@@ -4,32 +4,41 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## Production (none yet)
 
-- Commit running: <full hash>, since <date>.
-- Database or data version: <migration or schema version>.
-- Services and scheduled jobs: <names and times>.
+- Target: the owner's home server, home network only. Nothing deployed. Deployment model not
+  yet in the protected projects file; isolated behavior applies until it is.
+- Commit running: none.
 
 ## GitHub
 
-- Default branch `main` at <short hash>. Open branches and pull requests: <list>.
+- Default branch `main` at 4950000. Open branches: `task/001-setup-check` (local).
+  A stale local branch `feature/donetick-base` holds only the README commit (d856b41); nothing
+  to keep, the owner may delete it on GitHub if it was pushed.
 - Agents push task branches with the fine-grained token the orchestrator lists (it covers only the
-  owner's agent repositories). The owner merges into the default
-  branch.
+  owner's agent repositories). The owner merges into the default branch.
+- The owner will rename the repository to Wuzzanext; until the orchestrator says it is done,
+  the current remote and folder stay.
 
 ## Development (dev machine)
 
 - Account `devagent`, work folder `C:\dev`, main clone at `C:\dev\wuzzanikist-website`.
 - The orchestrator (`C:\dev\orchestrator`) holds the shared policy, add-ons and the tool versions.
-- Tools: Claude Code <version>, Codex CLI <version>, <runtime versions>.
-- Fence last tested: <date>, with Tokenmaxximus' security check (all checks ok).
+- Tools: Claude Code 2.1.301, Codex CLI 0.163.0, Git 2.56.0. **Missing:** Go, Node.js, JDK,
+  Android SDK (task 002).
+- Coding provider: codex. Codex profile: none set.
+- Locked rules: `git push --dry-run origin main` refused without a prompt on 2026-10-26.
+- Fence last tested with Tokenmaxximus' security check: not run in this session.
 
 ## In flight
 
-- <task number and name: status>
+- 001 setup check and plan: report sent to the orchestrator, waiting on the owner's OK and
+  answers.
 
 ## Open items
 
-1. <item>
+1. Owner installs the build tools (task 002).
+2. Owner answers the open questions in the 001 report (conflict rule, logo cut-out, server TLS,
+   sample recipe pages, repository public).
 
 ## Decisions (newest first)
 
-- <date>: <decision and the one-line reason>
+- 2026-10-26: the name is Wuzzanext (owner, through the orchestrator).

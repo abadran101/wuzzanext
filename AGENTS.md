@@ -20,4 +20,12 @@
 
 ## Project rules
 
-- <Coding rules for this project: language version, test command, style, what not to touch.>
+- The app is Wuzzanext, a fork of Donetick (AGPL-3.0): a Go backend and a React (Vite) web
+  interface, wrapped as an Android app. Keep upstream license and copyright notices.
+- Languages and test commands are pinned once the Donetick code is imported (task 003); until
+  then: Go for the server (`go test ./...`), TypeScript/React for the interface (the repo's own
+  `npm test`/lint scripts). (default, supervisor fills in after import)
+- Keep the interface fun and simple: few options, little text, icons where they fit.
+- Internal hostnames, family names and real recipes never go in code or tests; use configuration
+  and made-up data.
+- Don't touch: lock files, license files, the APK signing setup, unless the task file says so.

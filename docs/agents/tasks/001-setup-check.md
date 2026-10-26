@@ -1,6 +1,6 @@
 # Task 001: dev machine setup check
 
-- **Status:** ready
+- **Status:** in progress (report sent 2026-10-26; waits on the owner's OK)
 - **Branch:** `task/001-setup-check` from `main`, in the main clone
 - **Hand-off:** supervisor, plus one small read-only Codex run
 - **Shares:** nothing
