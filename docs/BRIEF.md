@@ -2,8 +2,8 @@
 
 The owner's brief of 2026-10-26, with internal hostnames replaced by role names. The name is
 settled: **Wuzzanext** for the app, the project and the repository (owner, through the
-orchestrator, 2026-10-26). The repository and folder keep their old name until the owner
-renames them.
+orchestrator, 2026-10-26). The GitHub repository becomes `abadran101/wuzzanext`; the local
+folder and project entry keep the old name.
 
 ## Overview
 

@@ -15,8 +15,10 @@ Update this file at every stop. Output from the real machines beats anything wri
   to keep, the owner may delete it on GitHub if it was pushed.
 - Agents push task branches with the fine-grained token the orchestrator lists (it covers only the
   owner's agent repositories). The owner merges into the default branch.
-- The owner will rename the repository to Wuzzanext; until the orchestrator says it is done,
-  the current remote and folder stay.
+- The owner will rename the GitHub repository to `abadran101/wuzzanext`. When the orchestrator
+  says it is done: `git remote set-url origin https://github.com/abadran101/wuzzanext.git`, then
+  confirm with `git ls-remote origin`. The local folder and the Tokenmaxximus project name stay
+  `wuzzanikist-website`.
 
 ## Development (dev machine)
 
@@ -41,4 +43,6 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## Decisions (newest first)
 
+- 2026-10-26: the repository is renamed to `wuzzanext` (no `-website`); the local folder and
+  project name stay (owner, through the orchestrator).
 - 2026-10-26: the name is Wuzzanext (owner, through the orchestrator).
