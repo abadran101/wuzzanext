@@ -20,7 +20,8 @@ folder and project entry keep the old name.
 - Fork Donetick (github.com/donetick/donetick, web interface in github.com/donetick/frontend),
   rename it to Wuzzanext and apply the logo throughout.
 - Donetick is AGPL-3.0. Keep the license and make the source available to users; a public
-  repository covers this.
+  repository covers this. (Since then the repository stays private, owner 2026-10-26; the
+  source is offered from the app itself instead, see the README and task 020.)
 - Code goes to this repository. Work on feature branches; the owner merges.
 
 ## Users and sign-in

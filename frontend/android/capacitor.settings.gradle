@@ -62,12 +62,6 @@ project(':capgo-capacitor-social-login').projectDir = new File('../node_modules/
 include ':jcesarmobile-capacitor-ocr'
 project(':jcesarmobile-capacitor-ocr').projectDir = new File('../node_modules/@jcesarmobile/capacitor-ocr/android')
 
-include ':revenuecat-purchases-capacitor'
-project(':revenuecat-purchases-capacitor').projectDir = new File('../node_modules/@revenuecat/purchases-capacitor/android')
-
-include ':revenuecat-purchases-capacitor-ui'
-project(':revenuecat-purchases-capacitor-ui').projectDir = new File('../node_modules/@revenuecat/purchases-capacitor-ui/android')
-
 include ':supernotes-capacitor-send-intent'
 project(':supernotes-capacitor-send-intent').projectDir = new File('../node_modules/@supernotes/capacitor-send-intent/android')
 
