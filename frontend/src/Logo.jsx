@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next'
 
-import LogoSVG from '@/assets/logo.svg'
+import LogoImage from '@/assets/logo.png'
 const Logo = ({ size = '128px' }) => {
   const { t } = useTranslation('common')
   return (
     <div className='logo'>
-      <img src={LogoSVG} alt={t('logoAlt')} width={size} height={size} />
+      <img src={LogoImage} alt={t('logoAlt')} width={size} height={size} />
     </div>
   )
 }

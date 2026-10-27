@@ -35,7 +35,7 @@ import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { version } from '../../../package.json'
-import DoneTickLogo from '../../assets/logo.svg'
+import AppLogo from '../../assets/logo.png'
 import UserProfileAvatar from '../../components/UserProfileAvatar'
 import { useNavBarTitleContext } from '../../contexts/NavBarTitleContext'
 import { useScrollDirection } from '../../hooks/useScrollDirection'
@@ -508,7 +508,7 @@ const NavBar = () => {
                   <Box
                     aria-hidden='true'
                     component='img'
-                    src={DoneTickLogo}
+                    src={AppLogo}
                     sx={{
                       display: 'block',
                       flexShrink: 0,

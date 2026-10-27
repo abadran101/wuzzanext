@@ -26,7 +26,6 @@ export default ({ command }) => {
           'favicon.ico',
           'robots.txt',
           'apple-touch-icon.png',
-          'safari-pinned-tab.svg',
           'mstile-150x150.png',
         ],
         injectManifest: {
