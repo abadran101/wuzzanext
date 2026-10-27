@@ -1,4 +1,4 @@
-package com.donetick.app.widget;
+package com.wuzzanext.app.widget;
 
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
@@ -14,7 +14,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.donetick.app.R;
+import com.wuzzanext.app.R;
 
 /**
  * Placement / long-press configuration, shared by every widget that declares

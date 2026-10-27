@@ -1,4 +1,4 @@
-package com.donetick.app.widget;
+package com.wuzzanext.app.widget;
 
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;

@@ -91,7 +91,7 @@ function BackupRestoreModal({ isOpen, onClose, showNotification }) {
           .replace(/:/g, '-')
         const filename = backupName
           ? `${backupName}-${timestamp}.backup`
-          : `donetick-backup-${timestamp}.backup`
+          : `wuzzanext-backup-${timestamp}.backup`
 
         // Download the backup file
         downloadFile(data.backup_data, filename)

@@ -1,4 +1,4 @@
-package com.donetick.app;
+package com.wuzzanext.app;
 
 import com.getcapacitor.BridgeActivity;
 
@@ -12,7 +12,7 @@ import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.donetick.app.widget.WidgetBridgePlugin;
+import com.wuzzanext.app.widget.WidgetBridgePlugin;
 
 
  public class MainActivity extends BridgeActivity implements ModifiedMainActivityForSocialLoginPlugin {
@@ -28,7 +28,7 @@ import com.donetick.app.widget.WidgetBridgePlugin;
      protected void onNewIntent(Intent intent) {
          if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())
                  && intent.getData() != null
-                 && "donetick".equals(intent.getData().getScheme())) {
+                 && "wuzzanext".equals(intent.getData().getScheme())) {
              intent.setAction(Intent.ACTION_VIEW);
          }
          super.onNewIntent(intent);

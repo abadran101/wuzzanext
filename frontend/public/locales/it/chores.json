@@ -516,7 +516,7 @@
     "notifyAll": "Avvisa tutti gli assegnatari",
     "notifyAllHint": "Se attivo, tutti i membri che possono vedere l'attività riceveranno la notifica. Altrimenti la riceverà solo la persona assegnata.",
     "selfHostedHeading": "Attenzione!",
-    "selfHostedNotice": "Questa funzione è disponibile su Donetick Cloud. Poiché usi un'istanza self-hosted, per i solleciti dovrai configurare un account Google Cloud e Firebase Cloud Messaging (FCM) e compilare personalmente l'app Android o iOS.",
+    "selfHostedNotice": "Nudges require push notifications to be configured on your server and in the native app.",
     "selfHostedFollowUp": "Aggiorneremo queste istruzioni se troveremo un modo più semplice per la configurazione self-hosted."
   },
   "nfc": {
@@ -572,7 +572,7 @@
     "file_many": "{{count}} file"
   },
   "searchBar": {
-    "placeholder": "Cerca in Donetick",
+    "placeholder": "Cerca in Wuzzanext",
     "clearAria": "Cancella ricerca attività"
   },
   "subTask": {
@@ -1038,11 +1038,11 @@
     "clear": "Cancella"
   },
   "empty": {
-    "errorTitle": "Impossibile raggiungere Donetick",
+    "errorTitle": "Impossibile raggiungere Wuzzanext",
     "errorDescription": "Le tue attività sono al sicuro. Al momento non riusciamo a caricarle: controlla la connessione e riprova.",
     "errorAction": "Riprova",
     "noTasksTitle": "Nessuna attività",
-    "noTasksDescription": "Crea la prima attività e Donetick terrà traccia della scadenza, di chi è il turno e di cosa viene dopo.",
+    "noTasksDescription": "Crea la prima attività e Wuzzanext terrà traccia della scadenza, di chi è il turno e di cosa viene dopo.",
     "createTask": "Crea un'attività",
     "moreOptions": "Altre opzioni",
     "noMatchTitle": "Nessuna attività corrisponde a questa vista",

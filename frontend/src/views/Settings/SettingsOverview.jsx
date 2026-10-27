@@ -2,6 +2,7 @@ import { Capacitor } from '@capacitor/core'
 import {
   ChevronRight,
   Feedback,
+  InfoOutlined,
   ReportProblem,
   Star,
 } from '@mui/icons-material'
@@ -21,13 +22,13 @@ import {
   Stack,
   Typography,
 } from '@mui/joy'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import { SETTINGS_SECTIONS } from '../../constants/settingsSections'
 import { useUserProfile } from '../../queries/UserQueries'
-import { isCloudInstance } from '../../service/FeedbackService'
+import { isFeedbackSubmissionConfigured } from '../../service/FeedbackService'
 import { isPlusAccount } from '../../utils/Helpers'
 import { isParentUser } from '../../utils/UserHelpers'
 import ErrorReportModal from '../Modals/ErrorReportModal'
@@ -39,19 +40,9 @@ const SettingsOverview = () => {
   const { data: userProfile } = useUserProfile()
   const [feedbackOpen, setFeedbackOpen] = useState(false)
   const [bugReportOpen, setBugReportOpen] = useState(false)
-  // Bridge is a relay for self-hosted instances; donetick.com users have no
-  // use for it since their server already has direct push access.
-  const [isCloud, setIsCloud] = useState(false)
-
-  useEffect(() => {
-    isCloudInstance().then(setIsCloud)
-  }, [])
-
   const settingsCards = [
     ...SETTINGS_SECTIONS.filter(
-      section =>
-        (!section.nativeOnly || Capacitor.isNativePlatform()) &&
-        (section.id !== 'bridge' || !isCloud),
+      section => !section.nativeOnly || Capacitor.isNativePlatform(),
     ).map(({ icon: Icon, id, isBeta }) => ({
       id,
       title: t(`overview.sections.${id}.title`),
@@ -60,12 +51,23 @@ const SettingsOverview = () => {
       isBeta,
     })),
     {
-      id: 'feedback',
-      title: t('overview.sections.feedback.title'),
-      description: t('overview.sections.feedback.description'),
-      icon: <Feedback />,
-      onSelect: () => setFeedbackOpen(true),
+      id: 'about',
+      title: t('common:about.title'),
+      description: t('common:about.description'),
+      icon: <InfoOutlined />,
+      onSelect: () => navigate('/about'),
     },
+    ...(isFeedbackSubmissionConfigured()
+      ? [
+          {
+            id: 'feedback',
+            title: t('overview.sections.feedback.title'),
+            description: t('overview.sections.feedback.description'),
+            icon: <Feedback />,
+            onSelect: () => setFeedbackOpen(true),
+          },
+        ]
+      : []),
     {
       id: 'bugreport',
       title: t('overview.sections.bugReport.title'),

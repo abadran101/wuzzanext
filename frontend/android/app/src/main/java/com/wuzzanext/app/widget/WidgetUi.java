@@ -1,4 +1,4 @@
-package com.donetick.app.widget;
+package com.wuzzanext.app.widget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -9,8 +9,8 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import com.donetick.app.MainActivity;
-import com.donetick.app.R;
+import com.wuzzanext.app.MainActivity;
+import com.wuzzanext.app.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -189,7 +189,7 @@ public final class WidgetUi {
         if (today) {
             Intent addTask = new Intent(context, MainActivity.class);
             addTask.setAction(Intent.ACTION_VIEW);
-            addTask.setData(Uri.parse("donetick://chores/add"));
+            addTask.setData(Uri.parse("wuzzanext://chores/add"));
             views.setOnClickPendingIntent(R.id.widget_add, PendingIntent.getActivity(
                     context, 2, addTask,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
@@ -208,7 +208,7 @@ public final class WidgetUi {
         views.setEmptyView(R.id.widget_list, R.id.widget_empty);
 
         // Row taps deep link into the chore view; the row's fill-in intent
-        // supplies the donetick://chores/<id> data URI.
+        // supplies the wuzzanext://chores/<id> data URI.
         Intent rowTemplate = new Intent(context, MainActivity.class);
         rowTemplate.setAction(Intent.ACTION_VIEW);
         views.setPendingIntentTemplate(R.id.widget_list, PendingIntent.getActivity(

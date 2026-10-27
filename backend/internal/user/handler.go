@@ -1186,7 +1186,7 @@ func (h *Handler) UpdateNotificationTarget(c *gin.Context) {
 func (h *Handler) updateUserPasswordLoggedInOnly(c *gin.Context) {
 	if h.isDonetickDotCom {
 		// only enable this feature for self-hosted instances
-		c.JSON(http.StatusForbidden, gin.H{"error": "This action is not allowed on donetick.com"})
+		c.JSON(http.StatusForbidden, gin.H{"error": "This action is not allowed on hosted instances"})
 		return
 	}
 	logger := logging.FromContext(c)

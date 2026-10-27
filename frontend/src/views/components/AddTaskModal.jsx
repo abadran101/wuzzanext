@@ -460,7 +460,7 @@ const TaskInput = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectAudienceKey])
 
-  // Quick-capture widget entry points (donetick://chores/add?mode=voice|scan)
+  // Quick-capture widget entry points (wuzzanext://chores/add?mode=voice|scan)
   // land here: open straight into the requested panel, once per modal open so
   // backing out of the panel doesn't bounce the user right back into it.
   const appliedInitialModeRef = useRef(false)

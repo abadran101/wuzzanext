@@ -1,21 +1,19 @@
-package com.donetick.app.widget;
+package com.wuzzanext.app.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 
-import com.donetick.app.R;
+import com.wuzzanext.app.R;
 
-/** "People" home-screen widget: every circle member with their task load. */
-public class PeopleWidgetProvider extends AppWidgetProvider {
+/** "Next 7 Days" home-screen widget: upcoming tasks grouped by day. */
+public class WeekWidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager manager, int[] appWidgetIds) {
         for (int id : appWidgetIds) {
-            manager.updateAppWidget(id, WidgetUi.build(context, WidgetUi.MODE_PEOPLE, id));
+            manager.updateAppWidget(id, WidgetUi.build(context, WidgetUi.MODE_WEEK, id));
         }
-        // Reload rows; the factory refreshes from the server when stale, which
-        // is what keeps the widget current while the app stays closed.
         manager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list);
     }
 
@@ -26,7 +24,7 @@ public class PeopleWidgetProvider extends AppWidgetProvider {
         int id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
         if (id != AppWidgetManager.INVALID_APPWIDGET_ID) {
-            WidgetUi.refresh(context, WidgetUi.MODE_PEOPLE, id, goAsync());
+            WidgetUi.refresh(context, WidgetUi.MODE_WEEK, id, goAsync());
         }
     }
 

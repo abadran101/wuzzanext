@@ -1,4 +1,4 @@
-package com.donetick.app.share;
+package com.wuzzanext.app.share;
 
 import app.supernotes.sendIntent.SendIntentActivity;
 

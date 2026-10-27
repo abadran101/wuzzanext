@@ -1,4 +1,4 @@
-package com.donetick.app.widget;
+package com.wuzzanext.app.widget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -10,7 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 
-import com.donetick.app.R;
+import com.wuzzanext.app.R;
 
 /**
  * "Quick Actions" widget: four configurable circular buttons in a 2x2 square.
@@ -20,10 +20,10 @@ import com.donetick.app.R;
  */
 public class QuickActionsWidgetProvider extends AppWidgetProvider {
     // Handled in src/CapacitorListener.js
-    private static final String URI_ADD = "donetick://chores/add";
-    private static final String URI_SCAN = "donetick://chores/add?mode=scan";
-    private static final String URI_VOICE = "donetick://chores/add?mode=voice";
-    private static final String URI_SEARCH = "donetick://search";
+    private static final String URI_ADD = "wuzzanext://chores/add";
+    private static final String URI_SCAN = "wuzzanext://chores/add?mode=scan";
+    private static final String URI_VOICE = "wuzzanext://chores/add?mode=voice";
+    private static final String URI_SEARCH = "wuzzanext://search";
 
     private static final int[] TILES = { R.id.action_0, R.id.action_1,
             R.id.action_2, R.id.action_3 };
@@ -79,8 +79,8 @@ public class QuickActionsWidgetProvider extends AppWidgetProvider {
         switch (action) {
             case "voice": return URI_VOICE;
             case "scan": return URI_SCAN;
-            case "projects": return "donetick://projects";
-            case "overview": return "donetick://overview";
+            case "projects": return "wuzzanext://projects";
+            case "overview": return "wuzzanext://overview";
             case "search": return URI_SEARCH;
             default: return URI_ADD;
         }
@@ -109,7 +109,7 @@ public class QuickActionsWidgetProvider extends AppWidgetProvider {
     }
 
     private static PendingIntent deepLink(Context context, int appWidgetId, int offset, String uri) {
-        Intent intent = new Intent(context, com.donetick.app.MainActivity.class);
+        Intent intent = new Intent(context, com.wuzzanext.app.MainActivity.class);
         intent.setAction(Intent.ACTION_VIEW);
         // Distinct data per bubble so the PendingIntents aren't collapsed.
         intent.setData(Uri.parse(uri));

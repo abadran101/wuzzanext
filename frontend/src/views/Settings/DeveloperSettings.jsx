@@ -1,5 +1,5 @@
 import { LocalNotifications } from '@capacitor/local-notifications'
-import { Refresh, Star, Token } from '@mui/icons-material'
+import { Refresh, Token } from '@mui/icons-material'
 import { Box, Button, Card, Chip, Divider, Typography } from '@mui/joy'
 import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useState } from 'react'
@@ -13,7 +13,6 @@ import {
   evaluatePromptEligibility,
   isFeedbackSubmissionConfigured,
   isRawChatWebhookConfigured,
-  requestStoreReview,
   resetFeedbackState,
   setDevForcedPrompt,
 } from '../../service/FeedbackService'
@@ -418,17 +417,6 @@ const DeveloperSettings = () => {
     })
   }
 
-  const handleRequestStoreReview = async () => {
-    const requested = await requestStoreReview()
-    await refreshFeedbackEligibility()
-    showNotification({
-      type: requested ? 'success' : 'warning',
-      message: requested
-        ? 'Review requested. The OS decides whether to actually show it.'
-        : 'Not available — native platform only.',
-    })
-  }
-
   const getNotificationStatusColor = scheduleTime => {
     if (!scheduleTime) return 'neutral'
 
@@ -720,7 +708,7 @@ const DeveloperSettings = () => {
               gap: 1,
             }}
           >
-            <Typography level='title-lg'>Feedback & Review Prompt</Typography>
+            <Typography level='title-lg'>Feedback Prompt</Typography>
             <Button
               size='sm'
               variant='soft'
@@ -803,10 +791,6 @@ const DeveloperSettings = () => {
                 : ''}
             </Typography>
             <Typography level='body-xs' color='neutral'>
-              Review requested:{' '}
-              {formatDateTime(feedbackEligibility?.state?.reviewRequestedAt)}
-            </Typography>
-            <Typography level='body-xs' color='neutral'>
               Current version: {feedbackEligibility?.version ?? 'N/A'} · Webhook{' '}
               {isFeedbackSubmissionConfigured()
                 ? 'configured'
@@ -845,16 +829,6 @@ const DeveloperSettings = () => {
                 onClick={handleForceFeedbackPrompt}
               >
                 Force Next Prompt
-              </Button>
-              <Button
-                size='sm'
-                variant='outlined'
-                color='neutral'
-                startDecorator={<Star />}
-                onClick={handleRequestStoreReview}
-                disabled={!isNativePlatform}
-              >
-                Request Store Review
               </Button>
               <Button
                 size='sm'

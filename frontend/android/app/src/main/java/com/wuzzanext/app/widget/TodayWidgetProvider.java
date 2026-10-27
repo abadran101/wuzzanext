@@ -1,11 +1,11 @@
-package com.donetick.app.widget;
+package com.wuzzanext.app.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 
-import com.donetick.app.R;
+import com.wuzzanext.app.R;
 
 /** "Today" home-screen widget: tasks due today plus anything awaiting approval. */
 public class TodayWidgetProvider extends AppWidgetProvider {

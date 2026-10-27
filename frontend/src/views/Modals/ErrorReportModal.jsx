@@ -1,10 +1,7 @@
-import { Browser } from '@capacitor/browser'
-import { Capacitor } from '@capacitor/core'
 import {
   CheckRounded,
   ContentCopyRounded,
   ExpandMoreRounded,
-  GitHub,
   ReportProblemRounded,
 } from '@mui/icons-material'
 import {
@@ -41,15 +38,6 @@ const enter = (delay = 0) => ({
 })
 
 const STEP = { FORM: 'form', SENT: 'sent', FALLBACK: 'fallback' }
-
-// Native webviews swallow target="_blank"; route through the system browser.
-const openUrl = async url => {
-  if (Capacitor.isNativePlatform()) {
-    await Browser.open({ url })
-  } else {
-    window.open(url, '_blank', 'noopener,noreferrer')
-  }
-}
 
 /**
  * The same halo treatment the onboarding views use, so the crash path doesn't
@@ -116,7 +104,6 @@ const ErrorReportModal = ({ error, errorInfo, onClose, open }) => {
   const [showDetails, setShowDetails] = useState(false)
   const [copied, setCopied] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const [githubUrl, setGithubUrl] = useState(null)
   const [step, setStep] = useState(STEP.FORM)
 
   useEffect(() => {
@@ -126,7 +113,6 @@ const ErrorReportModal = ({ error, errorInfo, onClose, open }) => {
     setShowDetails(false)
     setCopied(false)
     setSubmitting(false)
-    setGithubUrl(null)
     // Snapshot the environment at open time so it reflects the crash, not
     // whatever the app looks like after the user has poked at it.
     collectErrorReport({ error, errorInfo }).then(setReport)
@@ -144,7 +130,7 @@ const ErrorReportModal = ({ error, errorInfo, onClose, open }) => {
   const handleSubmit = async () => {
     if (!report) return
     setSubmitting(true)
-    const { githubUrl: url, result } = await submitErrorReport({
+    const { result } = await submitErrorReport({
       description,
       contactEmail: email,
       report,
@@ -155,9 +141,6 @@ const ErrorReportModal = ({ error, errorInfo, onClose, open }) => {
       setStep(STEP.SENT)
       return
     }
-    // Everything else — self-hosted, unconfigured, offline — hands the user a
-    // pre-filled issue so the report isn't simply lost.
-    setGithubUrl(url)
     setStep(STEP.FALLBACK)
   }
 
@@ -396,31 +379,20 @@ const ErrorReportModal = ({ error, errorInfo, onClose, open }) => {
       {step === STEP.FALLBACK && (
         <Stack spacing={2} sx={{ textAlign: 'center' }}>
           <Box sx={{ ...enter(0) }}>
-            <IconHalo icon={<GitHub />} color='neutral' />
+            <IconHalo icon={<ReportProblemRounded />} color='neutral' />
           </Box>
           <Box sx={{ ...enter(50) }}>
             <Typography level='h4' sx={{ fontWeight: 700 }}>
-              {t('errorReport.githubTitle')}
+              {t('about.reportUnavailableTitle')}
             </Typography>
             <Typography
               level='body-sm'
               sx={{ color: 'text.secondary', mt: 0.5, textWrap: 'pretty' }}
             >
-              {t('errorReport.githubBody')}
+              {t('about.reportUnavailableBody')}
             </Typography>
           </Box>
           <Stack spacing={1} sx={{ ...enter(100) }}>
-            <Button
-              size='lg'
-              fullWidth
-              startDecorator={<GitHub />}
-              onClick={() => {
-                openUrl(githubUrl)
-                onClose()
-              }}
-            >
-              {t('errorReport.openIssue')}
-            </Button>
             <Button
               variant='plain'
               color='neutral'

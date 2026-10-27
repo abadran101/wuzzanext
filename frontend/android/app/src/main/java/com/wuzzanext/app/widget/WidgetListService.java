@@ -1,4 +1,4 @@
-package com.donetick.app.widget;
+package com.wuzzanext.app.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.donetick.app.R;
+import com.wuzzanext.app.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -243,7 +243,7 @@ public class WidgetListService extends RemoteViewsService {
             }
 
             Intent fillIn = new Intent();
-            fillIn.setData(Uri.parse("donetick://chores/" + task.id));
+            fillIn.setData(Uri.parse("wuzzanext://chores/" + task.id));
             views.setOnClickFillInIntent(R.id.row_root, fillIn);
             return views;
         }
@@ -268,7 +268,7 @@ public class WidgetListService extends RemoteViewsService {
 
             Intent fillIn = new Intent();
             fillIn.setData(new Uri.Builder()
-                    .scheme("donetick")
+                    .scheme("wuzzanext")
                     .authority("chores")
                     .appendQueryParameter("filterId", "assignedTo:" + row.person.id)
                     .build());

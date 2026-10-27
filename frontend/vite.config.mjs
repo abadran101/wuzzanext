@@ -108,8 +108,8 @@ export default ({ command, mode }) => {
               type: 'image/png',
             },
           ],
-          name: 'Donetick: Simplify Tasks & Chores, Together.',
-          short_name: 'Donetick',
+          name: 'Wuzzanext: Simplify Tasks & Chores, Together.',
+          short_name: 'Wuzzanext',
           theme_color: '#ffffff',
         },
         registerType: 'prompt',
@@ -121,6 +121,7 @@ export default ({ command, mode }) => {
           //Exclude API and Swagger routes from service worker navigation fallback
           navigateFallback: '/index.html',
           navigateFallbackDenylist: [
+            /^\/wuzzanext-source\.tar\.gz$/,
             /^\/api\//, // Exclude all API routes
             /^\/swagger/, // Exclude all Swagger routes
           ],

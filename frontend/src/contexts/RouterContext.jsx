@@ -5,7 +5,6 @@ import ChoreEdit from '@/views/ChoreEdit/ChoreEdit'
 import Error from '@/views/Error'
 import AccountSettings from '@/views/Settings/AccountSettings'
 import AdvancedSettings from '@/views/Settings/AdvancedSettings'
-import BridgeSettings from '@/views/Settings/BridgeSettings'
 import ChildUserSettings from '@/views/Settings/ChildUserSettings'
 import CircleSettings from '@/views/Settings/CircleSettings'
 import DeveloperSettings from '@/views/Settings/DeveloperSettings'
@@ -15,6 +14,7 @@ import SettingsRoutes from '@/views/Settings/SettingsRoutes'
 import ThemeSettings from '@/views/Settings/ThemeSettings'
 
 import GlobalSearchPage from '../search/GlobalSearchPage'
+import About from '../views/About'
 import AuthenticationLoading from '../views/Authorization/Authenticating'
 import ForgotPasswordView from '../views/Authorization/ForgotPasswordView'
 import LoginSettings from '../views/Authorization/LoginSettings'
@@ -32,7 +32,6 @@ import DefaultViewRoute from '../views/Home/DefaultViewRoute'
 import HomeView from '../views/Home/HomeView'
 import LabelDetailView from '../views/Labels/LabelDetailView'
 import LabelView from '../views/Labels/LabelView'
-import Landing from '../views/Landing/Landing'
 import CircleSetupView from '../views/Onboarding/CircleSetupView'
 import GetStartedView from '../views/Onboarding/GetStartedView'
 import HeardAboutView from '../views/Onboarding/HeardAboutView'
@@ -40,7 +39,6 @@ import OnboardingView from '../views/Onboarding/OnboardingView'
 import WorkspaceReadyView from '../views/Onboarding/WorkspaceReadyView'
 import PaymentCancelledView from '../views/Payments/PaymentFailView'
 import PaymentSuccessView from '../views/Payments/PaymentSuccessView'
-import PrivacyPolicyView from '../views/PrivacyPolicy/PrivacyPolicyView'
 import ProjectView from '../views/Projects/ProjectView'
 import APITokenSettings from '../views/Settings/APITokenSettings'
 import CalendarSettings from '../views/Settings/CalendarSettings'
@@ -53,7 +51,6 @@ import PrivacyAnalyticsSettings from '../views/Settings/PrivacyAnalyticsSettings
 import ProfileSettings from '../views/Settings/ProfileSettings'
 import StorageSettings from '../views/Settings/StorageSettings'
 import WidgetSettings from '../views/Settings/WidgetSettings'
-import TermsView from '../views/Terms/TermsView'
 import TestView from '../views/TestView/Test'
 import ThingsHistory from '../views/Things/ThingsHistory'
 import ThingsView from '../views/Things/ThingsView'
@@ -61,6 +58,7 @@ import TimerDetails from '../views/Timer/TimerDetails'
 import UserActivities from '../views/User/UserActivities'
 import UserPoints from '../views/User/UserPoints'
 const Router = createBrowserRouter([
+  { path: '/about', element: <About /> },
   {
     path: '/',
     element: <App />,
@@ -113,10 +111,6 @@ const Router = createBrowserRouter([
           {
             path: 'apitokens',
             element: <APITokenSettings />,
-          },
-          {
-            path: 'bridge',
-            element: <BridgeSettings />,
           },
           {
             path: 'calendar',
@@ -243,7 +237,7 @@ const Router = createBrowserRouter([
       },
       {
         path: '/welcome',
-        element: <Landing />,
+        element: <Navigate to='/' replace />,
       },
       {
         path: '/test',
@@ -259,11 +253,11 @@ const Router = createBrowserRouter([
       },
       {
         path: '/privacy',
-        element: <PrivacyPolicyView />,
+        element: <Navigate to='/about' replace />,
       },
       {
         path: '/terms',
-        element: <TermsView />,
+        element: <Navigate to='/about' replace />,
       },
       {
         path: 'circle/join',

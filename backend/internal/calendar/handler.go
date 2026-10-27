@@ -25,7 +25,7 @@ import (
 )
 
 const (
-	calendarProdID = "-//Donetick//Chores Calendar//EN"
+	calendarProdID = "-//Wuzzanext//Chores Calendar//EN"
 	// calendarTokenBytes is the entropy of a calendar token. The token is a
 	// bearer credential sitting in a URL, so it must be infeasible to guess.
 	calendarTokenBytes = 32
@@ -317,7 +317,7 @@ func (h *Handler) ServeCalendar(c *gin.Context) {
 	}
 
 	c.Header("Content-Type", "text/calendar; charset=utf-8")
-	c.Header("Content-Disposition", "attachment; filename=\"donetick-chores.ics\"")
+	c.Header("Content-Disposition", "attachment; filename=\"wuzzanext-chores.ics\"")
 	c.Header("Cache-Control", "no-cache, no-store, must-revalidate")
 	c.Header("X-Content-Type-Options", "nosniff")
 	c.String(http.StatusOK, ical)
@@ -330,7 +330,7 @@ func buildICalFeed(chores []*chModel.Chore, calendarName string, userTimezone st
 	b.WriteString("BEGIN:VCALENDAR\r\n")
 	b.WriteString("VERSION:2.0\r\n")
 	b.WriteString(foldLine(fmt.Sprintf("PRODID:%s", calendarProdID)))
-	b.WriteString(foldLine(fmt.Sprintf("X-WR-CALNAME:Donetick - %s", escapeICalText(calendarName))))
+	b.WriteString(foldLine(fmt.Sprintf("X-WR-CALNAME:Wuzzanext - %s", escapeICalText(calendarName))))
 	b.WriteString("METHOD:PUBLISH\r\n")
 	b.WriteString("CALSCALE:GREGORIAN\r\n")
 

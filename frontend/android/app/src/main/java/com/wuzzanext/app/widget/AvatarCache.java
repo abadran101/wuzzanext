@@ -1,4 +1,4 @@
-package com.donetick.app.widget;
+package com.wuzzanext.app.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;

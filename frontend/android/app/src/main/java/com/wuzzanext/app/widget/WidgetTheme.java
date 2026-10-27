@@ -1,4 +1,4 @@
-package com.donetick.app.widget;
+package com.wuzzanext.app.widget;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -6,7 +6,7 @@ import android.widget.RemoteViews;
 
 import androidx.core.content.ContextCompat;
 
-import com.donetick.app.R;
+import com.wuzzanext.app.R;
 
 /**
  * Light/dark palette for the task widgets.

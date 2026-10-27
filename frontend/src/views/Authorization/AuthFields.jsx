@@ -140,30 +140,11 @@ export const AuthDivider = ({ children }) => {
 }
 
 export const LegalLinks = () => {
-  const { t } = useTranslation('auth')
+  const { t } = useTranslation('common')
   return (
-    <Typography
-      level='body-xs'
-      sx={{ textAlign: 'center', color: 'text.secondary' }}
-    >
-      <Link
-        href='https://donetick.com/privacy'
-        target='_blank'
-        rel='noopener'
-        color='neutral'
-        underline='hover'
-      >
-        {t('privacyPolicy')}
-      </Link>
-      {' · '}
-      <Link
-        href='https://donetick.com/terms'
-        target='_blank'
-        rel='noopener'
-        color='neutral'
-        underline='hover'
-      >
-        {t('termsOfUse')}
+    <Typography level='body-xs' sx={{ textAlign: 'center' }}>
+      <Link href='/about' color='neutral' underline='hover'>
+        {t('common:about.title')}
       </Link>
     </Typography>
   )

@@ -584,7 +584,7 @@ func TestBuildICalFeed_Empty(t *testing.T) {
 	if strings.Contains(result, "BEGIN:VEVENT") {
 		t.Error("should not contain VEVENT for empty chore list")
 	}
-	if !strings.Contains(result, "X-WR-CALNAME:Donetick - Test User") {
+	if !strings.Contains(result, "X-WR-CALNAME:Wuzzanext - Test User") {
 		t.Error("missing calendar name")
 	}
 	if !strings.Contains(result, "X-WR-TIMEZONE:America/New_York") {

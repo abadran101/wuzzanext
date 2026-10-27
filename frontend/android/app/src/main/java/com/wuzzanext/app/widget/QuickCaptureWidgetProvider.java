@@ -1,4 +1,4 @@
-package com.donetick.app.widget;
+package com.wuzzanext.app.widget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.RemoteViews;
 
-import com.donetick.app.R;
+import com.wuzzanext.app.R;
 
 /**
  * "Quick Capture" home-screen widget: three shortcuts straight into the
@@ -17,9 +17,9 @@ import com.donetick.app.R;
  */
 public class QuickCaptureWidgetProvider extends AppWidgetProvider {
     // Handled in src/CapacitorListener.js → /chores?add_task=1[&mode=…]
-    private static final String URI_TYPE = "donetick://chores/add";
-    private static final String URI_SCAN = "donetick://chores/add?mode=scan";
-    private static final String URI_VOICE = "donetick://chores/add?mode=voice";
+    private static final String URI_TYPE = "wuzzanext://chores/add";
+    private static final String URI_SCAN = "wuzzanext://chores/add?mode=scan";
+    private static final String URI_VOICE = "wuzzanext://chores/add?mode=voice";
 
     @Override
     public void onUpdate(Context context, AppWidgetManager manager, int[] appWidgetIds) {
@@ -67,7 +67,7 @@ public class QuickCaptureWidgetProvider extends AppWidgetProvider {
     }
 
     private static PendingIntent deepLink(Context context, int requestCode, String uri) {
-        Intent intent = new Intent(context, com.donetick.app.MainActivity.class);
+        Intent intent = new Intent(context, com.wuzzanext.app.MainActivity.class);
         intent.setAction(Intent.ACTION_VIEW);
         // Distinct data per tile so the three PendingIntents aren't collapsed.
         intent.setData(Uri.parse(uri));

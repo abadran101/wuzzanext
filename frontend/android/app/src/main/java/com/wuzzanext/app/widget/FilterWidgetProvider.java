@@ -1,4 +1,4 @@
-package com.donetick.app.widget;
+package com.wuzzanext.app.widget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -16,33 +16,33 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import com.donetick.app.MainActivity;
-import com.donetick.app.R;
+import com.wuzzanext.app.MainActivity;
+import com.wuzzanext.app.R;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-/** Interactive project browser. Widget hosts do not expose horizontal swipe
+/** Interactive filter browser. Widget hosts do not expose horizontal swipe
  * callbacks, so previous/next provide the same navigation deterministically. */
-public class ProjectWidgetProvider extends AppWidgetProvider {
-    private static final String ACTION_PREVIOUS = "com.donetick.app.widget.PROJECT_PREVIOUS";
-    private static final String ACTION_NEXT = "com.donetick.app.widget.PROJECT_NEXT";
-    private static final String ACTION_UP = "com.donetick.app.widget.PROJECT_UP";
-    private static final String ACTION_DOWN = "com.donetick.app.widget.PROJECT_DOWN";
-    private static final String ACTION_REFRESH = "com.donetick.app.widget.PROJECT_REFRESH";
-    private static final String ACTION_COMPLETE = "com.donetick.app.widget.PROJECT_COMPLETE";
+public class FilterWidgetProvider extends AppWidgetProvider {
+    private static final String ACTION_PREVIOUS = "com.donetick.app.widget.FILTER_PREVIOUS";
+    private static final String ACTION_NEXT = "com.donetick.app.widget.FILTER_NEXT";
+    private static final String ACTION_UP = "com.donetick.app.widget.FILTER_UP";
+    private static final String ACTION_DOWN = "com.donetick.app.widget.FILTER_DOWN";
+    private static final String ACTION_REFRESH = "com.donetick.app.widget.FILTER_REFRESH";
+    private static final String ACTION_COMPLETE = "com.donetick.app.widget.FILTER_COMPLETE";
     private static final String EXTRA_TASK_ID = "task_id";
     private static final int PAGE_SIZE = 5;
     private static final String[] REFRESH_FRAMES = { "↻", "↓" };
     private static final ConcurrentHashMap<Integer, Integer> REFRESHING = new ConcurrentHashMap<>();
 
-    private static final int[] ROWS = { R.id.project_row_0, R.id.project_row_1,
-            R.id.project_row_2, R.id.project_row_3, R.id.project_row_4 };
-    private static final int[] CHECKS = { R.id.project_check_0, R.id.project_check_1,
-            R.id.project_check_2, R.id.project_check_3, R.id.project_check_4 };
-    private static final int[] TITLES = { R.id.project_task_0, R.id.project_task_1,
-            R.id.project_task_2, R.id.project_task_3, R.id.project_task_4 };
+    private static final int[] ROWS = { R.id.filter_row_0, R.id.filter_row_1,
+            R.id.filter_row_2, R.id.filter_row_3, R.id.filter_row_4 };
+    private static final int[] CHECKS = { R.id.filter_check_0, R.id.filter_check_1,
+            R.id.filter_check_2, R.id.filter_check_3, R.id.filter_check_4 };
+    private static final int[] TITLES = { R.id.filter_task_0, R.id.filter_task_1,
+            R.id.filter_task_2, R.id.filter_task_3, R.id.filter_task_4 };
 
     @Override
     public void onUpdate(Context context, AppWidgetManager manager, int[] ids) {
@@ -64,7 +64,7 @@ public class ProjectWidgetProvider extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
         String action = intent.getAction();
-        if (action == null || !action.startsWith("com.donetick.app.widget.PROJECT_")) return;
+        if (action == null || !action.startsWith("com.donetick.app.widget.FILTER_")) return;
         int id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
         if (id == AppWidgetManager.INVALID_APPWIDGET_ID) return;
@@ -94,22 +94,22 @@ public class ProjectWidgetProvider extends AppWidgetProvider {
                     update(context, id);
                     pending.finish();
                 }
-            }, "project-widget-action").start();
+            }, "filter-widget-action").start();
             return;
         }
 
-        List<WidgetStore.Project> projects = WidgetStore.loadProjects(context);
-        if (projects.isEmpty()) return;
-        int index = Math.min(WidgetStore.projectIndex(context, id), projects.size() - 1);
-        int page = WidgetStore.projectPage(context, id);
-        if (ACTION_PREVIOUS.equals(action)) { index = (index - 1 + projects.size()) % projects.size(); page = 0; }
-        if (ACTION_NEXT.equals(action)) { index = (index + 1) % projects.size(); page = 0; }
+        List<WidgetStore.Filter> filters = WidgetStore.loadFilters(context);
+        if (filters.isEmpty()) return;
+        int index = Math.min(WidgetStore.filterIndex(context, id), filters.size() - 1);
+        int page = WidgetStore.filterPage(context, id);
+        if (ACTION_PREVIOUS.equals(action)) { index = (index - 1 + filters.size()) % filters.size(); page = 0; }
+        if (ACTION_NEXT.equals(action)) { index = (index + 1) % filters.size(); page = 0; }
         if (ACTION_UP.equals(action)) page = Math.max(0, page - 1);
         if (ACTION_DOWN.equals(action)) {
-            int taskCount = tasksFor(context, projects.get(index).id, id).size();
+            int taskCount = tasksFor(context, filters.get(index).id, id).size();
             page = Math.min(Math.max(0, (taskCount - 1) / PAGE_SIZE), page + 1);
         }
-        WidgetStore.setProjectPosition(context, id, index, page);
+        WidgetStore.setFilterPosition(context, id, index, page);
         update(context, id);
     }
 
@@ -126,13 +126,13 @@ public class ProjectWidgetProvider extends AppWidgetProvider {
                     break;
                 }
             }
-        }, "project-widget-refresh-animation").start();
+        }, "filter-widget-refresh-animation").start();
         return true;
     }
 
     public static void refreshAll(Context context) {
         AppWidgetManager manager = AppWidgetManager.getInstance(context);
-        int[] ids = manager.getAppWidgetIds(new ComponentName(context, ProjectWidgetProvider.class));
+        int[] ids = manager.getAppWidgetIds(new ComponentName(context, FilterWidgetProvider.class));
         for (int id : ids) manager.updateAppWidget(id, build(context, id));
     }
 
@@ -141,41 +141,35 @@ public class ProjectWidgetProvider extends AppWidgetProvider {
     }
 
     private static RemoteViews build(Context context, int widgetId) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_project);
-        List<WidgetStore.Project> projects = WidgetStore.loadProjects(context);
-        if (projects.isEmpty()) {
-            WidgetStore.Project fallback = new WidgetStore.Project();
-            fallback.id = "default"; fallback.name = "Projects"; fallback.color = "#64748B";
-            projects.add(fallback);
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_filter);
+        List<WidgetStore.Filter> filters = WidgetStore.loadFilters(context);
+        if (filters.isEmpty()) {
+            WidgetStore.Filter fallback = new WidgetStore.Filter();
+            fallback.id = "default"; fallback.name = "Filters"; fallback.color = "#64748B";
+            filters.add(fallback);
         }
-        int index = Math.min(WidgetStore.projectIndex(context, widgetId), projects.size() - 1);
-        WidgetStore.Project project = projects.get(index);
-        List<WidgetStore.ProjectTask> tasks = tasksFor(context, project.id, widgetId);
+        int index = Math.min(WidgetStore.filterIndex(context, widgetId), filters.size() - 1);
+        WidgetStore.Filter filter = filters.get(index);
+        List<WidgetStore.FilterTask> tasks = tasksFor(context, filter.id, widgetId);
         int maxPage = Math.max(0, (tasks.size() - 1) / PAGE_SIZE);
-        int page = Math.min(WidgetStore.projectPage(context, widgetId), maxPage);
-        if (page != WidgetStore.projectPage(context, widgetId)) {
-            WidgetStore.setProjectPosition(context, widgetId, index, page);
+        int page = Math.min(WidgetStore.filterPage(context, widgetId), maxPage);
+        if (page != WidgetStore.filterPage(context, widgetId)) {
+            WidgetStore.setFilterPosition(context, widgetId, index, page);
         }
 
-        int background = parseColor(project.color, Color.rgb(100, 116, 139));
+        int background = parseColor(filter.color, Color.rgb(100, 116, 139));
         int foreground = contrastColor(background);
         int secondary = withAlphaOver(foreground, background, 0.72f);
         int completedBg = blend(background, foreground, 0.10f);
         WidgetUi.applyOpacity(context, views, widgetId, background);
-        views.setTextColor(R.id.project_title, foreground);
-        views.setTextColor(R.id.project_icon, foreground);
-        views.setTextColor(R.id.project_counts, secondary);
-        views.setTextViewText(R.id.project_title, project.name);
-        views.setTextViewText(R.id.project_icon, icon(project.icon));
-        PendingIntent openProject = openProject(context, project.id, widgetId);
-        views.setOnClickPendingIntent(R.id.project_icon, openProject);
-        views.setOnClickPendingIntent(R.id.project_title, openProject);
-        views.setOnClickPendingIntent(R.id.project_counts, openProject);
-        String me = WidgetStore.userId(context);
-        int mine = 0;
-        for (WidgetStore.ProjectTask task : tasks) if (me != null && me.equals(task.assignedTo)) mine++;
-        views.setTextViewText(R.id.project_counts, tasks.size() + " tasks · " + mine + " assigned to me");
-        views.setTextColor(R.id.project_empty, secondary);
+        views.setTextColor(R.id.filter_title, foreground);
+        views.setTextColor(R.id.filter_counts, secondary);
+        views.setTextViewText(R.id.filter_title, filter.name);
+        PendingIntent openFilter = openFilter(context, filter.id, widgetId);
+        views.setOnClickPendingIntent(R.id.filter_title, openFilter);
+        views.setOnClickPendingIntent(R.id.filter_counts, openFilter);
+        views.setTextViewText(R.id.filter_counts, tasks.size() + " tasks");
+        views.setTextColor(R.id.filter_empty, secondary);
 
         int start = page * PAGE_SIZE;
         int visible = Math.min(PAGE_SIZE, Math.max(0, tasks.size() - start));
@@ -183,7 +177,7 @@ public class ProjectWidgetProvider extends AppWidgetProvider {
         for (int row = 0; row < PAGE_SIZE; row++) {
             views.setTextColor(TITLES[row], foreground);
             if (row < visible) {
-                WidgetStore.ProjectTask task = tasks.get(start + row);
+                WidgetStore.FilterTask task = tasks.get(start + row);
                 views.setViewVisibility(ROWS[row], View.VISIBLE);
                 int checkIcon = task.completed
                         ? (darkForeground ? R.drawable.widget_project_check_circle_dark
@@ -211,27 +205,27 @@ public class ProjectWidgetProvider extends AppWidgetProvider {
                 views.setViewVisibility(ROWS[row], View.GONE);
             }
         }
-        views.setViewVisibility(R.id.project_empty, tasks.isEmpty() ? View.VISIBLE : View.GONE);
+        views.setViewVisibility(R.id.filter_empty, tasks.isEmpty() ? View.VISIBLE : View.GONE);
 
-        views.setTextColor(R.id.project_previous, foreground);
-        views.setTextColor(R.id.project_next, foreground);
-        views.setTextColor(R.id.project_refresh, foreground);
+        views.setTextColor(R.id.filter_previous, foreground);
+        views.setTextColor(R.id.filter_next, foreground);
+        views.setTextColor(R.id.filter_refresh, foreground);
         Integer refreshFrame = REFRESHING.get(widgetId);
-        views.setTextViewText(R.id.project_refresh,
+        views.setTextViewText(R.id.filter_refresh,
                 refreshFrame == null ? "↻" : REFRESH_FRAMES[refreshFrame]);
-        views.setTextColor(R.id.project_up, foreground);
-        views.setTextColor(R.id.project_down, foreground);
-        views.setOnClickPendingIntent(R.id.project_previous, action(context, widgetId, ACTION_PREVIOUS, null, 1));
-        views.setOnClickPendingIntent(R.id.project_next, action(context, widgetId, ACTION_NEXT, null, 2));
-        views.setOnClickPendingIntent(R.id.project_refresh, action(context, widgetId, ACTION_REFRESH, null, 3));
-        views.setOnClickPendingIntent(R.id.project_up, action(context, widgetId, ACTION_UP, null, 4));
-        views.setOnClickPendingIntent(R.id.project_down, action(context, widgetId, ACTION_DOWN, null, 5));
+        views.setTextColor(R.id.filter_up, foreground);
+        views.setTextColor(R.id.filter_down, foreground);
+        views.setOnClickPendingIntent(R.id.filter_previous, action(context, widgetId, ACTION_PREVIOUS, null, 1));
+        views.setOnClickPendingIntent(R.id.filter_next, action(context, widgetId, ACTION_NEXT, null, 2));
+        views.setOnClickPendingIntent(R.id.filter_refresh, action(context, widgetId, ACTION_REFRESH, null, 3));
+        views.setOnClickPendingIntent(R.id.filter_up, action(context, widgetId, ACTION_UP, null, 4));
+        views.setOnClickPendingIntent(R.id.filter_down, action(context, widgetId, ACTION_DOWN, null, 5));
         return views;
     }
 
-    private static PendingIntent openProject(Context context, String projectId, int widgetId) {
-        Uri uri = new Uri.Builder().scheme("donetick").authority("chores")
-                .appendQueryParameter("project", projectId).build();
+    private static PendingIntent openFilter(Context context, String filterId, int widgetId) {
+        Uri uri = new Uri.Builder().scheme("wuzzanext").authority("chores")
+                .appendQueryParameter("filterId", filterId).build();
         Intent intent = new Intent(Intent.ACTION_VIEW, uri, context, MainActivity.class);
         return PendingIntent.getActivity(context, widgetId * 1000 + 500, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -239,14 +233,14 @@ public class ProjectWidgetProvider extends AppWidgetProvider {
 
     private static PendingIntent openTask(Context context, String taskId, int widgetId, int row) {
         Intent intent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse("donetick://chores/" + taskId), context, MainActivity.class);
+                Uri.parse("wuzzanext://chores/" + taskId), context, MainActivity.class);
         return PendingIntent.getActivity(context, widgetId * 1000 + 600 + row, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
     private static PendingIntent action(Context context, int widgetId, String action,
                                         String taskId, int offset) {
-        Intent intent = new Intent(context, ProjectWidgetProvider.class);
+        Intent intent = new Intent(context, FilterWidgetProvider.class);
         intent.setAction(action);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         if (taskId != null) intent.putExtra(EXTRA_TASK_ID, taskId);
@@ -254,13 +248,13 @@ public class ProjectWidgetProvider extends AppWidgetProvider {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
-    private static List<WidgetStore.ProjectTask> tasksFor(Context context, String projectId,
-                                                           int widgetId) {
-        List<WidgetStore.ProjectTask> result = new ArrayList<>();
+    private static List<WidgetStore.FilterTask> tasksFor(Context context, String filterId,
+                                                         int widgetId) {
+        List<WidgetStore.FilterTask> result = new ArrayList<>();
         boolean includeOthers = WidgetStore.includeOthers(context, widgetId, true);
         String me = WidgetStore.userId(context);
-        for (WidgetStore.ProjectTask task : WidgetStore.loadProjectTasks(context)) {
-            if (projectId.equals(task.projectId)
+        for (WidgetStore.FilterTask task : WidgetStore.loadFilterTasks(context)) {
+            if (filterId.equals(task.filterId)
                     && (includeOthers || (me != null && me.equals(task.assignedTo)))) {
                 result.add(task);
             }
@@ -274,16 +268,6 @@ public class ProjectWidgetProvider extends AppWidgetProvider {
                     WidgetStore.priorityRank(b.priority));
         });
         return result;
-    }
-
-    private static String icon(String name) {
-        if (name == null) return "●";
-        if (name.contains("Home")) return "⌂";
-        if (name.contains("Work") || name.contains("Business")) return "▣";
-        if (name.contains("School") || name.contains("Book")) return "▤";
-        if (name.contains("Shopping")) return "◆";
-        if (name.contains("Fitness") || name.contains("Sports")) return "★";
-        return "●";
     }
 
     private static int parseColor(String value, int fallback) {
