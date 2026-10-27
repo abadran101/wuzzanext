@@ -45,7 +45,6 @@ import EmptyState from '../../components/common/EmptyState'
 import FilterBar from '../../components/common/FilterBar'
 import SortAndFilterMenu from '../../components/common/SortAndFilterMenu'
 import { useLocalization } from '../../contexts/LocalizationContext'
-import { PAYWALL_REASON, usePaywall } from '../../contexts/PaywallContext'
 import { useFilter } from '../../hooks/useFilter'
 import {
   useChores,
@@ -56,7 +55,6 @@ import {
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries.jsx'
 import { ChoresGrouper } from '../../utils/Chores'
 import { COLORS, TASK_COLOR } from '../../utils/Colors.jsx'
-import { isPlusHistoryWindow } from '../../utils/entitlements'
 import LoadingComponent from '../components/Loading'
 import { useLabels } from '../Labels/LabelQueries'
 import EditHistoryModal from '../Modals/EditHistoryModal'
@@ -221,8 +219,8 @@ const ChoreHistoryTimeline = ({
 const PERIODS = [
   { value: 7, label: '7' },
   { value: 30, label: '30' },
-  { value: 90, label: '90', plus: true },
-  { value: 365, label: '∞', plus: true },
+  { value: 90, label: '90' },
+  { value: 365, label: '∞' },
 ]
 
 const surfaceSx = {
@@ -479,7 +477,6 @@ const USER_FILTER = (history, userId) => {
 const UserActivites = () => {
   const { t } = useTranslation('history')
   const { data: userProfile } = useUserProfile()
-  const { isPlus, showPaywall } = usePaywall()
   const [tabValue, setTabValue] = React.useState(7)
   const [selectedHistory, setSelectedHistory] = React.useState([])
   const [enrichedHistory, setEnrichedHistory] = React.useState([])
@@ -734,10 +731,6 @@ const UserActivites = () => {
   )
 
   const handlePeriodChange = days => {
-    if (!isPlus && isPlusHistoryWindow(days)) {
-      showPaywall(PAYWALL_REASON.HISTORY_WINDOW)
-      return
-    }
     setTabValue(days)
     refetchHistory(days)
   }

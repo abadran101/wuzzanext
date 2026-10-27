@@ -8,7 +8,6 @@ import {
   Settings,
   SwapHoriz,
   Tune,
-  WorkspacePremium,
 } from '@mui/icons-material'
 import {
   Avatar,
@@ -25,7 +24,6 @@ import {
   useColorScheme,
 } from '@mui/joy'
 import { useMediaQuery } from '@mui/material'
-import moment from 'moment'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -35,9 +33,8 @@ import { useImpersonateUser } from '../contexts/ImpersonateUserContext'
 import useStickyState from '../hooks/useStickyState'
 import { useCircleMembers, useUserProfile } from '../queries/UserQueries'
 import { apiClient } from '../utils/ApiClient'
-import { isPlusAccount, resolvePhotoURL } from '../utils/Helpers'
+import { resolvePhotoURL } from '../utils/Helpers'
 import UserModal from '../views/Modals/Inputs/UserModal'
-import SubscriptionModal from './SubscriptionModal'
 
 const UserProfileAvatar = ({ showDetails = false }) => {
   const { t } = useTranslation('common')
@@ -53,7 +50,6 @@ const UserProfileAvatar = ({ showDetails = false }) => {
   } = useImpersonateUser()
   const { data: circleMembersData } = useCircleMembers()
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false)
   const [themeMode, setThemeMode] = useStickyState(mode, 'themeMode')
   const isLargeScreen = useMediaQuery(theme => theme.breakpoints.up('lg'))
 
@@ -61,31 +57,9 @@ const UserProfileAvatar = ({ showDetails = false }) => {
 
   const currentUser = getEffectiveUser(userProfile)
   const isAdmin = canImpersonate(userProfile, circleMembersData?.res)
-  const isPlusUser = isPlusAccount(userProfile)
-
-  const getSubscriptionStatus = () => {
-    if (!userProfile) return t('userMenu.planFree')
-
-    if (userProfile.subscription === 'active') {
-      return t('userMenu.planPlus')
-    }
-
-    if (
-      userProfile.subscription === 'cancelled' &&
-      moment().isBefore(userProfile.expiration)
-    ) {
-      return t('userMenu.planPlusExpiring')
-    }
-
-    return t('userMenu.planFree')
-  }
 
   const handleLogout = () => {
     apiClient.handleLogout()
-  }
-
-  const handleSupportEmail = () => {
-    window.location.href = 'mailto:support@donetick.com'
   }
 
   const isDarkMode = themeMode === 'dark'
@@ -270,18 +244,6 @@ const UserProfileAvatar = ({ showDetails = false }) => {
                   >
                     {currentUser?.email}
                   </Typography>
-                  {isPlusUser && (
-                    <Typography
-                      level='body-xs'
-                      sx={{
-                        color: 'var(--joy-palette-warning-600)',
-                        fontWeight: 500,
-                        fontSize: '11px',
-                      }}
-                    >
-                      {getSubscriptionStatus()}
-                    </Typography>
-                  )}
                 </Box>
                 {isImpersonating && (
                   <Box
@@ -487,62 +449,6 @@ const UserProfileAvatar = ({ showDetails = false }) => {
             </ListItemContent>
           </MenuItem>
 
-          {!isPlusUser && (
-            <MenuItem
-              onClick={() => navigate('/settings/account')}
-              sx={{
-                borderRadius: 'var(--joy-radius-sm)',
-                '&:hover': {
-                  backgroundColor: 'var(--joy-palette-warning-softHoverBg)',
-                },
-              }}
-            >
-              <ListItemDecorator
-                sx={{ color: 'var(--joy-palette-warning-500)' }}
-              >
-                <WorkspacePremium />
-              </ListItemDecorator>
-              <ListItemContent>
-                <Typography
-                  level='body-sm'
-                  sx={{
-                    fontWeight: 500,
-                  }}
-                >
-                  {t('userMenu.upgradeToPlus')}
-                </Typography>
-                <Typography level='body-xs'>
-                  {t('userMenu.unlockPremium')}
-                </Typography>
-              </ListItemContent>
-            </MenuItem>
-          )}
-
-          {/* <MenuItem
-            onClick={handleSupportEmail}
-            sx={{
-              borderRadius: 'var(--joy-radius-sm)',
-              '&:hover': {
-                backgroundColor: 'var(--joy-palette-neutral-softHoverBg)',
-              },
-            }}
-          >
-            <ListItemDecorator sx={{ color: 'var(--joy-palette-info-500)' }}>
-              <Email />
-            </ListItemDecorator>
-            <ListItemContent>
-              <Typography level='body-sm' sx={{ fontWeight: 500 }}>
-                Support
-              </Typography>
-              <Typography
-                level='body-xs'
-                sx={{ color: 'var(--joy-palette-text-tertiary)' }}
-              >
-                support@donetick.com
-              </Typography>
-            </ListItemContent>
-          </MenuItem> */}
-
           <Divider sx={{ my: 1 }} />
 
           <MenuItem
@@ -577,11 +483,6 @@ const UserProfileAvatar = ({ showDetails = false }) => {
           setIsModalOpen(false)
         }}
         onClose={() => setIsModalOpen(false)}
-      />
-
-      <SubscriptionModal
-        open={isSubscriptionModalOpen}
-        onClose={() => setIsSubscriptionModalOpen(false)}
       />
     </>
   )

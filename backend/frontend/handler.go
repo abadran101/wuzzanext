@@ -61,6 +61,11 @@ func staticMiddlewareNoRoute(root string) gin.HandlerFunc {
 
 	// always serve index.html for any route does not match:
 	return func(c *gin.Context) {
+		// A missing source archive must return 404, never the app shell.
+		if c.Request.URL.Path == "/wuzzanext-source.tar.gz" {
+			c.Status(http.StatusNotFound)
+			return
+		}
 		// Rewrite all requests to serve index.html
 		c.Request.URL.Path = "/"
 		fileServer.ServeHTTP(c.Writer, c.Request)

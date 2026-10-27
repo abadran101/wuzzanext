@@ -407,9 +407,6 @@ const NavBar = () => {
   }
   if (PUBLIC_PAGES.includes(location.pathname)) return null
   if (isMobile && location.pathname === '/search') return null
-  if (['www.donetick.com', 'donetick.com'].includes(window.location.hostname)) {
-    return null
-  }
 
   return (
     <>

@@ -70,12 +70,9 @@ const isItemActive = (item, pathname) => {
   return pathname === to
 }
 
-const MARKETING_HOSTNAMES = ['www.donetick.com', 'donetick.com']
-
 // Shared with the settings page so the "customize bottom nav" section only
 // shows when the bar itself is eligible to render.
-export const isMobileBottomNavEligible = isMobile =>
-  isMobile && !MARKETING_HOSTNAMES.includes(window.location.hostname)
+export const isMobileBottomNavEligible = isMobile => isMobile
 
 const NavItem = ({ active, hideLabel, icon, label, onClick, to }) => {
   const content = (

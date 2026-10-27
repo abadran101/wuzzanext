@@ -11,12 +11,10 @@ import Input from '@mui/joy/Input'
 import Option from '@mui/joy/Option'
 import Select from '@mui/joy/Select'
 import Typography from '@mui/joy/Typography'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { PAYWALL_REASON, usePaywall } from '../contexts/PaywallContext'
 import { TIME_UNITS } from '../utils/DurationUtils'
-import { sanitizeRemindersForPlan } from '../utils/entitlements'
 
 const timingOptions = ['before', 'ondue', 'after']
 
@@ -54,7 +52,7 @@ function getInternalValue(timing, displayValue) {
 }
 
 const NotificationTemplate = ({
-  maxNotifications = 5,
+  maxNotifications = Infinity,
   // ChoreEdit owns the on/off state and must retain at least one reminder.
   // Consumers with their own empty state can pass 0.
   minNotifications = 1,
@@ -62,7 +60,6 @@ const NotificationTemplate = ({
   value,
 }) => {
   const { t } = useTranslation('chores')
-  const { isPlanKnown, isPlus, showPaywall } = usePaywall()
   const [notifications, setNotifications] = useState(() =>
     getInitialNotifications(value),
   )
@@ -71,31 +68,12 @@ const NotificationTemplate = ({
   const [error, setError] = useState(null)
   const [showSaveDefault, setShowSaveDefault] = useState(false)
 
-  const requirePlus = useCallback(() => {
-    if (isPlus) return true
-    showPaywall(PAYWALL_REASON.ADVANCED_REMINDERS)
-    return false
-  }, [isPlus, showPaywall])
-
   const commitNotifications = updated => {
     setNotifications(updated)
     notificationsRef.current = updated
     setError(null)
     setShowSaveDefault(true)
   }
-
-  // Defaults created while subscribed may contain advanced reminders. Remove
-  // those once the current plan is known so the editor matches what can save.
-  useEffect(() => {
-    if (!isPlanKnown || isPlus) return
-
-    setNotifications(previous => {
-      const allowed = sanitizeRemindersForPlan(previous, false)
-      if (allowed.length === previous.length) return previous
-      notificationsRef.current = allowed
-      return allowed
-    })
-  }, [isPlanKnown, isPlus])
 
   useEffect(() => {
     onChange?.({ notifications })
@@ -135,7 +113,6 @@ const NotificationTemplate = ({
     const ui = getUIRepresentation(currentNotification)
 
     if (field === 'timing') {
-      if (nextValue !== 'ondue' && !requirePlus()) return
       ui.timing = nextValue
 
       if (nextValue === 'ondue') {
@@ -174,7 +151,6 @@ const NotificationTemplate = ({
 
   const addSmartNotification = type => {
     if (notificationsRef.current.length >= maxNotifications) return
-    if (type !== 'due' && !requirePlus()) return
 
     let newNotification
     if (type === 'due') {

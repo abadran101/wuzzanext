@@ -118,7 +118,7 @@ const hasHtmlTags = value => /<\/?[a-z][\s\S]*>/i.test(value)
 
 const getNFCUrl = choreId =>
   Capacitor.getPlatform() === 'android' || Capacitor.getPlatform() === 'ios'
-    ? `donetick://chores/${choreId}`
+    ? `wuzzanext://chores/${choreId}`
     : `${window.location.origin}/chores/${choreId}`
 
 const ChoreView = () => {
@@ -183,7 +183,7 @@ const ChoreView = () => {
       return
     }
     setChore(choreData.res)
-    document.title = 'Donetick: ' + choreData.res.name
+    document.title = 'Wuzzanext: ' + choreData.res.name
 
     setPerformers(circleMembersData.res)
     if (searchParams.get('auto_complete') === 'true') {

@@ -1,6 +1,5 @@
 import { Capacitor } from '@capacitor/core'
 import { Preferences } from '@capacitor/preferences'
-import { InAppReview } from '@capacitor-community/in-app-review'
 
 import { getAppVersion, getDeviceContext } from '../utils/DeviceInfo'
 import { isOfficialDonetickInstance } from '../utils/FeatureToggle'
@@ -19,12 +18,6 @@ const COOLDOWN_DAYS = 90
 const OPT_OUT_LAPSE_DAYS = 365
 // A recent crash/API failure poisons the sentiment reading, so hold off.
 const ERROR_QUIET_PERIOD_MS = 10 * 60 * 1000
-
-const APP_STORE_URL =
-  'https://apps.apple.com/app/apple-store/id6742807441?pt=127258663&ct=website&mt=8'
-const PLAY_STORE_URL =
-  'https://play.google.com/store/apps/details?id=com.donetick.app'
-const GITHUB_URL = 'https://github.com/donetick/donetick'
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
@@ -184,7 +177,6 @@ export const collectFeedbackContext = async ({ feature, userProfile } = {}) => {
     tasksCompleted: state.completions,
     daysSinceSignup,
     userId: userProfile?.id ?? null,
-    subscription: userProfile?.subscription ?? null,
     recentErrors: recentErrors.map(error => error.message),
     submittedAt: new Date().toISOString(),
   }
@@ -235,6 +227,17 @@ export const PROMPT_BLOCKERS = {
 export const evaluatePromptEligibility = async ({ userProfile } = {}) => {
   const state = await readState()
   const version = await getAppVersion()
+
+  if (!isFeedbackSubmissionConfigured()) {
+    return {
+      eligible: false,
+      forced: false,
+      blockers: ['No feedback webhook configured'],
+      blockerCodes: ['unconfigured'],
+      state,
+      version,
+    }
+  }
 
   if (state.devForced) {
     return {
@@ -358,43 +361,8 @@ export const optOutOfFeedbackPrompts = () =>
   })
 
 // ---------------------------------------------------------------------------
-// Store review + submission
+// Optional feedback submission
 // ---------------------------------------------------------------------------
-
-export const getStoreUrl = () => {
-  const platform = Capacitor.getPlatform()
-  if (platform === 'ios') return APP_STORE_URL
-  if (platform === 'android') return PLAY_STORE_URL
-  return GITHUB_URL
-}
-
-export const storeLinks = {
-  appStore: APP_STORE_URL,
-  playStore: PLAY_STORE_URL,
-  github: GITHUB_URL,
-}
-
-/**
- * Asks the OS to show its native review dialog. The OS decides whether to
- * actually display it and gives no feedback either way, so this resolves true
- * only to mean "the request went through".
- */
-export const requestStoreReview = async () => {
-  if (!Capacitor.isNativePlatform()) return false
-  try {
-    await InAppReview.requestReview()
-    await writeState({
-      reviewRequestedAt: Date.now(),
-      optedOut: true,
-      optedOutAt: Date.now(),
-      optedOutReason: 'reviewed',
-    })
-    return true
-  } catch (error) {
-    console.warn('FeedbackService: review request failed', error)
-    return false
-  }
-}
 
 const WEBHOOK_URL = import.meta.env.VITE_FEEDBACK_WEBHOOK_URL
 
@@ -415,11 +383,7 @@ export const isFeedbackSubmissionConfigured = () =>
 /** Developer Settings: flag the misconfiguration in the UI, not just the log. */
 export const isRawChatWebhookConfigured = () => isRawChatWebhook(WEBHOOK_URL)
 
-/**
- * Whether this app is talking to the hosted donetick.com service. Self-hosted
- * instances route feedback to GitHub instead of the webhook, so their data
- * never leaves infrastructure they control.
- */
+/** Reports whether the configured server is the upstream cloud service. */
 export const isCloudInstance = () =>
   isOfficialDonetickInstance().catch(() => false)
 
@@ -431,65 +395,7 @@ export const SUBMIT_RESULT = {
   SELF_HOSTED: 'self-hosted',
 }
 
-/**
- * Builds a pre-filled GitHub issue for self-hosted users. Everything the
- * webhook would have collected goes into the issue body, where the user can
- * see and edit it before anything is published.
- */
-export const buildGithubIssueUrl = ({
-  category,
-  context,
-  message,
-  sentiment,
-}) => {
-  const labelFor = {
-    bugs: 'bug',
-    missingFeature: 'feature request',
-    tooComplicated: 'usability',
-    slow: 'performance',
-    notifications: 'notifications',
-    ai: 'ai',
-    other: 'feedback',
-  }
-  const title = `[${labelFor[category] || 'feedback'}] ${
-    message?.split('\n')[0]?.slice(0, 80) || 'App feedback'
-  }`
-
-  const body = [
-    message?.trim() || '_no description_',
-    '',
-    '---',
-    '',
-    '<details><summary>Environment</summary>',
-    '',
-    `- App version: ${context.appVersion}`,
-    `- Platform: ${context.platform}${context.isNative ? ' (native)' : ''}`,
-    `- Device: ${context.deviceModel}`,
-    `- OS: ${context.osVersion}`,
-    `- Locale: ${context.locale}`,
-    `- Hosting: ${context.hosting}`,
-    `- Screen: ${context.feature}`,
-    `- Sentiment: ${sentiment}`,
-    ...(context.recentErrors.length
-      ? ['', 'Recent errors:', '```', ...context.recentErrors, '```']
-      : []),
-    '',
-    '</details>',
-  ].join('\n')
-
-  return `${GITHUB_URL}/issues/new?title=${encodeURIComponent(
-    title,
-  )}&body=${encodeURIComponent(body)}`
-}
-
-/**
- * Posts the structured feedback plus the auto-collected context to the
- * configured webhook. Never throws, so the UI can show a soft failure without
- * losing what the user typed.
- *
- * Self-hosted instances are never relayed: the caller gets SELF_HOSTED plus a
- * pre-filled GitHub issue URL to send the user to instead.
- */
+/** Sends feedback only to an explicitly configured webhook. */
 export const submitFeedback = async ({
   category,
   feature,
@@ -504,15 +410,6 @@ export const submitFeedback = async ({
     category: category || null,
     message: message?.trim() || null,
     context,
-  }
-
-  // Enforced here rather than only in the UI so no future caller can leak a
-  // self-hosted user's feedback to the hosted relay.
-  if (context.hosting !== 'cloud') {
-    return {
-      result: SUBMIT_RESULT.SELF_HOSTED,
-      githubUrl: buildGithubIssueUrl({ sentiment, category, message, context }),
-    }
   }
 
   if (!WEBHOOK_URL) {

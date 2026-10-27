@@ -1,19 +1,10 @@
 import { CheckRounded } from '@mui/icons-material'
 import { Box, Button, Typography } from '@mui/joy'
-import { useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
-import { track } from '../../analytics'
 import Logo from '../../Logo'
 import { useUserProfile } from '../../queries/UserQueries'
-import { isOfficialDonetickInstance } from '../../utils/FeatureToggle'
-import {
-  isNativePurchasePlatform,
-  NATIVE_PAYWALL_INVOKER,
-  presentNativePaywall,
-} from '../../utils/NativePaywall'
 import { haptic } from '../../utils/Onboarding'
 import { authButtonSx } from '../Authorization/authStyles'
 
@@ -26,55 +17,15 @@ const READY_KEYS = [
   'workspaceReady.readyReminders',
 ]
 
-/**
- * The beat between signing up and landing in an empty task list: the account is
- * made, so say so. Everything listed here is already switched on for a free
- * account — the upgrade offer comes after, never in place of it.
- */
+// Confirm the workspace is ready before entering the task list.
 const WorkspaceReadyView = () => {
   const { t } = useTranslation('common')
   const navigate = useNavigate()
-  const queryClient = useQueryClient()
   const { data: userProfile } = useUserProfile()
-  const [busy, setBusy] = useState(false)
 
-  const enterApp = () => navigate('/', { replace: true })
-
-  /**
-   * Shows the configured RevenueCat offering, then continues into the app
-   * whatever the outcome — dismissing the paywall is the "continue free" path,
-   * and a missing offering or a store hiccup must never trap a new user here.
-   */
-  const showOnboardingPaywall = async () => {
-    const isDonetickDotCom = await isOfficialDonetickInstance()
-    if (!isDonetickDotCom || !isNativePurchasePlatform() || !userProfile?.id)
-      return
-
-    const result = await presentNativePaywall({
-      appUserID: userProfile.id,
-      invoker: NATIVE_PAYWALL_INVOKER.ONBOARDING,
-    })
-    if (!result) return
-
-    const { Purchases } = await import('@revenuecat/purchases-capacitor')
-    const { customerInfo } = await Purchases.getCustomerInfo()
-    if (customerInfo.entitlements.active['Donetick Plus']) {
-      queryClient.invalidateQueries({ queryKey: ['userProfile'] })
-    }
-  }
-
-  const handleContinue = async () => {
-    setBusy(true)
+  const handleContinue = () => {
     haptic('medium')
-    try {
-      await showOnboardingPaywall()
-    } catch (error) {
-      console.log('Paywall skipped:', error)
-    } finally {
-      setBusy(false)
-      track('onboarding_completed')
-      enterApp()
-    }
+    navigate('/', { replace: true })
   }
 
   return (
@@ -208,13 +159,7 @@ const WorkspaceReadyView = () => {
       </Box>
 
       <Box sx={{ width: '100%', maxWidth: 420 }}>
-        <Button
-          size='lg'
-          fullWidth
-          loading={busy}
-          onClick={handleContinue}
-          sx={authButtonSx}
-        >
+        <Button size='lg' fullWidth onClick={handleContinue} sx={authButtonSx}>
           {t('workspaceReady.continue')}
         </Button>
       </Box>

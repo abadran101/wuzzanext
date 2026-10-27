@@ -10,7 +10,6 @@ import (
 
 	"donetick.com/core/config"
 	docs "donetick.com/core/docs"
-	"donetick.com/core/external/payment"
 	"donetick.com/core/frontend"
 	auth "donetick.com/core/internal/auth"
 	"donetick.com/core/internal/auth/apple"
@@ -34,8 +33,6 @@ import (
 	reward "donetick.com/core/internal/reward"
 	rwRepo "donetick.com/core/internal/reward/repo"
 
-	sRepo "donetick.com/core/external/payment/repo"
-	sService "donetick.com/core/external/payment/service"
 	notifier "donetick.com/core/internal/notifier"
 	"donetick.com/core/internal/notifier/push"
 	nRepo "donetick.com/core/internal/notifier/repo"
@@ -183,13 +180,6 @@ func main() {
 		fx.Provide(thing.NewHandler),
 
 		// External Only:
-		fx.Provide(sService.NewStripeService,
-			sRepo.NewStripeDB,
-			sRepo.NewRevenueCatDB,
-			sRepo.NewSubscriptionDB,
-		),
-		fx.Provide(payment.NewHandler),
-		fx.Provide(payment.NewWebhook),
 		fx.Provide(chore.NewAPI),
 
 		// Sync:
@@ -242,8 +232,6 @@ func main() {
 			docs.Routes,
 			resource.Routes,
 			// backup.Routes,
-			payment.Routes,
-			payment.Webhooks,
 
 			dsync.Routes,
 			realtime.Routes, // (router, rtAuthMiddleware, pollingHandler, jwtAuth)

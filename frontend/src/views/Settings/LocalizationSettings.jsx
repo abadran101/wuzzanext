@@ -5,7 +5,6 @@ import {
   Divider,
   FormControl,
   FormHelperText,
-  Link,
   Option,
   Select,
   Typography,
@@ -19,7 +18,6 @@ import {
   useLocalization,
 } from '@/contexts/LocalizationContext'
 
-import { track } from '../../analytics'
 import SettingsLayout from './SettingsLayout'
 
 const LocalizationSettings = () => {
@@ -38,8 +36,6 @@ const LocalizationSettings = () => {
   } = useLocalization()
 
   const sampleDate = moment('2024-01-15 14:30:00')
-
-  const translateUrl = code => `https://crowdin.com/project/donetick/${code}`
 
   const dateFormatOptions = [
     { value: DATE_FORMATS.MDY, label: t('localization.formats.mdy') },
@@ -64,10 +60,6 @@ const LocalizationSettings = () => {
             value={language}
             onChange={(_, value) => {
               setLanguage(value)
-              track('localization_setting_changed', {
-                setting: 'language',
-                value,
-              })
             }}
             sx={{ maxWidth: '300px' }}
           >
@@ -85,22 +77,6 @@ const LocalizationSettings = () => {
           {isRTL && (
             <FormHelperText>{t('localization.rtlNotice')}</FormHelperText>
           )}
-          {language !== 'en' && (
-            <FormHelperText>
-              <Link
-                href={translateUrl(language)}
-                target='_blank'
-                rel='noopener'
-                onClick={() =>
-                  track('localization_help_translate_clicked', {
-                    language,
-                  })
-                }
-              >
-                {t('localization.helpTranslate')}
-              </Link>
-            </FormHelperText>
-          )}
         </FormControl>
 
         <Typography level='h3'>{t('localization.dateFormat')}</Typography>
@@ -113,10 +89,6 @@ const LocalizationSettings = () => {
             value={dateFormat}
             onChange={(_, value) => {
               setDateFormat(value)
-              track('localization_setting_changed', {
-                setting: 'date_format',
-                value,
-              })
             }}
             sx={{ maxWidth: '300px' }}
           >
@@ -155,10 +127,6 @@ const LocalizationSettings = () => {
             value={timeFormat}
             onChange={(_, value) => {
               setTimeFormat(value)
-              track('localization_setting_changed', {
-                setting: 'time_format',
-                value,
-              })
             }}
             sx={{ maxWidth: '300px' }}
           >
@@ -211,10 +179,6 @@ const LocalizationSettings = () => {
               variant={firstDayOfWeek === 0 ? 'solid' : 'outlined'}
               onClick={() => {
                 setFirstDayOfWeek(0)
-                track('localization_setting_changed', {
-                  setting: 'first_day_of_week',
-                  value: 'sunday',
-                })
               }}
             >
               {t('localization.sunday')}
@@ -223,10 +187,6 @@ const LocalizationSettings = () => {
               variant={firstDayOfWeek === 1 ? 'solid' : 'outlined'}
               onClick={() => {
                 setFirstDayOfWeek(1)
-                track('localization_setting_changed', {
-                  setting: 'first_day_of_week',
-                  value: 'monday',
-                })
               }}
             >
               {t('localization.monday')}
@@ -235,10 +195,6 @@ const LocalizationSettings = () => {
               variant={firstDayOfWeek === 6 ? 'solid' : 'outlined'}
               onClick={() => {
                 setFirstDayOfWeek(6)
-                track('localization_setting_changed', {
-                  setting: 'first_day_of_week',
-                  value: 'saturday',
-                })
               }}
             >
               {t('localization.saturday')}

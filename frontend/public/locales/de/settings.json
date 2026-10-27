@@ -88,7 +88,7 @@
       },
       "feedback": {
         "title": "Feedback senden",
-        "description": "Sag uns, wie Donetick für dich funktioniert, oder wünsche dir eine Funktion."
+        "description": "Sag uns, wie Wuzzanext für dich funktioniert, oder wünsche dir eine Funktion."
       },
       "bugReport": {
         "title": "Fehler melden",
@@ -96,7 +96,7 @@
       },
       "widgets": {
         "title": "Startbildschirm-Widgets",
-        "description": "Lege fest, wie die Donetick-Widgets auf dem Startbildschirm dieses Geräts aussehen."
+        "description": "Lege fest, wie die Wuzzanext-Widgets auf dem Startbildschirm dieses Geräts aussehen."
       },
       "sidepanel": {
         "title": "Seitenleisten-Anpassung",
@@ -134,8 +134,8 @@
     "codeCopied": "Code in die Zwischenablage kopiert",
     "linkCopied": "Einladungslink in die Zwischenablage kopiert",
     "myCircle": "meinem Kreis",
-    "shareTitle": "Tritt {{name}} auf Donetick bei",
-    "shareText": "Ich möchte dich einladen, {{name}} auf Donetick beizutreten.",
+    "shareTitle": "Tritt {{name}} auf Wuzzanext bei",
+    "shareText": "Ich möchte dich einladen, {{name}} auf Wuzzanext beizutreten.",
     "shareDialogTitle": "Kreiseinladung teilen",
     "leave": "Circle verlassen",
     "leaveConfirmTitle": "Circle verlassen",
@@ -567,7 +567,7 @@
     "title": "Erweiterte Einstellungen",
     "description": "Konfiguriere erweiterte Funktionen wie Webhooks und Echtzeit-Updates für mehr Produktivität.",
     "offlineTitle": "Offline-Unterstützung",
-    "offlineDescription": "Nutze Donetick auch offline auf diesem Gerät/Browser. Deine Änderungen werden lokal gespeichert und synchronisiert, sobald du wieder online bist.",
+    "offlineDescription": "Nutze Wuzzanext auch offline auf diesem Gerät/Browser. Deine Änderungen werden lokal gespeichert und synchronisiert, sobald du wieder online bist.",
     "offlineToggle": "Offline-Unterstützung aktivieren",
     "offlineHelper": "Beim Deaktivieren werden nicht synchronisierte Offline-Änderungen und gespeicherte Offline-Daten von diesem Gerät/Browser entfernt.",
     "offlineEnabled": "Offline-Modus für dieses Gerät/diesen Browser aktiviert",
@@ -602,9 +602,9 @@
   },
   "privacyAnalytics": {
     "title": "Datenschutz & Analysen",
-    "description": "Donetick sendet niemals Aufgabennamen, Beschreibungen, Notizen oder andere Aufgabeninhalte. Sitzungsaufzeichnungen werden niemals aktiviert.",
+    "description": "Wuzzanext sendet niemals Aufgabennamen, Beschreibungen, Notizen oder andere Aufgabeninhalte. Sitzungsaufzeichnungen werden niemals aktiviert.",
     "analyticsToggle": "Anonyme Analysen",
-    "analyticsHelper": "Hilf Donetick zu verbessern, indem du anonyme Nutzungsstatistiken teilst.",
+    "analyticsHelper": "Hilf Wuzzanext zu verbessern, indem du anonyme Nutzungsstatistiken teilst.",
     "crashToggle": "Absturzberichte",
     "crashHelper": "Sende uns bei einem Absturz den Fehler und den Ablauf davor – ohne Aufgabeninhalte.",
     "footnote": "Du kannst diese Auswahl jederzeit ändern."
@@ -753,7 +753,7 @@
     "iosStep1": "1. Öffne die App <b>Einstellungen</b> auf deinem Gerät",
     "iosStep2": "2. Tippe oben auf deinen Namen",
     "iosStep3": "3. Tippe auf <b>Abonnements</b>",
-    "iosStep4": "4. Suche <b>Donetick</b> und tippe darauf",
+    "iosStep4": "4. Suche <b>Wuzzanext</b> und tippe darauf",
     "iosStep5": "5. Tippe auf <b>Abonnement kündigen</b>",
     "iosNote": "<b>Hinweis:</b> Wenn du das Abonnement über iOS abgeschlossen hast und die Web-/Desktop-Version verwendest, musst du es wie oben beschrieben in den iOS-Einstellungen kündigen.",
     "androidHeading": "Für Android:",
@@ -761,7 +761,7 @@
     "androidStep2": "2. Tippe oben rechts auf das Profilsymbol",
     "androidStep3": "3. Tippe auf <b>Zahlungen & Abos</b>",
     "androidStep4": "4. Tippe auf <b>Abos</b>",
-    "androidStep5": "5. Suche <b>Donetick</b> und tippe darauf",
+    "androidStep5": "5. Suche <b>Wuzzanext</b> und tippe darauf",
     "androidStep6": "6. Tippe auf <b>Abo kündigen</b>",
     "androidNote": "<b>Hinweis:</b> Wenn du das Abonnement über Google Play abgeschlossen hast und die Web-/Desktop-Version verwendest, musst du es wie oben beschrieben über Google Play kündigen.",
     "webHeading": "Für Web-/Desktop-Abonnements:",

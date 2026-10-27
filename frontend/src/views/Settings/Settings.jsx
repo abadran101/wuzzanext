@@ -15,23 +15,18 @@ import {
   Select,
   Typography,
 } from '@mui/joy'
-import { Purchases } from '@revenuecat/purchases-capacitor'
 import { useQueryClient } from '@tanstack/react-query'
-import moment from 'moment'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import RealTimeSettings from '../../components/RealTimeSettings'
-import SubscriptionModal from '../../components/SubscriptionModal'
 import { useLocalization } from '../../contexts/LocalizationContext'
-import { PAYWALL_REASON, usePaywall } from '../../contexts/PaywallContext'
 import Logo from '../../Logo'
 import { useUserProfile } from '../../queries/UserQueries'
 import { useNotification } from '../../service/NotificationProvider'
 import {
   AcceptCircleMemberRequest,
-  CancelSubscription,
   DeleteCircleMember,
   GetAllCircleMembers,
   GetCircleMemberRequests,
@@ -42,15 +37,8 @@ import {
   UpdateMemberRole,
   UpdatePassword,
 } from '../../utils/Fetcher'
-import { isPlusAccount } from '../../utils/Helpers'
-import {
-  isNativePurchasePlatform,
-  NATIVE_PAYWALL_INVOKER,
-  presentNativePaywall,
-} from '../../utils/NativePaywall'
 import LoadingComponent from '../components/Loading'
 import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
-import NativeCancelSubscriptionModal from '../Modals/Inputs/NativeCancelSubscriptionModal'
 import PassowrdChangeModal from '../Modals/Inputs/PasswordChangeModal'
 import UserDeletionModal from '../Modals/Inputs/UserDeletionModal'
 import APITokenSettings from './APITokenSettings'
@@ -66,7 +54,6 @@ import ThemeToggle from './ThemeToggle'
 const Settings = () => {
   const { t } = useTranslation('settings')
   const { data: userProfile } = useUserProfile()
-  const { showPaywall } = usePaywall()
   const queryClient = useQueryClient()
   const { showNotification } = useNotification()
   const navigate = useNavigate()
@@ -83,9 +70,7 @@ const Settings = () => {
   const [isRefreshing, setIsRefreshing] = useState(false)
 
   const [changePasswordModal, setChangePasswordModal] = useState(false)
-  const [subscriptionModal, setSubscriptionModal] = useState(false)
   const [userDeletionModal, setUserDeletionModal] = useState(false)
-  const [nativeCancelModal, setNativeCancelModal] = useState(false)
   const [confirmModalConfig, setConfirmModalConfig] = useState({})
 
   const showConfirmation = (
@@ -186,34 +171,6 @@ const Settings = () => {
       window.removeEventListener('hashchange', handleHashChange)
     }
   }, [])
-
-  const getSubscriptionDetails = () => {
-    if (userProfile?.subscription === 'active') {
-      return t('accountSettings.activeDescription', {
-        date: fmt.date(userProfile?.expiration),
-      })
-    } else if (userProfile?.subscription === 'cancelled') {
-      return t('accountSettings.cancelledDescription', {
-        date: fmt.date(userProfile?.expiration),
-      })
-    } else {
-      return t('accountSettings.freeDescription')
-    }
-  }
-  const getSubscriptionStatus = () => {
-    if (userProfile?.subscription === 'active') {
-      return t('accountSettings.plus')
-    } else if (userProfile?.subscription === 'cancelled') {
-      if (moment().isBefore(userProfile?.expiration)) {
-        return t('accountSettings.plusUntil', {
-          date: fmt.date(userProfile?.expiration),
-        })
-      }
-      return t('accountSettings.free')
-    } else {
-      return t('accountSettings.free')
-    }
-  }
 
   if (userProfile === null) {
     return (
@@ -627,10 +584,6 @@ const Settings = () => {
               <Checkbox
                 checked={webhookURL !== null}
                 onClick={() => {
-                  if (!isPlusAccount(userProfile)) {
-                    showPaywall(PAYWALL_REASON.WEBHOOKS)
-                    return
-                  }
                   if (webhookURL === null) {
                     setWebhookURL('')
                   } else {
@@ -697,138 +650,6 @@ const Settings = () => {
       <div className='grid gap-4 py-4' id='account'>
         <Typography level='h3'>{t('accountSettings.title')}</Typography>
         <Divider />
-        <Typography level='body-md'>
-          {t('accountSettings.description')}
-        </Typography>
-        <Typography level='title-md' mb={-1}>
-          {t('accountSettings.accountType', { type: getSubscriptionStatus() })}
-        </Typography>
-        <Typography level='body-sm'>{getSubscriptionDetails()}</Typography>
-        <Box>
-          <Button
-            sx={{
-              width: '110px',
-              mb: 1,
-            }}
-            disabled={
-              userProfile?.subscription === 'active' ||
-              (moment(userProfile?.expiration).isAfter(moment()) &&
-                userProfile?.subscription !== 'cancelled')
-            }
-            onClick={async () => {
-              if (isNativePurchasePlatform()) {
-                try {
-                  await presentNativePaywall({
-                    appUserID: userProfile.id,
-                    invoker: NATIVE_PAYWALL_INVOKER.SETTINGS,
-                  })
-
-                  // Check if user now has entitlement after paywall interaction
-                  const { customerInfo } = await Purchases.getCustomerInfo()
-                  if (customerInfo.entitlements.active['Donetick Plus']) {
-                    queryClient.invalidateQueries({ queryKey: ['userProfile'] })
-                    queryClient.refetchQueries({ queryKey: ['userProfile'] })
-                    showNotification({
-                      type: 'success',
-                      message: t('accountSettings.purchase.success'),
-                    })
-                    // invalidate user profile to get new subscription status:
-                  }
-                } catch (error) {
-                  console.log('Purchase error:', error)
-
-                  // Handle different error types
-                  if (error.code === '1') {
-                    // User cancelled - don't show error
-                    return
-                  } else if (error.code === '2') {
-                    // Store problem
-                    showNotification({
-                      type: 'error',
-                      message: t('accountSettings.purchase.storeConnection'),
-                    })
-                  } else if (error.code === '3') {
-                    // Purchase not allowed
-                    showNotification({
-                      type: 'error',
-                      message: t('accountSettings.purchase.notAllowed'),
-                    })
-                  } else if (error.code === '4') {
-                    // Product not available
-                    showNotification({
-                      type: 'error',
-                      message: t('accountSettings.purchase.unavailable'),
-                    })
-                  } else if (error.code === '5') {
-                    // Receipt already in use
-                    showNotification({
-                      type: 'error',
-                      message: t('accountSettings.purchase.alreadyProcessed'),
-                    })
-                  } else if (error.code === '6') {
-                    // Missing receipt file
-                    showNotification({
-                      type: 'error',
-                      message: t('accountSettings.purchase.receiptMissing'),
-                    })
-                  } else if (error.code === '7') {
-                    // Network error
-                    showNotification({
-                      type: 'error',
-                      message: t('accountSettings.purchase.networkError'),
-                    })
-                  } else if (error.code === '8') {
-                    // Invalid receipt
-                    showNotification({
-                      type: 'error',
-                      message: t('accountSettings.purchase.invalidReceipt'),
-                    })
-                  } else if (error.code === '9') {
-                    // Payment pending
-                    showNotification({
-                      type: 'warning',
-                      message: t('accountSettings.purchase.pending'),
-                    })
-                  } else {
-                    // Generic error
-                    // log on what part of the code the error happened
-                    console.error('Unexpected purchase error:', error)
-                    console.error('Error occurred in purchase flow')
-                    showNotification({
-                      type: 'error',
-                      message: t('accountSettings.purchase.failed', {
-                        error:
-                          error.message ||
-                          t('accountSettings.purchase.unknownError'),
-                      }),
-                    })
-                  }
-                }
-              } else {
-                setSubscriptionModal(true)
-              }
-            }}
-          >
-            {t('accountSettings.upgrade')}
-          </Button>
-
-          {userProfile?.subscription === 'active' && (
-            <Button
-              sx={{
-                width: '110px',
-                mb: 1,
-                ml: 1,
-              }}
-              variant='outlined'
-              color='danger'
-              onClick={() => {
-                setNativeCancelModal(true)
-              }}
-            >
-              {t('accountSettings.cancel')}
-            </Button>
-          )}
-        </Box>
         {import.meta.env.VITE_IS_SELF_HOSTED === 'true' && (
           <Box>
             <Typography level='title-md' mb={1}>
@@ -928,12 +749,6 @@ const Settings = () => {
         <ConfirmationModal config={confirmModalConfig} />
       )}
 
-      <SubscriptionModal
-        open={subscriptionModal}
-        invoker={NATIVE_PAYWALL_INVOKER.SETTINGS}
-        onClose={() => setSubscriptionModal(false)}
-      />
-
       <UserDeletionModal
         isOpen={userDeletionModal}
         onClose={success => {
@@ -946,29 +761,6 @@ const Settings = () => {
           }
         }}
         userProfile={userProfile}
-      />
-
-      <NativeCancelSubscriptionModal
-        isOpen={nativeCancelModal}
-        onClose={action => {
-          setNativeCancelModal(false)
-          if (action === 'desktop') {
-            CancelSubscription().then(resp => {
-              if (resp.ok) {
-                showNotification({
-                  type: 'success',
-                  message: 'Subscription cancelled',
-                })
-                window.location.reload()
-              } else {
-                showNotification({
-                  type: 'error',
-                  message: 'Failed to cancel subscription',
-                })
-              }
-            })
-          }
-        }}
       />
     </Container>
   )

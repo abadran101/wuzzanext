@@ -99,7 +99,7 @@ const AuthenticationLoading = () => {
       await apiClient.init()
       const baseURL = apiClient.getApiURL()
       const redirectURI = Capacitor.isNativePlatform()
-        ? 'donetick://auth/oauth2'
+        ? 'wuzzanext://auth/oauth2'
         : `${window.location.origin}/auth/oauth2`
       try {
         const response = await fetch(`${baseURL}/auth/oauth2/callback`, {

@@ -396,20 +396,6 @@ const UpdateNotificationTarget = notificationTarget => {
   })
 }
 
-const GetSubscriptionSession = () => {
-  return Fetch(`/payments/create-subscription`, {
-    method: 'GET',
-    headers: HEADERS(),
-  })
-}
-
-const CancelSubscription = () => {
-  return Fetch(`/payments/cancel-subscription`, {
-    method: 'POST',
-    headers: HEADERS(),
-  })
-}
-
 const GetThings = () => {
   return Fetch(`/things`, {
     method: 'GET',
@@ -1132,7 +1118,6 @@ export {
   ApproveChore,
   ApproveRedemption,
   ArchiveChore,
-  CancelSubscription,
   ChangePassword,
   CheckUserDeletion,
   ClearChoreTimer,
@@ -1196,7 +1181,6 @@ export {
   GetResource,
   GetRewards,
   GetStorageUsage,
-  GetSubscriptionSession,
   GetThingHistory,
   GetThings,
   GetUserCircle,

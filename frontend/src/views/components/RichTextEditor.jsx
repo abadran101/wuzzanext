@@ -44,12 +44,11 @@ import {
 } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { PAYWALL_REASON, usePaywall } from '../../contexts/PaywallContext'
 import { useDescriptionHtml } from '../../hooks/useDescriptionHtml'
 import { useUserProfile } from '../../queries/UserQueries'
 import { useNotification } from '../../service/NotificationProvider'
 import { apiClient } from '../../utils/ApiClient'
-import { isPlusAccount, resolvePhotoURL } from '../../utils/Helpers'
+import { resolvePhotoURL } from '../../utils/Helpers'
 import { patchDescriptionHtml } from '../../utils/ImageCache'
 
 const RichTextEditor = forwardRef(
@@ -69,7 +68,6 @@ const RichTextEditor = forwardRef(
     const { t } = useTranslation('chores')
     const { showError } = useNotification()
     const { data: userProfile } = useUserProfile()
-    const { showPaywall } = usePaywall()
     // Display-only HTML with expired image srcs swapped for cached/re-signed ones
     const displayHtml = useDescriptionHtml(value)
     const quillRef = useRef(null)
@@ -96,13 +94,6 @@ const RichTextEditor = forwardRef(
 
     // Image upload handler - wrapped in useCallback to avoid recreating on every render
     const handleImageUpload = useCallback(() => {
-      // Image uploads are a Plus feature — meet the paywall on the attempt,
-      // before the file picker opens.
-      if (!isPlusAccount(userProfile)) {
-        showPaywall(PAYWALL_REASON.FILE_UPLOAD)
-        return
-      }
-
       const input = document.createElement('input')
       input.setAttribute('type', 'file')
       input.setAttribute('accept', 'image/*')
@@ -169,9 +160,6 @@ const RichTextEditor = forwardRef(
               message: t('common:upload.tooLargeMessage'),
             })
             return
-          } else if (response.status === 403 && !isPlusAccount(userProfile)) {
-            showPaywall(PAYWALL_REASON.FILE_UPLOAD)
-            return
           } else if (response.status === 403) {
             showError({
               title: t('common:upload.deniedTitle'),
@@ -204,7 +192,7 @@ const RichTextEditor = forwardRef(
           })
         }
       }
-    }, [entityId, entityType, draftId, showError, showPaywall, userProfile]) // Dependencies for useCallback
+    }, [entityId, entityType, draftId, showError, t]) // Dependencies for useCallback
 
     useEffect(() => {
       if (!quillRef.current) return

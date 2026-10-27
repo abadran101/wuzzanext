@@ -53,12 +53,11 @@ type IUserRepository interface {
 }
 
 type UserRepository struct {
-	db               *gorm.DB
-	isDonetickDotCom bool
+	db *gorm.DB
 }
 
 func NewUserRepository(db *gorm.DB, cfg *config.Config) *UserRepository {
-	return &UserRepository{db, cfg.IsDoneTickDotCom}
+	return &UserRepository{db: db}
 }
 
 func (r *UserRepository) GetAllUsers(c context.Context, circleID int) ([]*uModel.User, error) {
@@ -84,21 +83,8 @@ func (r *UserRepository) CreateUser(c context.Context, user *uModel.User) (*uMod
 }
 func (r *UserRepository) GetUserByUsername(c context.Context, username string) (*uModel.UserDetails, error) {
 	var user *uModel.UserDetails
-	if r.isDonetickDotCom {
-		now := time.Now().UTC()
-		if err := r.db.WithContext(c).Preload("UserNotificationTargets").Table("users u").Select("u.*, s.status as subscription, s.expires_at as expiration, c.webhook_url as webhook_url").Joins("left join subscriptions s on s.circle_id = u.circle_id AND s.status = 'active' AND (s.expires_at IS NULL OR s.expires_at > ?)", now).Joins("left join circles c on c.id = u.circle_id").Where("username = ?", username).First(&user).Error; err != nil {
-			return nil, err
-		}
-	} else {
-		// For self-hosted, first get the user without subscription/expiration fields
-		if err := r.db.WithContext(c).Preload("UserNotificationTargets").Table("users u").Select("u.*, c.webhook_url as webhook_url").Joins("left join circles c on c.id = u.circle_id").Where("username = ?", username).First(&user).Error; err != nil {
-			return nil, err
-		}
-		// Then manually set the subscription status and expiration for self-hosted users
-		subscription := "active"
-		futureDate := time.Date(2999, 12, 31, 0, 0, 0, 0, time.UTC)
-		user.Subscription = &subscription
-		user.Expiration = &futureDate
+	if err := r.db.WithContext(c).Preload("UserNotificationTargets").Table("users u").Select("u.*, c.webhook_url as webhook_url").Joins("left join circles c on c.id = u.circle_id").Where("username = ?", username).First(&user).Error; err != nil {
+		return nil, err
 	}
 
 	return user, nil
@@ -106,33 +92,13 @@ func (r *UserRepository) GetUserByUsername(c context.Context, username string) (
 
 func (r *UserRepository) GetUserByID(c context.Context, userID int) (*uModel.User, error) {
 	var user *uModel.User
-	now := time.Now().UTC()
-	if r.isDonetickDotCom {
-		if err := r.db.WithContext(c).Preload("UserNotificationTargets").
-			Table("users u").
-			Select("u.*, s.status as subscription, s.expires_at as expiration, c.webhook_url as webhook_url").
-			Joins("left join subscriptions s on s.circle_id = u.circle_id AND s.status = 'active' AND s.expires_at > ?", now).
-			Joins("left join circles c on c.id = u.circle_id").
-			Where("u.id = ?", userID).
-			First(&user).Error; err != nil {
-			return nil, err
-		}
-	} else {
-		if err := r.db.WithContext(c).Preload("UserNotificationTargets").
-			Table("users u").
-			Select("u.*, c.webhook_url as webhook_url").
-			Joins("left join circles c on c.id = u.circle_id").
-			Where("u.id = ?", userID).
-			First(&user).Error; err != nil {
-			return nil, err
-		}
-		// Set default subscription/expiration for self-hosted
-		subscription := "active"
-		futureDate := time.Date(2999, 12, 31, 0, 0, 0, 0, time.UTC)
-
-		user.Subscription = &subscription
-		user.Expiration = &futureDate
-
+	if err := r.db.WithContext(c).Preload("UserNotificationTargets").
+		Table("users u").
+		Select("u.*, c.webhook_url as webhook_url").
+		Joins("left join circles c on c.id = u.circle_id").
+		Where("u.id = ?", userID).
+		First(&user).Error; err != nil {
+		return nil, err
 	}
 	return user, nil
 }
@@ -251,25 +217,13 @@ func (r *UserRepository) StoreAPIToken(c context.Context, userID int, name strin
 
 func (r *UserRepository) GetUserByToken(c context.Context, token string) (*uModel.UserDetails, error) {
 	var user *uModel.UserDetails
-	now := time.Now().UTC()
 
 	if strings.HasPrefix(token, uModel.APITokenPrefix) {
 		token = hashAPIToken(token)
 	}
 
-	if r.isDonetickDotCom {
-		if err := r.db.WithContext(c).Table("users u").Select("u.*, s.status as subscription, s.expires_at as expiration, c.webhook_url as webhook_url").Joins("left join api_tokens at on at.user_id = u.id").Joins("left join subscriptions s on s.circle_id = u.circle_id AND s.status = 'active' AND (s.expires_at IS NULL OR s.expires_at > ?)", now).Joins("left join circles c on c.id = u.circle_id").Where("at.token = ?", token).First(&user).Error; err != nil {
-			return nil, err
-		}
-	} else {
-		if err := r.db.WithContext(c).Table("users u").Select("u.*, c.webhook_url as webhook_url").Joins("left join api_tokens at on at.user_id = u.id").Joins("left join circles c on c.id = u.circle_id").Where("at.token = ?", token).First(&user).Error; err != nil {
-			return nil, err
-		}
-		// Set default subscription/expiration for self-hosted
-		subscription := "active"
-		futureDate := time.Date(2999, 12, 31, 0, 0, 0, 0, time.UTC)
-		user.Subscription = &subscription
-		user.Expiration = &futureDate
+	if err := r.db.WithContext(c).Table("users u").Select("u.*, c.webhook_url as webhook_url").Joins("left join api_tokens at on at.user_id = u.id").Joins("left join circles c on c.id = u.circle_id").Where("at.token = ?", token).First(&user).Error; err != nil {
+		return nil, err
 	}
 
 	return user, nil

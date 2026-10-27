@@ -21,9 +21,7 @@ func (a *ExtendedUserRepository) FindFullUserByEmail(ctx context.Context, email 
 	logger.Debugw("repository.user.FindFullUserByEmail", "email", email)
 	var acc exUser.UserExtended
 	if err := a.db.Table("users").
-		Select("users.*, s.expired_at, s.status , s.customer_id").
-		Joins("LEFT JOIN stripe_customers sc ON sc.user_id = users.id").
-		Joins("LEFT JOIN stripe_subscriptions s ON s.customer_id = sc.customer_id AND s.expired_at > now() OR s.expired_at is null").
+		Select("users.*").
 		Where("email = ?", email).
 		First(&acc).Error; err != nil {
 		logger.Error("repository.user.FindFullUserByEmail failed to find", "err", err)
@@ -37,9 +35,7 @@ func (a *ExtendedUserRepository) FindFullUserByUsername(ctx context.Context, use
 	logger.Debugw("repository.user.FindFullUserByUsername", "username", username)
 	var acc exUser.UserExtended
 	if err := a.db.Table("users").
-		Select("users.*, s.expired_at, s.status , s.customer_id").
-		Joins("LEFT JOIN stripe_customers sc ON sc.user_id = users.id").
-		Joins("LEFT JOIN stripe_subscriptions s ON s.customer_id = sc.customer_id AND s.expired_at > now() OR s.expired_at is null").
+		Select("users.*").
 		Where("username = ?", username).
 		First(&acc).Error; err != nil {
 		logger.Error("repository.user.FindFullUserByUsername failed to find", "err", err)

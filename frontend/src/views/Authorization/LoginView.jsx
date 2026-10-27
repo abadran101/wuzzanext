@@ -416,7 +416,7 @@ const LoginView = () => {
     }
 
     if (Capacitor.isNativePlatform()) {
-      params.set('redirect_uri', 'donetick://auth/oauth2')
+      params.set('redirect_uri', 'wuzzanext://auth/oauth2')
 
       const authUrl = `${authentikAuthorizeUrl}?${params.toString()}`
       console.log('Opening OAuth in browser:', authUrl)

@@ -1,10 +1,6 @@
-import moment from 'moment'
-
 import { apiClient } from './ApiClient'
 
-const isPlusAccount = userProfile => {
-  return userProfile?.expiration && moment(userProfile?.expiration).isAfter()
-}
+const isPlusAccount = () => true
 
 // Turns rich-text/HTML content (task descriptions, notes) into plain text so it
 // can be indexed or matched by search.

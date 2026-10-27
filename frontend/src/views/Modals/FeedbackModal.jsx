@@ -1,6 +1,3 @@
-import { Browser } from '@capacitor/browser'
-import { Capacitor } from '@capacitor/core'
-import { Android, Apple, Favorite, GitHub } from '@mui/icons-material'
 import {
   Box,
   Button,
@@ -17,17 +14,13 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 
-import { track } from '../../analytics'
 import { useResponsiveModal } from '../../hooks/useResponsiveModal.js'
 import { useUserProfile } from '../../queries/UserQueries'
 import {
   FEEDBACK_CATEGORIES,
-  getFeedbackState,
-  isCloudInstance,
+  isFeedbackSubmissionConfigured,
   markSentiment,
-  requestStoreReview,
   SENTIMENTS,
-  storeLinks,
   SUBMIT_RESULT,
   submitFeedback,
 } from '../../service/FeedbackService'
@@ -36,17 +29,6 @@ const STEP = {
   SENTIMENT: 'sentiment',
   DETAILS: 'details',
   THANKS: 'thanks',
-  WEB_REVIEW: 'webReview',
-  GITHUB: 'github',
-}
-
-// Native webviews swallow target="_blank"; route through the system browser.
-const openUrl = async url => {
-  if (Capacitor.isNativePlatform()) {
-    await Browser.open({ url })
-  } else {
-    window.open(url, '_blank', 'noopener,noreferrer')
-  }
 }
 
 const SENTIMENT_OPTIONS = [
@@ -55,11 +37,7 @@ const SENTIMENT_OPTIONS = [
   { value: SENTIMENTS.ISSUES, emoji: '😕' },
 ]
 
-/**
- * Sentiment-first feedback flow. "Love it" routes to the native store review
- * dialog (or star links on web); anything else collects structured feedback
- * and never asks for a review.
- */
+/** Collects feedback for an optional configured webhook. */
 const FeedbackModal = ({ onClose, onDismiss, open, source = 'settings' }) => {
   const { t } = useTranslation()
   const { ResponsiveModal } = useResponsiveModal()
@@ -71,9 +49,7 @@ const FeedbackModal = ({ onClose, onDismiss, open, source = 'settings' }) => {
   const [category, setCategory] = useState(null)
   const [message, setMessage] = useState('')
   const [submitting, setSubmitting] = useState(false)
-  const [isCloud, setIsCloud] = useState(true)
-  const [githubUrl, setGithubUrl] = useState(null)
-  const [shownCount, setShownCount] = useState(0)
+  const [submissionFailed, setSubmissionFailed] = useState(false)
 
   useEffect(() => {
     if (open) {
@@ -82,13 +58,7 @@ const FeedbackModal = ({ onClose, onDismiss, open, source = 'settings' }) => {
       setCategory(null)
       setMessage('')
       setSubmitting(false)
-      setGithubUrl(null)
-      isCloudInstance().then(setIsCloud)
-      getFeedbackState().then(state => {
-        const count = state.shownCount || 0
-        setShownCount(count)
-        track('feedback_prompt_shown', { source, shown_count: count })
-      })
+      setSubmissionFailed(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
@@ -99,44 +69,20 @@ const FeedbackModal = ({ onClose, onDismiss, open, source = 'settings' }) => {
     if (step === STEP.SENTIMENT) {
       onDismiss?.()
     }
-    // Tracked for both steps even though only one affects the cooldown:
-    // "closed without answering" and "answered, then gave up on the form"
-    // are the two drop-off points worth telling apart.
-    if (step === STEP.SENTIMENT || step === STEP.DETAILS) {
-      track('feedback_prompt_dismissed', {
-        source,
-        shown_count: shownCount,
-        step,
-        sentiment,
-      })
-    }
     onClose()
   }
 
   const handleSentiment = async value => {
     setSentiment(value)
     await markSentiment(value)
-    track('feedback_sentiment_selected', { sentiment: value })
 
-    if (value !== SENTIMENTS.LOVE) {
-      setStep(STEP.DETAILS)
-      return
-    }
-
-    if (Capacitor.isNativePlatform()) {
-      const requested = await requestStoreReview()
-      track('feedback_review_requested', { requested })
-      if (requested) {
-        onClose()
-        return
-      }
-    }
-    setStep(STEP.WEB_REVIEW)
+    setStep(STEP.DETAILS)
   }
 
   const handleSubmit = async () => {
     setSubmitting(true)
-    const { githubUrl: url, result } = await submitFeedback({
+    setSubmissionFailed(false)
+    const { result } = await submitFeedback({
       sentiment,
       category,
       message,
@@ -144,18 +90,10 @@ const FeedbackModal = ({ onClose, onDismiss, open, source = 'settings' }) => {
       userProfile,
     })
     setSubmitting(false)
-    track('feedback_submitted', {
-      category,
-      has_message: message.trim().length > 0,
-      result,
-      sentiment,
-    })
 
-    // Self-hosted feedback is never relayed; hand the user a pre-filled issue
-    // instead so they choose what gets published.
-    if (result === SUBMIT_RESULT.SELF_HOSTED) {
-      setGithubUrl(url)
-      setStep(STEP.GITHUB)
+    if (result !== SUBMIT_RESULT.SENT) {
+      setSubmissionFailed(true)
+      setStep(STEP.DETAILS)
       return
     }
     setStep(STEP.THANKS)
@@ -236,11 +174,14 @@ const FeedbackModal = ({ onClose, onDismiss, open, source = 'settings' }) => {
             </FormControl>
 
             <Typography level='body-xs' sx={{ color: 'text.tertiary' }}>
-              {isCloud
-                ? t('feedback.details.contextNote')
-                : t('feedback.details.contextNoteSelfHosted')}
+              {t('feedback.details.contextNote')}
             </Typography>
 
+            {submissionFailed && (
+              <Typography color='danger' level='body-sm'>
+                {t('about.feedbackFailed')}
+              </Typography>
+            )}
             <Divider />
             <Stack direction='row' spacing={1} justifyContent='flex-end'>
               <Button variant='plain' color='neutral' onClick={handleClose}>
@@ -249,107 +190,17 @@ const FeedbackModal = ({ onClose, onDismiss, open, source = 'settings' }) => {
               <Button
                 variant='solid'
                 color='primary'
-                disabled={!canSubmit || submitting}
+                disabled={
+                  !canSubmit || submitting || !isFeedbackSubmissionConfigured()
+                }
                 startDecorator={
                   submitting ? <CircularProgress size='sm' /> : null
                 }
                 onClick={handleSubmit}
               >
-                {isCloud
-                  ? t('feedback.details.submit')
-                  : t('feedback.details.submitSelfHosted')}
+                {t('feedback.details.submit')}
               </Button>
             </Stack>
-          </>
-        )}
-
-        {step === STEP.WEB_REVIEW && (
-          <>
-            <Typography
-              level='h4'
-              sx={{ fontWeight: 600 }}
-              startDecorator={<Favorite color='error' />}
-            >
-              {t('feedback.review.title')}
-            </Typography>
-            <Typography level='body-sm' sx={{ color: 'text.secondary' }}>
-              {t('feedback.review.subtitle')}
-            </Typography>
-            <Stack spacing={1} sx={{ mt: 1 }}>
-              <Button
-                variant='outlined'
-                color='neutral'
-                startDecorator={<GitHub />}
-                onClick={() => {
-                  track('feedback_review_action', {
-                    action: 'github',
-                    sentiment,
-                  })
-                  openUrl(storeLinks.github)
-                }}
-                sx={{ justifyContent: 'flex-start' }}
-              >
-                {t('feedback.review.github')}
-              </Button>
-              <Button
-                variant='outlined'
-                color='neutral'
-                startDecorator={<Apple />}
-                onClick={() => {
-                  track('feedback_review_action', {
-                    action: 'appStore',
-                    sentiment,
-                  })
-                  openUrl(storeLinks.appStore)
-                }}
-                sx={{ justifyContent: 'flex-start' }}
-              >
-                {t('feedback.review.appStore')}
-              </Button>
-              <Button
-                variant='outlined'
-                color='neutral'
-                startDecorator={<Android />}
-                onClick={() => {
-                  track('feedback_review_action', {
-                    action: 'playStore',
-                    sentiment,
-                  })
-                  openUrl(storeLinks.playStore)
-                }}
-                sx={{ justifyContent: 'flex-start' }}
-              >
-                {t('feedback.review.playStore')}
-              </Button>
-            </Stack>
-            <Button variant='plain' color='neutral' onClick={onClose}>
-              {t('close')}
-            </Button>
-          </>
-        )}
-
-        {step === STEP.GITHUB && (
-          <>
-            <Typography level='h4' sx={{ fontWeight: 600 }}>
-              {t('feedback.github.title')}
-            </Typography>
-            <Typography level='body-sm' sx={{ color: 'text.secondary' }}>
-              {t('feedback.github.subtitle')}
-            </Typography>
-            <Button
-              variant='solid'
-              color='primary'
-              startDecorator={<GitHub />}
-              onClick={() => {
-                openUrl(githubUrl)
-                onClose()
-              }}
-            >
-              {t('feedback.github.open')}
-            </Button>
-            <Button variant='plain' color='neutral' onClick={onClose}>
-              {t('close')}
-            </Button>
           </>
         )}
 

@@ -88,7 +88,7 @@
       },
       "feedback": {
         "title": "Prześlij opinię",
-        "description": "Powiedz nam, jak działa Donetick lub zgłoś propozycję nowej funkcji."
+        "description": "Powiedz nam, jak działa Wuzzanext lub zgłoś propozycję nowej funkcji."
       },
       "bugReport": {
         "title": "Zgłoś problem",
@@ -96,7 +96,7 @@
       },
       "widgets": {
         "title": "Widżety na ekranie głównym",
-        "description": "Ustaw, jak widżety Donetick wyglądają na ekranie głównym tego urządzenia."
+        "description": "Ustaw, jak widżety Wuzzanext wyglądają na ekranie głównym tego urządzenia."
       },
       "sidepanel": {
         "title": "",
@@ -134,8 +134,8 @@
     "codeCopied": "Kod skopiowano do schowka",
     "linkCopied": "Link z zaproszeniem skopiowano do schowka",
     "myCircle": "Mój krąg",
-    "shareTitle": "Dołącz do {{name}} w Donetick",
-    "shareText": "Zapraszam Cię do dołączenia do kręgu {{name}} w Donetick.",
+    "shareTitle": "Dołącz do {{name}} w Wuzzanext",
+    "shareText": "Zapraszam Cię do dołączenia do kręgu {{name}} w Wuzzanext.",
     "shareDialogTitle": "Udostępnij zaproszenie do kręgu",
     "leave": "Opuść krąg",
     "leaveConfirmTitle": "Opuść krąg",
@@ -567,7 +567,7 @@
     "title": "Ustawienia zaawansowane",
     "description": "Skonfiguruj zaawansowane funkcje, takie jak webhooki i aktualizacje na żywo.",
     "offlineTitle": "Obsługa trybu offline",
-    "offlineDescription": "Kontynuuj korzystanie z Donetick w trybie offline na tym urządzeniu/w przeglądarce. Zmiany są zapisywane lokalnie i synchronizowane po powrocie do sieci.",
+    "offlineDescription": "Kontynuuj korzystanie z Wuzzanext w trybie offline na tym urządzeniu/w przeglądarce. Zmiany są zapisywane lokalnie i synchronizowane po powrocie do sieci.",
     "offlineToggle": "Włącz obsługę offline",
     "offlineHelper": "Wyłączenie tej opcji spowoduje usunięcie niezsynchronizowanych zmian offline i zapisanych danych z tego urządzenia/przeglądarki.",
     "offlineEnabled": "Włączono tryb offline dla tego urządzenia/przeglądarki",
@@ -602,11 +602,11 @@
   },
   "privacyAnalytics": {
     "title": "Prywatność i statystyki",
-    "description": "Donetick nigdy nie wysyła nazw zadań, opisów, notatek ani innych treści. Nagrywanie sesji nigdy nie jest włączane.",
+    "description": "Wuzzanext nigdy nie wysyła nazw zadań, opisów, notatek ani innych treści. Nagrywanie sesji nigdy nie jest włączane.",
     "analyticsToggle": "Anonimowe statystyki",
-    "analyticsHelper": "Pomóż ulepszać Donetick, dzieląc się anonimowymi statystykami użytkowania.",
+    "analyticsHelper": "Pomóż ulepszać Wuzzanext, dzieląc się anonimowymi statystykami użytkowania.",
     "crashToggle": "Raporty o awariach",
-    "crashHelper": "Wysyłaj informacje o błędach i ich przyczynach, gdy Donetick ulegnie awarii — bez treści zadań.",
+    "crashHelper": "Wysyłaj informacje o błędach i ich przyczynach, gdy Wuzzanext ulegnie awarii — bez treści zadań.",
     "footnote": "Możesz zmienić te ustawienia w dowolnym momencie."
   },
   "subscription": {
@@ -753,7 +753,7 @@
     "iosStep1": "1. Otwórz aplikację <b>Ustawienia</b> na urządzeniu",
     "iosStep2": "2. Stuknij swoje imię i nazwisko u góry ekranu",
     "iosStep3": "3. Stuknij <b>Subskrypcje</b>",
-    "iosStep4": "4. Znajdź i stuknij <b>Donetick</b>",
+    "iosStep4": "4. Znajdź i stuknij <b>Wuzzanext</b>",
     "iosStep5": "5. Stuknij <b>Anuluj subskrypcję</b>",
     "iosNote": "<b>Uwaga:</b> Jeśli subskrypcję kupiono na iOS, a korzystasz z wersji web/desktop, musisz anulować ją w Ustawieniach iOS zgodnie z powyższym opisem.",
     "androidHeading": "Dla systemu Android:",
@@ -761,7 +761,7 @@
     "androidStep2": "2. Dotknij ikony profilu w prawym górnym rogu",
     "androidStep3": "3. Wybierz <b>Płatności i subskrypcje</b>",
     "androidStep4": "4. Wybierz <b>Subskrypcje</b>",
-    "androidStep5": "5. Znajdź i dotknij <b>Donetick</b>",
+    "androidStep5": "5. Znajdź i dotknij <b>Wuzzanext</b>",
     "androidStep6": "6. Dotknij <b>Anuluj subskrypcję</b>",
     "androidNote": "<b>Uwaga:</b> Jeśli subskrypcję kupiono w Google Play, a korzystasz z wersji web/desktop, musisz anulować ją w Google Play zgodnie z powyższym opisem.",
     "webHeading": "Dla subskrypcji Web/Desktop:",

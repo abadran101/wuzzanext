@@ -33,8 +33,8 @@
 # ---------------------------------------------------------------------------
 # AAPT generates keep rules for manifest-declared components, but the widget
 # RemoteViews stack is also referenced from XML resources and PendingIntents.
--keep class com.donetick.app.MainActivity { *; }
--keep class com.donetick.app.widget.** { *; }
+-keep class com.wuzzanext.app.MainActivity { *; }
+-keep class com.wuzzanext.app.widget.** { *; }
 
 # ---------------------------------------------------------------------------
 # Third-party plugins that use JNI / codegen / reflection

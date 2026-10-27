@@ -2,11 +2,9 @@ import imageCompression from 'browser-image-compression'
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { PAYWALL_REASON, usePaywall } from '../contexts/PaywallContext'
-import { useUserProfile } from '../queries/UserQueries'
 import { useNotification } from '../service/NotificationProvider'
 import { apiClient } from '../utils/ApiClient'
-import { isPlusAccount, resolvePhotoURL } from '../utils/Helpers'
+import { resolvePhotoURL } from '../utils/Helpers'
 
 export const useFileUpload = ({
   draftId,
@@ -15,18 +13,9 @@ export const useFileUpload = ({
 } = {}) => {
   const { t } = useTranslation('common')
   const { showError } = useNotification()
-  const { data: userProfile } = useUserProfile()
-  const { showPaywall } = usePaywall()
 
   const uploadFile = useCallback(
     async file => {
-      // The upgrade pitch belongs in the paywall modal, not in an error toast
-      // the user can only dismiss.
-      if (!isPlusAccount(userProfile)) {
-        showPaywall(PAYWALL_REASON.FILE_UPLOAD)
-        return null
-      }
-
       try {
         // Only images go through compression — anything else (PDFs, docs)
         // would be destroyed by re-encoding it as a JPEG.
@@ -70,11 +59,6 @@ export const useFileUpload = ({
             message: t('upload.tooLargeMessage'),
           })
           return null
-        } else if (response.status === 403 && !isPlusAccount(userProfile)) {
-          // The server reached the same verdict the click-time gate did —
-          // usually a plan that changed under us. Same wall, same modal.
-          showPaywall(PAYWALL_REASON.FILE_UPLOAD)
-          return null
         } else if (response.status === 403) {
           showError({
             title: t('upload.deniedTitle'),
@@ -106,8 +90,8 @@ export const useFileUpload = ({
         return null
       }
     },
-    [entityType, entityId, draftId, showError, showPaywall, userProfile, t],
+    [entityType, entityId, draftId, showError, t],
   )
 
-  return { uploadFile, isPlus: isPlusAccount(userProfile) }
+  return { uploadFile }
 }

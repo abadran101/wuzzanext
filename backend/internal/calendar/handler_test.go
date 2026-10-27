@@ -13,7 +13,6 @@ import (
 	"unicode/utf8"
 
 	"donetick.com/core/config"
-	sModel "donetick.com/core/external/payment/model"
 	auth "donetick.com/core/internal/auth"
 	calRepo "donetick.com/core/internal/calendar/repo"
 	chModel "donetick.com/core/internal/chore/model"
@@ -32,16 +31,15 @@ const (
 )
 
 // newTestHandler builds a handler backed by a real sqlite database, plus a
-// router that authenticates every request as a plus-member testUserID. The
-// instance is self-hosted, which the user repo always treats as plus.
+// router that authenticates every request as testUserID.
 func newTestHandler(t *testing.T) (*Handler, *gorm.DB, *gin.Engine) {
 	t.Helper()
 	return newTestHandlerWithConfig(t, func(cfg *config.Config) {}, true)
 }
 
 // newTestHandlerWithConfig builds the test handler with a customized config and
-// control over whether the authenticated caller is a plus member.
-func newTestHandlerWithConfig(t *testing.T, customize func(*config.Config), callerIsPlus bool) (*Handler, *gorm.DB, *gin.Engine) {
+// control over whether the authenticated caller has a legacy expiration value.
+func newTestHandlerWithConfig(t *testing.T, customize func(*config.Config), callerHasExpiration bool) (*Handler, *gorm.DB, *gin.Engine) {
 	t.Helper()
 	gin.SetMode(gin.TestMode)
 
@@ -75,10 +73,9 @@ func newTestHandlerWithConfig(t *testing.T, customize func(*config.Config), call
 		t.Fatalf("failed to seed user: %v", err)
 	}
 
-	// IsPlusMember() reads Expiration, which the real auth middleware fills in
-	// from the subscription join (or the self-hosted default).
+	// Legacy expiration values must have no effect on feature access.
 	identity := &uModel.UserDetails{User: uModel.User{ID: testUserID, CircleID: testCircleID}}
-	if callerIsPlus {
+	if callerHasExpiration {
 		future := time.Now().UTC().Add(24 * time.Hour)
 		identity.Expiration = &future
 	}
@@ -584,7 +581,7 @@ func TestBuildICalFeed_Empty(t *testing.T) {
 	if strings.Contains(result, "BEGIN:VEVENT") {
 		t.Error("should not contain VEVENT for empty chore list")
 	}
-	if !strings.Contains(result, "X-WR-CALNAME:Donetick - Test User") {
+	if !strings.Contains(result, "X-WR-CALNAME:Wuzzanext - Test User") {
 		t.Error("missing calendar name")
 	}
 	if !strings.Contains(result, "X-WR-TIMEZONE:America/New_York") {
@@ -983,17 +980,18 @@ func TestServeCalendar_DisabledUser(t *testing.T) {
 	}
 }
 
-func TestManagementRoutes_RequirePlusMember(t *testing.T) {
+func TestManagementRoutes_AllowAccountWithoutSubscription(t *testing.T) {
 	_, _, router := newTestHandlerWithConfig(t, func(cfg *config.Config) {}, false)
 
 	requests := []struct {
 		method string
 		path   string
+		status int
 	}{
-		{http.MethodGet, "/url"},
-		{http.MethodPost, "/url"},
-		{http.MethodPost, "/url/rotate"},
-		{http.MethodDelete, "/url"},
+		{http.MethodGet, "/url", http.StatusNotFound},
+		{http.MethodPost, "/url", http.StatusCreated},
+		{http.MethodPost, "/url/rotate", http.StatusOK},
+		{http.MethodDelete, "/url", http.StatusNoContent},
 	}
 
 	for _, req := range requests {
@@ -1001,15 +999,14 @@ func TestManagementRoutes_RequirePlusMember(t *testing.T) {
 			w := httptest.NewRecorder()
 			router.ServeHTTP(w, httptest.NewRequest(req.method, req.path, nil))
 
-			if w.Code != http.StatusForbidden {
-				t.Errorf("expected 403 for a non-plus member, got %d (%s)", w.Code, w.Body.String())
+			if w.Code != req.status {
+				t.Errorf("expected %d, got %d (%s)", req.status, w.Code, w.Body.String())
 			}
 		})
 	}
 }
 
-// On donetick.com, plus status comes from an active subscription row rather
-// than the self-hosted default.
+// Hosted configuration must not change feature access.
 func newHostedTestHandler(t *testing.T) (*Handler, *gorm.DB, *gin.Engine) {
 	t.Helper()
 	return newTestHandlerWithConfig(t, func(cfg *config.Config) {
@@ -1017,40 +1014,32 @@ func newHostedTestHandler(t *testing.T) (*Handler, *gorm.DB, *gin.Engine) {
 	}, true)
 }
 
-func TestServeCalendar_NonPlusOwnerIsRejected(t *testing.T) {
+func TestServeCalendar_OwnerWithoutSubscriptionIsServed(t *testing.T) {
 	_, _, router := newHostedTestHandler(t)
 
-	// The URL is issued while the caller is a plus member...
 	_, created := callJSON(t, router, http.MethodPost, "/url")
 	token := tokenFromURL(t, created.URL)
 
-	// ...but the owner has no active subscription row, so the feed itself must
-	// refuse to serve. This is the lapsed-subscription path.
-	if code := serveFeed(t, router, token); code != http.StatusForbidden {
-		t.Errorf("expected 403 for a non-plus owner, got %d", code)
+	if code := serveFeed(t, router, token); code != http.StatusOK {
+		t.Errorf("expected 200 for an owner without a subscription, got %d", code)
 	}
 }
 
-func TestServeCalendar_PlusOwnerIsServed(t *testing.T) {
+func TestServeCalendar_ChildOwnerIsServed(t *testing.T) {
 	_, db, router := newHostedTestHandler(t)
 
-	expires := time.Now().UTC().Add(30 * 24 * time.Hour)
-	subscription := &sModel.Subscription{
-		ID:        "sub_test",
-		UserID:    testUserID,
-		CircleID:  testCircleID,
-		Status:    "active",
-		ExpiresAt: &expires,
-	}
-	if err := db.Create(subscription).Error; err != nil {
-		t.Fatalf("failed to seed subscription: %v", err)
+	if err := db.Model(&uModel.User{}).Where("id = ?", testUserID).Updates(map[string]interface{}{
+		"user_type":      uModel.UserTypeChild,
+		"parent_user_id": 1,
+	}).Error; err != nil {
+		t.Fatalf("failed to set child owner: %v", err)
 	}
 
 	_, created := callJSON(t, router, http.MethodPost, "/url")
 	token := tokenFromURL(t, created.URL)
 
 	if code := serveFeed(t, router, token); code != http.StatusOK {
-		t.Errorf("expected 200 for a plus owner, got %d", code)
+		t.Errorf("expected 200 for a child owner, got %d", code)
 	}
 }
 

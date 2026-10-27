@@ -325,15 +325,6 @@ const docTemplate = `{
                             }
                         }
                     },
-                    "403": {
-                        "description": "error: Only plus members can access this endpoint",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
                     "404": {
                         "description": "error: No calendar URL generated",
                         "schema": {
@@ -389,15 +380,6 @@ const docTemplate = `{
                                 "type": "string"
                             }
                         }
-                    },
-                    "403": {
-                        "description": "error: Only plus members can access this endpoint",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
                     }
                 }
             },
@@ -427,15 +409,6 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "error: Authentication failed",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "error: Only plus members can access this endpoint",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -482,15 +455,6 @@ const docTemplate = `{
                                 "type": "string"
                             }
                         }
-                    },
-                    "403": {
-                        "description": "error: Only plus members can access this endpoint",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
                     }
                 }
             }
@@ -522,7 +486,7 @@ const docTemplate = `{
                         }
                     },
                     "403": {
-                        "description": "Invalid calendar token, or the owner is not a plus member",
+                        "description": "Invalid calendar token or disabled owner",
                         "schema": {
                             "type": "string"
                         }

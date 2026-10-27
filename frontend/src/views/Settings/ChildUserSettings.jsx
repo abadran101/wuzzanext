@@ -22,7 +22,6 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useLocalization } from '../../contexts/LocalizationContext'
-import { PAYWALL_REASON, usePaywall } from '../../contexts/PaywallContext'
 import useConfirmationModal from '../../hooks/useConfirmationModal'
 import { useChildUsers, useUserProfile } from '../../queries/UserQueries'
 import { useNotification } from '../../service/NotificationProvider'
@@ -31,7 +30,6 @@ import {
   DeleteChildUser,
   UpdateChildPassword,
 } from '../../utils/Fetcher'
-import { isPlusAccount } from '../../utils/Helpers'
 import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
 import CreateChildUserModal from '../Modals/Inputs/CreateChildUserModal'
 import PasswordChangeModal from '../Modals/Inputs/PasswordChangeModal'
@@ -48,7 +46,6 @@ const ChildUserSettings = () => {
   const { t } = useTranslation('settings')
   const { fmt } = useLocalization()
   const { data: userProfile } = useUserProfile()
-  const { showPaywall } = usePaywall()
   const { data: childUsers, isLoading, refetch } = useChildUsers()
   const { showNotification } = useNotification()
   const queryClient = useQueryClient()
@@ -62,10 +59,6 @@ const ChildUserSettings = () => {
   const isParentUser = userProfile?.userType === 0 && !userProfile?.parentUserId
 
   const openCreateModal = () => {
-    if (!isPlusAccount(userProfile)) {
-      showPaywall(PAYWALL_REASON.CHILD_ACCOUNTS)
-      return
-    }
     setCreateModalOpen(true)
   }
 

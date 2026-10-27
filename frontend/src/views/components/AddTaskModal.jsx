@@ -44,7 +44,6 @@ import LABEL_COLORS, { TASK_COLOR } from '../../utils/Colors'
 import { sanitizeRemindersForPlan } from '../../utils/entitlements'
 import { CreateLabel, DeleteDraftAttachment } from '../../utils/Fetcher'
 import { imageSourceToFile } from '../../utils/FileConvert'
-import { isPlusAccount } from '../../utils/Helpers'
 import {
   filterMembersForProject,
   getProjectAudienceIds,
@@ -460,7 +459,7 @@ const TaskInput = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectAudienceKey])
 
-  // Quick-capture widget entry points (donetick://chores/add?mode=voice|scan)
+  // Quick-capture widget entry points (wuzzanext://chores/add?mode=voice|scan)
   // land here: open straight into the requested panel, once per modal open so
   // backing out of the panel doesn't bounce the user right back into it.
   const appliedInitialModeRef = useRef(false)
@@ -1386,7 +1385,6 @@ const TaskInput = ({
     // same rule as trigger frequencies.
     const planReminders = sanitizeRemindersForPlan(
       notificationMetadata?.templates,
-      isPlusAccount(userProfile),
     )
     const hasReminders = planReminders.length > 0 && !isAlwaysAvailable
 
@@ -2139,9 +2137,7 @@ const TaskInput = ({
           <ScanPanel
             open
             autoCapture={scanAutoCapture}
-            canKeepImage={
-              isPlusAccount(userProfile) && !scanImageAlreadyAttached
-            }
+            canKeepImage={!scanImageAlreadyAttached}
             onTaskExtracted={handleTaskExtracted}
             onImageCaptured={handleBackgroundScanCaptured}
             initialImageUrl={pendingPhotoUrl}

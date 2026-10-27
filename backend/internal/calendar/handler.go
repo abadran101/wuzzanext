@@ -25,7 +25,7 @@ import (
 )
 
 const (
-	calendarProdID = "-//Donetick//Chores Calendar//EN"
+	calendarProdID = "-//Wuzzanext//Chores Calendar//EN"
 	// calendarTokenBytes is the entropy of a calendar token. The token is a
 	// bearer credential sitting in a URL, so it must be infeasible to guess.
 	calendarTokenBytes = 32
@@ -119,7 +119,6 @@ func (h *Handler) issueToken(c *gin.Context, userID int) (*calModel.CalendarToke
 //	@Security		APIKeyAuth
 //	@Success		200	{object}	map[string]string	"url: calendar subscription URL"
 //	@Failure		401	{object}	map[string]string	"error: Authentication failed"
-//	@Failure		403	{object}	map[string]string	"error: Only plus members can access this endpoint"
 //	@Failure		404	{object}	map[string]string	"error: No calendar URL generated"
 //	@Router			/chores/calendar/url [get]
 func (h *Handler) GetCalendarURL(c *gin.Context) {
@@ -156,7 +155,6 @@ func (h *Handler) GetCalendarURL(c *gin.Context) {
 //	@Success		200	{object}	map[string]string	"url: existing calendar subscription URL"
 //	@Success		201	{object}	map[string]string	"url: newly generated calendar subscription URL"
 //	@Failure		401	{object}	map[string]string	"error: Authentication failed"
-//	@Failure		403	{object}	map[string]string	"error: Only plus members can access this endpoint"
 //	@Router			/chores/calendar/url [post]
 func (h *Handler) CreateCalendarURL(c *gin.Context) {
 	logger := logging.FromContext(c)
@@ -199,7 +197,6 @@ func (h *Handler) CreateCalendarURL(c *gin.Context) {
 //	@Security		APIKeyAuth
 //	@Success		200	{object}	map[string]string	"url: new calendar subscription URL"
 //	@Failure		401	{object}	map[string]string	"error: Authentication failed"
-//	@Failure		403	{object}	map[string]string	"error: Only plus members can access this endpoint"
 //	@Router			/chores/calendar/url/rotate [post]
 func (h *Handler) RotateCalendarURL(c *gin.Context) {
 	logger := logging.FromContext(c)
@@ -231,7 +228,6 @@ func (h *Handler) RotateCalendarURL(c *gin.Context) {
 //	@Security		APIKeyAuth
 //	@Success		204	{string}	string	"No content"
 //	@Failure		401	{object}	map[string]string	"error: Authentication failed"
-//	@Failure		403	{object}	map[string]string	"error: Only plus members can access this endpoint"
 //	@Router			/chores/calendar/url [delete]
 func (h *Handler) RevokeCalendarURL(c *gin.Context) {
 	logger := logging.FromContext(c)
@@ -260,7 +256,7 @@ func (h *Handler) RevokeCalendarURL(c *gin.Context) {
 //	@Produce		text/calendar
 //	@Param			token	path		string	true	"Calendar token (obtained from /chores/calendar/url)"
 //	@Success		200		{string}	string	"iCal calendar data"
-//	@Failure		403		{string}	string	"Invalid calendar token, or the owner is not a plus member"
+//	@Failure		403		{string}	string	"Invalid calendar token or disabled owner"
 //	@Failure		500		{string}	string	"Failed to generate calendar"
 //	@Router			/chores/calendar/{token} [get]
 func (h *Handler) ServeCalendar(c *gin.Context) {
@@ -293,15 +289,6 @@ func (h *Handler) ServeCalendar(c *gin.Context) {
 		return
 	}
 
-	// The plus check has to happen here too, not just on the management routes:
-	// this endpoint authenticates by token, so a subscription that lapses after
-	// the URL was issued would otherwise keep serving the feed forever.
-	if !user.IsPlusMember() {
-		logger.Warn("Calendar feed requested by non-plus member", "userID", token.UserID)
-		c.String(http.StatusForbidden, "Calendar sync requires a plus subscription")
-		return
-	}
-
 	chores, err := h.choreRepo.GetChores(ctx, user.CircleID, token.UserID, false, nil, false)
 	if err != nil {
 		logger.Error("Failed to retrieve chores for calendar", "error", err, "userID", token.UserID)
@@ -317,7 +304,7 @@ func (h *Handler) ServeCalendar(c *gin.Context) {
 	}
 
 	c.Header("Content-Type", "text/calendar; charset=utf-8")
-	c.Header("Content-Disposition", "attachment; filename=\"donetick-chores.ics\"")
+	c.Header("Content-Disposition", "attachment; filename=\"wuzzanext-chores.ics\"")
 	c.Header("Cache-Control", "no-cache, no-store, must-revalidate")
 	c.Header("X-Content-Type-Options", "nosniff")
 	c.String(http.StatusOK, ical)
@@ -330,7 +317,7 @@ func buildICalFeed(chores []*chModel.Chore, calendarName string, userTimezone st
 	b.WriteString("BEGIN:VCALENDAR\r\n")
 	b.WriteString("VERSION:2.0\r\n")
 	b.WriteString(foldLine(fmt.Sprintf("PRODID:%s", calendarProdID)))
-	b.WriteString(foldLine(fmt.Sprintf("X-WR-CALNAME:Donetick - %s", escapeICalText(calendarName))))
+	b.WriteString(foldLine(fmt.Sprintf("X-WR-CALNAME:Wuzzanext - %s", escapeICalText(calendarName))))
 	b.WriteString("METHOD:PUBLISH\r\n")
 	b.WriteString("CALSCALE:GREGORIAN\r\n")
 

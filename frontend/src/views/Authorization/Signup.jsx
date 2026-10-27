@@ -57,9 +57,9 @@ const SignupView = () => {
       return
     }
 
-    // "How did you hear about us" (cloud) / privacy preferences (self-hosted)
-    // that view forwards to '/circle-setup' once the user answers.
-    Navigate('/heard-about', { replace: true })
+    // Straight to circle setup (the upstream survey and analytics opt-in
+    // screen is removed).
+    Navigate('/circle-setup', { replace: true })
   }
   const handleSignUpValidation = () => {
     // Reset errors before validation

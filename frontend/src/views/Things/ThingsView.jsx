@@ -34,7 +34,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
-import { track } from '../../analytics'
 import EmptyState from '../../components/common/EmptyState'
 import SortAndFilterMenu from '../../components/common/SortAndFilterMenu'
 import SwipeListItem, {
@@ -333,7 +332,6 @@ const ThingsView = () => {
             const currentThings = [...things]
             currentThings.push(data.res)
             setThings(currentThings)
-            track('thing_created', {})
           }
           showNotification({
             type: 'success',

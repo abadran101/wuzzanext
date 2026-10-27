@@ -498,7 +498,7 @@
     "notifyAll": "Уведомить всех исполнителей",
     "notifyAllHint": "Если включено, все участники, которые могут видеть эту задачу, будут уведомлены. В противном случае только исполнитель получит напоминание.",
     "selfHostedHeading": "Как успехи!",
-    "selfHostedNotice": "Эта функция доступна в Donetick Cloud! Поскольку вы используете собственный сервер, для напоминаний требуется создание аккаунта в Google Cloud и Firebase Cloud Messaging (FCM), а также собственная сборка приложения для Android или iOS.",
+    "selfHostedNotice": "Nudges require push notifications to be configured on your server and in the native app.",
     "selfHostedFollowUp": "Мы оповестим вас, если найдем более простой путь для данной настройки на своем сервере."
   },
   "nfc": {
@@ -553,7 +553,7 @@
     "couldNotReadScannedImage": "Не удалось прочитать сканированное изображение."
   },
   "searchBar": {
-    "placeholder": "Поиск по Donetick",
+    "placeholder": "Поиск по Wuzzanext",
     "clearAria": "Очистить поиск по задачам"
   },
   "subTask": {
@@ -1018,11 +1018,11 @@
     "clear": "Очистить"
   },
   "empty": {
-    "errorTitle": "Не удалось подключиться к Donetick",
+    "errorTitle": "Не удалось подключиться к Wuzzanext",
     "errorDescription": "Ваши задачи в безопасности. Мы не смогли загрузить их прямо сейчас, проверьте подключение и попробуйте еще раз.",
     "errorAction": "Попробуйте еще раз",
     "noTasksTitle": "Пока нет задач",
-    "noTasksDescription": "Создайте свою первую задачу, а Donetick проследит за сроками, чья очередь и что будет дальше.",
+    "noTasksDescription": "Создайте свою первую задачу, а Wuzzanext проследит за сроками, чья очередь и что будет дальше.",
     "createTask": "Создать задачу",
     "moreOptions": "Больше опций",
     "noMatchTitle": "Нет задач, соответствующих этому отображению",

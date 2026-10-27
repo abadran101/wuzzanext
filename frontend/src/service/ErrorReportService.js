@@ -1,8 +1,6 @@
 import { getSessionDiagnostics } from './DiagnosticsSession'
 import { collectFeedbackContext } from './FeedbackService'
 
-const GITHUB_URL = 'https://github.com/donetick/donetick'
-
 // Reports go to the same relay as feedback unless a dedicated one is set, so
 // self-hosters who point at their own Worker get both for the price of one.
 const REPORT_URL =
@@ -95,7 +93,7 @@ const cachedUser = () => {
 
 /**
  * The full diagnostic bundle. Deliberately assembled in one place so the copy
- * button, the GitHub fallback and the webhook all describe the same crash.
+ * button and the configured webhook all describe the same crash.
  *
  * Reads the signed-in user from cache rather than the network: by the time
  * this runs the app has already failed, and a fetch may be exactly what broke.
@@ -215,34 +213,6 @@ export const formatErrorReport = report => {
 }
 
 /**
- * Pre-filled GitHub issue for self-hosted instances — their crash data never
- * leaves infrastructure they control, and they see it before it is published.
- */
-export const buildErrorIssueUrl = ({ description, report }) => {
-  const isBug = report.kind === 'bug'
-  const title = isBug
-    ? `[bug] ${description?.trim().slice(0, 80) || 'Reported from the app'}`
-    : `[crash] ${
-        report.error.message?.slice(0, 80) ||
-        report.error.name ||
-        'Unexpected error'
-      }`
-  const body = [
-    '### What happened',
-    description?.trim() || '_no description provided_',
-    '',
-    '### Diagnostics',
-    '```',
-    formatErrorReport(report),
-    '```',
-  ].join('\n')
-
-  return `${GITHUB_URL}/issues/new?labels=bug&title=${encodeURIComponent(
-    title,
-  )}&body=${encodeURIComponent(body)}`
-}
-
-/**
  * Posts the report to the relay. Never throws — a failed crash report must not
  * produce a second crash, so every path resolves to a result the UI can show.
  */
@@ -275,20 +245,10 @@ export const submitErrorReport = async ({
     report: submittedReport,
   }
 
-  // Enforced here, not only in the UI, so no future caller can relay a
-  // self-hosted instance's stack traces to the hosted endpoint.
-  if (report.app?.hosting !== 'cloud') {
-    return {
-      result: SUBMIT_RESULT.SELF_HOSTED,
-      githubUrl: buildErrorIssueUrl({ description, report }),
-    }
-  }
-
   if (!REPORT_URL) {
     console.info('ErrorReportService: no endpoint configured, report:', payload)
     return {
       result: SUBMIT_RESULT.UNCONFIGURED,
-      githubUrl: buildErrorIssueUrl({ description, report }),
     }
   }
 
@@ -300,7 +260,6 @@ export const submitErrorReport = async ({
     )
     return {
       result: SUBMIT_RESULT.MISCONFIGURED,
-      githubUrl: buildErrorIssueUrl({ description, report }),
     }
   }
 
@@ -317,6 +276,5 @@ export const submitErrorReport = async ({
 
   return {
     result: SUBMIT_RESULT.FAILED,
-    githubUrl: buildErrorIssueUrl({ description, report }),
   }
 }

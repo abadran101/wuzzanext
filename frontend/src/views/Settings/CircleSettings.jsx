@@ -168,10 +168,7 @@ const CircleSettings = () => {
     circle?.userRole === 'member' && myMembership && !myMembership.isActive
   const inviteCode = circle?.invite_code || ''
   const apiURL = new URL(apiClient.getApiURL(), window.location.origin)
-  const inviteOrigin =
-    apiURL.hostname === 'api.donetick.com'
-      ? 'https://app.donetick.com'
-      : `${apiURL.origin}${apiURL.pathname.replace(/\/api\/v1\/?$/, '')}`
+  const inviteOrigin = `${apiURL.origin}${apiURL.pathname.replace(/\/api\/v1\/?$/, '')}`
   const inviteLink = inviteCode
     ? `${inviteOrigin.replace(/\/$/, '')}/circle/join?code=${encodeURIComponent(inviteCode)}`
     : ''

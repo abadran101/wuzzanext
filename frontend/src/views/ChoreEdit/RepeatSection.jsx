@@ -21,9 +21,6 @@ import { useTranslation } from 'react-i18next'
 
 import NumberInput from '../../components/common/NumberInput'
 import { useLocalization } from '../../contexts/LocalizationContext'
-import { PAYWALL_REASON, usePaywall } from '../../contexts/PaywallContext'
-import { useUserProfile } from '../../queries/UserQueries'
-import { isPlusAccount } from '../../utils/Helpers'
 import ThingTriggerSection from './ThingTriggerSection'
 
 const FREQUENCY_TYPES_RADIOS = [
@@ -512,8 +509,6 @@ const RepeatSection = ({
   selectedThing,
   viewOnly = false,
 }) => {
-  const { data: userProfile } = useUserProfile({ enabled: !viewOnly })
-  const { showPaywall } = usePaywall()
   const { t } = useTranslation('chores')
 
   return (
@@ -533,10 +528,6 @@ const RepeatSection = ({
           }
           onChange={(_, mode) => {
             if (!mode) return
-            if (mode === 'trigger' && !isPlusAccount(userProfile)) {
-              showPaywall(PAYWALL_REASON.THING_TRIGGERS)
-              return
-            }
             onFrequencyTypeUpdate(mode === 'repeat' ? 'daily' : mode)
             if (mode !== 'trigger') onTriggerUpdate(null)
           }}

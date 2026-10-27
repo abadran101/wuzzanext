@@ -1,8 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { track } from '../../analytics'
-import { PAYWALL_REASON, usePaywall } from '../../contexts/PaywallContext'
-import { canCreateQuickFilter } from '../../utils/entitlements'
 import {
   CreateFilter,
   DeleteFilter,
@@ -117,24 +114,13 @@ export const useFilter = filterId => {
 // Mutation hook for creating a new filter
 export const useCreateFilter = () => {
   const queryClient = useQueryClient()
-  const { isPlanKnown, isPlus, showPaywall } = usePaywall()
 
   return useMutation({
     mutationFn: async filterData => {
-      // Last line of defense behind the click-time gates: an entry point that
-      // forgets to check can't push a free account past its allowance. Waits
-      // for the plan to be known so a cold load never blocks a Plus user.
-      const existing = queryClient.getQueryData(['filters']) ?? []
-      if (isPlanKnown && !canCreateQuickFilter(existing.length, isPlus)) {
-        showPaywall(PAYWALL_REASON.QUICK_FILTER_LIMIT)
-        throw new Error('Quick filter limit reached')
-      }
-
       try {
         const response = await CreateFilter(filterData)
         if (response.ok) {
           const data = await response.json()
-          track('filter_created', {})
           return data.res || data
         }
         const errorData = await response.json()

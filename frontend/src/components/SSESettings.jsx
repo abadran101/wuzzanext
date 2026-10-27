@@ -11,16 +11,11 @@ import {
 } from '@mui/joy'
 import { useTranslation } from 'react-i18next'
 
-import { PAYWALL_REASON, usePaywall } from '../contexts/PaywallContext'
 import { useSSEContext } from '../hooks/useSSEContext'
-import { useUserProfile } from '../queries/UserQueries'
-import { isPlusAccount } from '../utils/Helpers'
 import SSEConnectionStatus from './SSEConnectionStatus'
 
 const SSESettings = () => {
   const { t } = useTranslation('settings')
-  const { data: userProfile } = useUserProfile()
-  const { showPaywall } = usePaywall()
   const {
     error,
     getConnectionStatus,
@@ -31,18 +26,7 @@ const SSESettings = () => {
   } = useSSEContext()
 
   const handleToggle = () => {
-    console.log('=== TOGGLE CLICKED ===')
-    if (!isPlusAccount(userProfile)) {
-      showPaywall(PAYWALL_REASON.REALTIME_SYNC)
-      return
-    }
     const currentlyEnabled = isSSEEnabled()
-    console.log('SSE Settings - Toggle clicked:', {
-      currentlyEnabled,
-      newState: !currentlyEnabled,
-      userProfile,
-      isPlusAccount: isPlusAccount(userProfile),
-    })
     toggleSSEEnabled(!currentlyEnabled)
   }
 
@@ -69,7 +53,7 @@ const SSESettings = () => {
   return (
     <Card sx={{ mt: 2, p: 3 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-        {isSSEEnabled() && isPlusAccount(userProfile) ? (
+        {isSSEEnabled() ? (
           <Sync color={isConnected ? 'success' : 'disabled'} />
         ) : (
           <SyncDisabled color='disabled' />
@@ -80,9 +64,7 @@ const SSESettings = () => {
             {t('realtime.subtitleSse')}
           </Typography>
         </Box>
-        {isSSEEnabled() && isPlusAccount(userProfile) && (
-          <SSEConnectionStatus variant='chip' />
-        )}
+        {isSSEEnabled() && <SSEConnectionStatus variant='chip' />}
       </Box>
 
       <FormControl orientation='horizontal' sx={{ mb: 2 }}>
@@ -93,22 +75,16 @@ const SSESettings = () => {
           </FormHelperText>
         </Box>
         <Switch
-          checked={isSSEEnabled() && isPlusAccount(userProfile)}
+          checked={isSSEEnabled()}
           onChange={handleToggle}
-          color={
-            isSSEEnabled() && isPlusAccount(userProfile) ? 'success' : 'neutral'
-          }
+          color={isSSEEnabled() ? 'success' : 'neutral'}
           variant='solid'
-          endDecorator={
-            isSSEEnabled() && isPlusAccount(userProfile)
-              ? t('common.on')
-              : t('common.off')
-          }
+          endDecorator={isSSEEnabled() ? t('common.on') : t('common.off')}
           slotProps={{ endDecorator: { sx: { minWidth: 24 } } }}
         />
       </FormControl>
 
-      {isSSEEnabled() && isPlusAccount(userProfile) && (
+      {isSSEEnabled() && (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
           <Typography level='body-xs' color='neutral'>
             {t('realtime.statusLabel')}

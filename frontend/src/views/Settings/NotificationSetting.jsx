@@ -690,20 +690,6 @@ const NotificationSetting = () => {
             </Select>
             {notificationTarget === '1' && (
               <>
-                <Typography level='body-xs'>
-                  {t('notifications.telegramBotHelpBefore')}{' '}
-                  <a
-                    style={{
-                      textDecoration: 'underline',
-                      color: '#0891b2',
-                    }}
-                    href='https://t.me/DonetickBot'
-                  >
-                    {t('notifications.clickHere')}
-                  </a>{' '}
-                  {t('notifications.telegramBotHelpAfter')}
-                </Typography>
-
                 <Typography level='body-sm'>
                   {t('notifications.chatId')}
                 </Typography>

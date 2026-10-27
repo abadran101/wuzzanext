@@ -85,7 +85,7 @@ func (b *BridgeNotifier) SendNotification(ctx context.Context, notification *nMo
 	}
 	if p.Title == "" && p.Body == "" {
 		p.Body = notification.Text
-		p.Title = "DoneTick"
+		p.Title = "Wuzzanext"
 	}
 
 	badge := 1

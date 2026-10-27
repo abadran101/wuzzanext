@@ -32,9 +32,6 @@ type Handler struct {
 	pushSender           *push.Sender
 	projectRepo          *pjRepo.ProjectRepository
 	signer               storage.URLSigner
-	isDonetickDotCom     bool
-	maxCircleMembers     int
-	plusMaxCircleMembers int
 	singleCircleInstance bool
 }
 
@@ -48,9 +45,6 @@ func NewHandler(cr *cRepo.CircleRepository, ur *uRepo.UserRepository, c *chRepo.
 		pushSender:           ps,
 		projectRepo:          projectRepo,
 		signer:               signer,
-		isDonetickDotCom:     config.IsDoneTickDotCom,
-		maxCircleMembers:     config.FeatureLimits.MaxCircleMembers,
-		plusMaxCircleMembers: config.FeatureLimits.PlusCircleMaxMembers,
 		singleCircleInstance: config.SingleCircleInstance,
 	}
 }
@@ -635,32 +629,12 @@ func (h *Handler) AcceptJoinRequest(c *gin.Context) {
 	}
 
 	currentMembers, err := h.circleRepo.GetCircleUsers(c, currentUser.CircleID)
-	// filter to the active members only:
-	activeMembers := make([]*cModel.UserCircleDetail, 0)
-	for _, member := range currentMembers {
-		if member.IsActive {
-			activeMembers = append(activeMembers, member)
-		}
-	}
 	if err != nil {
 		log.Error("Error getting circle members:", err)
 		c.JSON(500, gin.H{
 			"error": "Error getting circle members",
 		})
 		return
-	}
-	if h.isDonetickDotCom {
-		maxMembers := h.maxCircleMembers
-		if currentUser.IsPlusMember() {
-			maxMembers = h.plusMaxCircleMembers
-		}
-		if len(activeMembers) >= maxMembers {
-			log.Error("Circle is full")
-			c.JSON(400, gin.H{
-				"error": "Circle is full, you can only have " + strconv.Itoa(maxMembers) + " members in a circle",
-			})
-			return
-		}
 	}
 	if !h.requireCircleAdmin(c, currentMembers, currentUser.ID) {
 		return

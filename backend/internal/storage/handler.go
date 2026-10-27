@@ -185,10 +185,6 @@ func (h *Handler) ChoreUploadHandler(c *gin.Context) {
 			log.Error("user has no enough space", "error", err)
 			c.JSON(http.StatusInsufficientStorage, gin.H{"error": "no enough space"})
 			return
-		case err == errorx.ErrNotAPlusMember:
-			log.Error("user is not a plus member", "error", err)
-			c.JSON(http.StatusForbidden, gin.H{"error": "user is not a plus member"})
-			return
 		default:
 			log.Error("failed to save file record to db", "error", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to save file record"})

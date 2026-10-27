@@ -49,8 +49,6 @@ type Handler struct {
 	deletionService        *DeletionService
 	appleService           *apple.AppleService
 	mfaService             *mfa.MFAService
-	maxSubaccounts         int
-	plusMaxSubaccounts     int
 	oauth2Config           config.OAuth2Config
 	singleCircleInstance   bool
 }
@@ -78,8 +76,6 @@ func NewHandler(ur *uRepo.UserRepository, cr *cRepo.CircleRepository,
 		deletionService:        deletionService,
 		appleService:           appleService,
 		mfaService:             mfaService,
-		maxSubaccounts:         config.FeatureLimits.MaxSubaccounts,
-		plusMaxSubaccounts:     config.FeatureLimits.PlusMaxSubaccounts,
 		oauth2Config:           config.OAuth2Config,
 		singleCircleInstance:   config.SingleCircleInstance,
 	}
@@ -1186,7 +1182,7 @@ func (h *Handler) UpdateNotificationTarget(c *gin.Context) {
 func (h *Handler) updateUserPasswordLoggedInOnly(c *gin.Context) {
 	if h.isDonetickDotCom {
 		// only enable this feature for self-hosted instances
-		c.JSON(http.StatusForbidden, gin.H{"error": "This action is not allowed on donetick.com"})
+		c.JSON(http.StatusForbidden, gin.H{"error": "This action is not allowed on hosted instances"})
 		return
 	}
 	logger := logging.FromContext(c)
@@ -1241,11 +1237,6 @@ func (h *Handler) setWebhook(c *gin.Context) {
 	var req Request
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request: " + err.Error()})
-		return
-	}
-
-	if !currentUser.IsPlusMember() {
-		c.JSON(http.StatusForbidden, gin.H{"error": "This action is only available for Plus members"})
 		return
 	}
 
@@ -1502,26 +1493,6 @@ func (h *Handler) createChildUser(c *gin.Context) {
 		return
 	}
 
-	// Check current child user count to enforce limit (only for donetick.com)
-	if h.isDonetickDotCom {
-		currentChildCount, err := h.userRepo.GetChildUserCount(c, currentUser.ID)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to check existing subaccounts"})
-			return
-		}
-
-		maxSubaccounts := h.maxSubaccounts
-		if currentUser.IsPlusMember() {
-			maxSubaccounts = h.plusMaxSubaccounts
-		}
-
-		if int(currentChildCount) >= maxSubaccounts {
-			c.JSON(http.StatusForbidden, gin.H{
-				"error": fmt.Sprintf("Maximum of %d subaccounts allowed per account", maxSubaccounts),
-			})
-			return
-		}
-	}
 	// Validate username and child username:
 	if !utils.IsValidUsername(currentUser.Username) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid parent username format"})

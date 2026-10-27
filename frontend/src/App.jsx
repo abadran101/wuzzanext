@@ -10,17 +10,11 @@ import { useRegisterSW } from 'virtual:pwa-register/react'
 import MobileBottomNav from '@/views/components/MobileBottomNav'
 import NavBar from '@/views/components/NavBar'
 
-import {
-  initialize as initializeAnalytics,
-  installGlobalErrorHandlers,
-} from './analytics'
-import useAnalyticsIdentity from './analytics/useAnalyticsIdentity'
 import { registerCapacitorListeners } from './CapacitorListener'
 import PageTransition from './components/animations/PageTransition'
 import { ImpersonateUserProvider } from './contexts/ImpersonateUserContext'
 import { KeyboardShortcutScopeProvider } from './contexts/KeyboardShortcutScopeContext'
 import { NavBarTitleProvider } from './contexts/NavBarTitleContext'
-import { PaywallProvider } from './contexts/PaywallContext'
 import SSEProvider from './contexts/SSEContext'
 import useAppBadgeSync from './hooks/useAppBadgeSync'
 import { AuthProvider } from './hooks/useAuth.jsx'
@@ -134,7 +128,6 @@ const WebServiceWorkerManager = () => {
 const AppContent = () => {
   const location = useLocation()
   useSyncOnReconnect()
-  useAnalyticsIdentity()
   useAppBadgeSync()
 
   // Every route renders through this Outlet, so one listener here gives crash
@@ -218,11 +211,6 @@ function App() {
     registerCapacitorListeners(navigate)
   }, [navigate])
 
-  useEffect(() => {
-    initializeAnalytics()
-    installGlobalErrorHandlers()
-  }, [])
-
   return (
     <div>
       <NetworkBanner />
@@ -231,9 +219,7 @@ function App() {
         <SSEProvider>
           <GlobalSearchProvider>
             <KeyboardShortcutScopeProvider>
-              <PaywallProvider>
-                <AppContent />
-              </PaywallProvider>
+              <AppContent />
             </KeyboardShortcutScopeProvider>
           </GlobalSearchProvider>
         </SSEProvider>

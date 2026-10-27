@@ -61,7 +61,7 @@ func (es *EmailSender) SendVerificationEmail(to, code string) error {
 	msg := gomail.NewMessage()
 	msg.SetHeader("From", es.fromMail)
 	msg.SetHeader("To", to)
-	msg.SetHeader("Subject", "Welcome to Donetick! Verify your email")
+	msg.SetHeader("Subject", "Welcome to Wuzzanext! Verify your email")
 	// text/html for a html email
 	htmlBody := `
 	<!--
@@ -166,9 +166,6 @@ func (es *EmailSender) SendVerificationEmail(to, code string) error {
 		@media only screen and (min-width: 481px) {.t20{width:720px!important}.t27{padding:40px 60px 50px!important}.t29{padding:40px 60px 50px!important;width:680px!important}.t43{width:600px!important}.t53,.t61{width:580px!important}.t65{width:600px!important}.t78{padding-left:0!important;padding-right:0!important}.t80{padding-left:0!important;padding-right:0!important;width:400px!important}.t84,.t94{width:600px!important}}
 		</style>
 		<style type="text/css" media="screen and (min-width:481px)">.moz-text-html .t20{width:720px!important}.moz-text-html .t27{padding:40px 60px 50px!important}.moz-text-html .t29{padding:40px 60px 50px!important;width:680px!important}.moz-text-html .t43{width:600px!important}.moz-text-html .t53,.moz-text-html .t61{width:580px!important}.moz-text-html .t65{width:600px!important}.moz-text-html .t78{padding-left:0!important;padding-right:0!important}.moz-text-html .t80{padding-left:0!important;padding-right:0!important;width:400px!important}.moz-text-html .t84,.moz-text-html .t94{width:600px!important}</style>
-		<!--[if !mso]><!-->
-		<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600&amp;family=Albert+Sans:wght@800&amp;display=swap" rel="stylesheet" type="text/css">
-		<!--<![endif]-->
 		<!--[if mso]>
 		<style type="text/css">
 		td.t20{width:800px !important}td.t27{padding:40px 60px 50px !important}td.t29{padding:40px 60px 50px !important;width:800px !important}td.t43,td.t53{width:600px !important}td.t61{width:580px !important}td.t65{width:600px !important}td.t78,td.t80{padding-left:0 !important;padding-right:0 !important}td.t84,td.t94{width:600px !important}
@@ -184,7 +181,7 @@ func (es *EmailSender) SendVerificationEmail(to, code string) error {
 		<![endif]-->
 		</head>
 		<body class="t0" style="min-width:100%;Marg
-		if you did not sign up with Donetick please Ignore this email. in:0px;padding:0px;background-color:#FFFFFF;"><div class="t1" style="background-color:#FFFFFF;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" align="center"><tbody><tr><td class="t130" style="font-size:0;line-height:0;mso-line-height-rule:exactly;" valign="top" align="center">
+		if you did not sign up with Wuzzanext please Ignore this email. in:0px;padding:0px;background-color:#FFFFFF;"><div class="t1" style="background-color:#FFFFFF;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" align="center"><tbody><tr><td class="t130" style="font-size:0;line-height:0;mso-line-height-rule:exactly;" valign="top" align="center">
 		<!--[if mso]>
 		<v:background xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false">
 		<v:fill color="#FFFFFF"/>
@@ -212,7 +209,7 @@ func (es *EmailSender) SendVerificationEmail(to, code string) error {
 		<!--[if !mso]><!--><td class="t104" style="width:200px;">
 		<!--<![endif]-->
 		<!--[if mso]><td class="t104" style="width:200px;"><![endif]-->
-		<div style="font-size:0px;"><img class="t110" style="display:block;border:0;height:auto;width:100%;Margin:0;max-width:100%;" width="200" height="179.5" alt="" src="https://835a1b8e-557a-4713-8f1c-104febdb8808.b-cdn.net/e/30b4288c-4e67-4e3b-9527-1fc4c4ec2fdf/df3f012a-c060-4d59-b5fd-54a57dae1916.png"></div></td>
+		<div style="font-size:0px;"></div></td>
 		</tr></tbody></table>
 		</td></tr></tbody></table></td>
 		</tr></tbody></table>
@@ -226,7 +223,7 @@ func (es *EmailSender) SendVerificationEmail(to, code string) error {
 		<!--[if !mso]><!--><td class="t43" style="width:480px;">
 		<!--<![endif]-->
 		<!--[if mso]><td class="t43" style="width:480px;"><![endif]-->
-		<h1 class="t49" style="margin:0;Margin:0;font-family:BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif,'Albert Sans';line-height:35px;font-weight:800;font-style:normal;font-size:30px;text-decoration:none;text-transform:none;letter-spacing:-1.2px;direction:ltr;color:#333333;text-align:center;mso-line-height-rule:exactly;mso-text-raise:2px;">Welcome to Donetick!</h1></td>
+		<h1 class="t49" style="margin:0;Margin:0;font-family:BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif,'Albert Sans';line-height:35px;font-weight:800;font-style:normal;font-size:30px;text-decoration:none;text-transform:none;letter-spacing:-1.2px;direction:ltr;color:#333333;text-align:center;mso-line-height-rule:exactly;mso-text-raise:2px;">Welcome to Wuzzanext!</h1></td>
 		</tr></tbody></table>
 		</td></tr><tr><td><div class="t41" style="mso-line-height-rule:exactly;mso-line-height-alt:16px;line-height:16px;font-size:1px;display:block;">&nbsp;</div></td></tr><tr><td><p class="t39" style="margin:0;Margin:0;font-family:BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif,'Inter Tight';line-height:21px;font-weight:400;font-style:normal;font-size:14px;text-decoration:none;text-transform:none;direction:ltr;color:#555555;text-align:center;mso-line-height-rule:exactly;mso-text-raise:2px;">Thank you for joining us. We're excited to have you on board.To complete your registration, click the button below</p></td></tr><tr><td><div class="t31" style="mso-line-height-rule:exactly;mso-line-height-alt:30px;line-height:30px;font-size:1px;display:block;">&nbsp;</div></td></tr><tr><td>
 		<table class="t52" role="presentation" cellpadding="0" cellspacing="0" align="center"><tbody><tr>
@@ -256,7 +253,7 @@ func (es *EmailSender) SendVerificationEmail(to, code string) error {
 		<!--[if !mso]><!--><td class="t94" style="width:480px;">
 		<!--<![endif]-->
 		<!--[if mso]><td class="t94" style="width:480px;"><![endif]-->
-		<p class="t100" style="margin:0;Margin:0;font-family:BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif,'Inter Tight';line-height:18px;font-weight:400;font-style:normal;font-size:12px;text-decoration:none;text-transform:none;direction:ltr;color:#555555;text-align:center;mso-line-height-rule:exactly;mso-text-raise:2px;">if you did not sign up with Donetick please Ignore this email. </p></td>
+		<p class="t100" style="margin:0;Margin:0;font-family:BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif,'Inter Tight';line-height:18px;font-weight:400;font-style:normal;font-size:12px;text-decoration:none;text-transform:none;direction:ltr;color:#555555;text-align:center;mso-line-height-rule:exactly;mso-text-raise:2px;">if you did not sign up with Wuzzanext please Ignore this email. </p></td>
 		</tr></tbody></table>
 		</td></tr><tr><td><div class="t81" style="mso-line-height-rule:exactly;mso-line-height-alt:8px;line-height:8px;font-size:1px;display:block;">&nbsp;</div></td></tr><tr><td>
 		<table class="t83" role="presentation" cellpadding="0" cellspacing="0" align="center"><tbody><tr>
@@ -288,7 +285,7 @@ func (es *EmailSender) SendResetPasswordEmail(c context.Context, to, code string
 	msg := gomail.NewMessage()
 	msg.SetHeader("From", es.fromMail)
 	msg.SetHeader("To", to)
-	msg.SetHeader("Subject", "Donetick! Password Reset")
+	msg.SetHeader("Subject", "Wuzzanext! Password Reset")
 	htmlBody := `
 	<!--
 	********************************************************
@@ -392,9 +389,6 @@ func (es *EmailSender) SendResetPasswordEmail(c context.Context, to, code string
 		@media only screen and (min-width: 481px) {.t20{width:720px!important}.t27{padding:40px 60px 50px!important}.t29{padding:40px 60px 50px!important;width:680px!important}.t43{width:600px!important}.t53,.t61{width:580px!important}.t65{width:600px!important}.t78{padding-left:0!important;padding-right:0!important}.t80{padding-left:0!important;padding-right:0!important;width:400px!important}.t84,.t94{width:600px!important}}
 		</style>
 		<style type="text/css" media="screen and (min-width:481px)">.moz-text-html .t20{width:720px!important}.moz-text-html .t27{padding:40px 60px 50px!important}.moz-text-html .t29{padding:40px 60px 50px!important;width:680px!important}.moz-text-html .t43{width:600px!important}.moz-text-html .t53,.moz-text-html .t61{width:580px!important}.moz-text-html .t65{width:600px!important}.moz-text-html .t78{padding-left:0!important;padding-right:0!important}.moz-text-html .t80{padding-left:0!important;padding-right:0!important;width:400px!important}.moz-text-html .t84,.moz-text-html .t94{width:600px!important}</style>
-		<!--[if !mso]><!-->
-		<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600&amp;family=Albert+Sans:wght@800&amp;display=swap" rel="stylesheet" type="text/css">
-		<!--<![endif]-->
 		<!--[if mso]>
 		<style type="text/css">
 		td.t20{width:800px !important}td.t27{padding:40px 60px 50px !important}td.t29{padding:40px 60px 50px !important;width:800px !important}td.t43,td.t53{width:600px !important}td.t61{width:580px !important}td.t65{width:600px !important}td.t78,td.t80{padding-left:0 !important;padding-right:0 !important}td.t84,td.t94{width:600px !important}
@@ -410,7 +404,7 @@ func (es *EmailSender) SendResetPasswordEmail(c context.Context, to, code string
 		<![endif]-->
 		</head>
 		<body class="t0" style="min-width:100%;Marg
-		if you did not sign up with Donetick please Ignore this email. in:0px;padding:0px;background-color:#FFFFFF;"><div class="t1" style="background-color:#FFFFFF;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" align="center"><tbody><tr><td class="t130" style="font-size:0;line-height:0;mso-line-height-rule:exactly;" valign="top" align="center">
+		if you did not sign up with Wuzzanext please Ignore this email. in:0px;padding:0px;background-color:#FFFFFF;"><div class="t1" style="background-color:#FFFFFF;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" align="center"><tbody><tr><td class="t130" style="font-size:0;line-height:0;mso-line-height-rule:exactly;" valign="top" align="center">
 		<!--[if mso]>
 		<v:background xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false">
 		<v:fill color="#FFFFFF"/>
@@ -438,7 +432,7 @@ func (es *EmailSender) SendResetPasswordEmail(c context.Context, to, code string
 		<!--[if !mso]><!--><td class="t104" style="width:200px;">
 		<!--<![endif]-->
 		<!--[if mso]><td class="t104" style="width:200px;"><![endif]-->
-		<div style="font-size:0px;"><img class="t110" style="display:block;border:0;height:auto;width:100%;Margin:0;max-width:100%;" width="200" height="179.5" alt="" src="https://835a1b8e-557a-4713-8f1c-104febdb8808.b-cdn.net/e/30b4288c-4e67-4e3b-9527-1fc4c4ec2fdf/df3f012a-c060-4d59-b5fd-54a57dae1916.png"></div></td>
+		<div style="font-size:0px;"></div></td>
 		</tr></tbody></table>
 		</td></tr></tbody></table></td>
 		</tr></tbody></table>
@@ -482,7 +476,7 @@ func (es *EmailSender) SendResetPasswordEmail(c context.Context, to, code string
 		<!--[if !mso]><!--><td class="t94" style="width:480px;">
 		<!--<![endif]-->
 		<!--[if mso]><td class="t94" style="width:480px;"><![endif]-->
-		<p class="t100" style="margin:0;Margin:0;font-family:BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif,'Inter Tight';line-height:18px;font-weight:400;font-style:normal;font-size:12px;text-decoration:none;text-transform:none;direction:ltr;color:#555555;text-align:center;mso-line-height-rule:exactly;mso-text-raise:2px;">if you did not sign up with Donetick please Ignore this email. </p></td>
+		<p class="t100" style="margin:0;Margin:0;font-family:BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif,'Inter Tight';line-height:18px;font-weight:400;font-style:normal;font-size:12px;text-decoration:none;text-transform:none;direction:ltr;color:#555555;text-align:center;mso-line-height-rule:exactly;mso-text-raise:2px;">if you did not sign up with Wuzzanext please Ignore this email. </p></td>
 		</tr></tbody></table>
 		</td></tr><tr><td><div class="t81" style="mso-line-height-rule:exactly;mso-line-height-alt:8px;line-height:8px;font-size:1px;display:block;">&nbsp;</div></td></tr><tr><td>
 		<table class="t83" role="presentation" cellpadding="0" cellspacing="0" align="center"><tbody><tr>

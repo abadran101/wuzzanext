@@ -143,8 +143,6 @@ const buildChips = (
       label: `P${effective.priority}`,
     })
   }
-  // Mirrors buildChorePayload: reminders only reach the backend for Plus
-  // accounts on a task that has something to remind against
   const reminderCount = effective.notificationMetadata?.templates?.length || 0
   if (
     canRemind &&
