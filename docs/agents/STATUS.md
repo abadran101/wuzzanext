@@ -11,10 +11,10 @@ Update this file at every stop. Output from the real machines beats anything wri
 ## GitHub
 
 - Repository `abadran101/wuzzanext`, private (stays private, owner 2026-10-26). Default branch
-  `main` at 724a3e1 (PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
+  `main` at 963c84d (PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
   merged 2026-10-27; PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1,
   task 001, before it).
-- Open branch: `task/007-profiles-pin` (PR open, waiting on the owner).
+- Open branch: `task/024-menu-visibility` (in progress).
 - Remote `origin` is `https://github.com/abadran101/wuzzanext.git`, confirmed with
   `git ls-remote origin` on 2026-10-26.
 - Agents push task branches with the fine-grained token the orchestrator lists (it covers only the
@@ -49,8 +49,7 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 007 profiles and PIN sign-in: PR #7 and PR #8 (Log out waits for sync) merged; the last
-  follow-up (Switch language in the user menu, Wuzzanext wordmark) is in a new PR.
+- 024 menu items hidden from regular users (task file).
 - Next: 022 (missing Arabic texts and right-to-left check, owner reviews the wording), then 023 (translation), then 008
   onward; 012-015 stay parked.
 
@@ -66,9 +65,18 @@ Update this file at every stop. Output from the real machines beats anything wri
 5. For 017: a forced sign-out when a session expires still empties the offline queue (as
    upstream does), so changes made offline and not yet sent are lost. Needs one queue per
    person. Log out, Switch person and the tablet idle switch already wait for sync (007).
+6. Suggestion for 011 (the supervisor's, not a decision): remove Report an Issue entirely. It can
+   only send to an outside Discord or Slack webhook built into the app, none is set, and the
+   no-cloud rule keeps it that way.
 
 ## Decisions (newest first)
 
+- 2026-10-27: PR #9 (007 language switch and wordmark) merged; do 024 before 022 and 023
+  (owner, through the orchestrator: "yes, and #9 is merged").
+- 2026-10-27: menu items: "hide Archived, Things, Labels and Report an Issue from regular users,
+  and let admins toggle menu items visible or hidden for other users"; "Those can be hidden for
+  all non admin users (not user specific) and no need to block the actual pages"; PR #9 "Updates
+  look good" (owner, through the orchestrator). Task 024.
 - 2026-10-27: after testing 007, the owner asked for Switch language in the user menu and the
   Wuzzanext wordmark next to the logo ("Wuzza" and "next" in two colours); "Everything else
   looks good" (owner, through the orchestrator). Both done; 022 keeps the missing

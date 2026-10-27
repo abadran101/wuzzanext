@@ -48,6 +48,7 @@ everything on the dev machine is readable by Codex.
 | 020 | Source archive of the exact commit packaged into each build, offered on the About page (AGPL, private repository) | Approved (2026-10-26), before 019 | 004 |
 | 021 | Remove unused PostHog, RevenueCat and Stripe packages; README brought up to date | Done | 004 |
 | 022 | Arabic: full right-to-left layout (the one-tap toggle is in the user menu since 007), missing Arabic texts filled in; the owner reviews the Arabic wording before merge | Proposed | 007 |
+| 024 | Menu items hidden from regular users: Archived, Things, Labels, Report an Issue hidden by default; admins switch each on or off for all regular users (household setting); pages not blocked | Proposed | 007 |
 | 023 | Translate chore names, chore details and recipe names English <-> Arabic on the home server (Google Cloud Translation, cached; key only in the server's configuration) | Proposed | 022 |
 
 ## Settled: don't propose these again
