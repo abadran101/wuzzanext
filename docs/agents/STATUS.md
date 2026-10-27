@@ -49,9 +49,9 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 007 profiles and PIN sign-in: done, PR open for the owner (task file Result); the owner
-  tries the faces screen and PIN sign-in by hand.
-- Next: 022 (Arabic toggle, owner reviews the wording), then 023 (translation), then 008
+- 007 profiles and PIN sign-in: PR #7 merged; follow-up PR #8 (Log out waits for sync,
+  Switch language in the user menu, Wuzzanext wordmark) open for the owner.
+- Next: 022 (missing Arabic texts and right-to-left check, owner reviews the wording), then 023 (translation), then 008
   onward; 012-015 stay parked.
 
 ## Open items
@@ -69,6 +69,11 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## Decisions (newest first)
 
+- 2026-10-27: after testing 007, the owner asked for Switch language in the user menu and the
+  Wuzzanext wordmark next to the logo ("Wuzza" and "next" in two colours); "Everything else
+  looks good" (owner, through the orchestrator). Both done in PR #8; 022 keeps the missing
+  Arabic texts, full right-to-left check and the owner's wording review.
+- 2026-10-27: PR #7 (task 007) merged (seen on GitHub: main e1b2bf31).
 - 2026-10-27: 007's Log out waits for offline changes to sync, like Switch person; the
   forced sign-out on session expiry goes to 017 (owner, through the orchestrator: "yes").
 - 2026-10-27: PR #6 (task 005) merged (owner, through the orchestrator: "#6 merged").

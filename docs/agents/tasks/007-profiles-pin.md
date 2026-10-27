@@ -98,15 +98,18 @@ the server is reachable only on the home network.
   - 01972a98b985086982da40798f40bc6f7ca83c33: Log out (user menu, side bar, "use a different account") waits for
     offline changes to sync like Switch person, and refuses with a short message while they
     can't be sent (owner, through the orchestrator, 2026-10-27: "yes").
+  - 62c0b21b1e1939acd5ff21019f7d758e38944023: after the owner's test (2026-10-27): Switch language
+    (English / Arabic, one tap) in the user menu next to dark mode, saved to the person;
+    "Wuzzanext" wordmark next to the logo and on the loading screen, two colours.
 - **Checked:** `go build ./...` ok; `go vet` only the known `pool.go:218`; `go test ./...`
   25 packages ok (9 new tests: PIN sign-in and refresh, lockout and expiry, concurrent wrong
   PINs, profile list scope and no secrets, admin rules, own PIN rules, preferences, MFA,
   colour migration); gofmt clean. `npm run build` ok; `npm run lint` exit 0 (0 errors, 1904
   warnings); node tests 8 pass, only the known upstream failure (new: PIN input, lock
   countdown, idle timer, switch guard, every new text in English and Arabic).
-- **Left:** the by-hand check in a browser and on a phone (faces, PIN, switch, wrong PIN,
-  right-to-left) was not run on the dev machine; the owner tries it. The one-tap Arabic
-  toggle is task 022. For 017 (STATUS open item 5): a forced sign-out when a session expires
+- **Left:** the owner tested the app on the dev machine (2026-10-27): "Everything else looks
+  good"; a phone check is still to do. The missing Arabic texts and the full right-to-left
+  check are task 022. For 017 (STATUS open item 5): a forced sign-out when a session expires
   still empties the offline queue, as upstream does; it needs one queue per person.
 - **Owner:** review the PR (it also carries the `CLAUDE.md` change), try the faces screen and
   PIN sign-in, merge.
