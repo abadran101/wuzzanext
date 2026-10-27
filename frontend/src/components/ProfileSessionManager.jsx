@@ -37,8 +37,8 @@ export default function ProfileSessionManager({ children }) {
   const [sharedTablet, setSharedTabletState] = useState(
     () => localStorage.getItem('sharedTablet') === 'true',
   )
-  const [blocked, setBlocked] = useState(false)
-  const [switchingVisible, setSwitchingVisible] = useState(false)
+  const [blocked, setBlocked] = useState('')
+  const [switchingVisible, setSwitchingVisible] = useState('')
   const [initialInput] = useState(
     () => Number(localStorage.getItem('profileLastInput')) || Date.now(),
   )
@@ -63,25 +63,29 @@ export default function ProfileSessionManager({ children }) {
     setSharedTabletState(value)
   }
 
+  // Sync first; false while queued changes still can't be sent.
+  const outboxSent = async () => {
+    if (syncEngine.inFlight) await syncEngine.inFlight
+    return canSwitchPerson({
+      getPending: () => offlineDB.getCommands(),
+      sync: () => syncEngine.sync(),
+      online: navigator.onLine,
+    })
+  }
+
   const switchPerson = useCallback(async () => {
     if (switching.current) return false
     switching.current = true
-    setSwitchingVisible(true)
+    setSwitchingVisible('switchPerson')
     try {
-      if (syncEngine.inFlight) await syncEngine.inFlight
-      const allowed = await canSwitchPerson({
-        getPending: () => offlineDB.getCommands(),
-        sync: () => syncEngine.sync(),
-        online: navigator.onLine,
-      })
-      if (!allowed) {
-        setBlocked(true)
+      if (!(await outboxSent())) {
+        setBlocked('switchBlocked')
         return false
       }
       // Stop active queries before removing cached data. Never delete the outbox.
       await queryClient.cancelQueries()
       if ((await offlineDB.getCommands()).length) {
-        setBlocked(true)
+        setBlocked('switchBlocked')
         return false
       }
       await offlineDB.clearServerData()
@@ -111,13 +115,35 @@ export default function ProfileSessionManager({ children }) {
       window.location.replace('/login')
       return true
     } catch {
-      setBlocked(true)
+      setBlocked('switchBlocked')
       return false
     } finally {
       switching.current = false
-      setSwitchingVisible(false)
+      setSwitchingVisible('')
     }
   }, [queryClient, setProfileLanguage])
+
+  // Log out empties the offline queue, so it waits for the same sync as
+  // switching. A forced sign-out on session expiry still empties it (task 017).
+  const logOut = useCallback(async () => {
+    if (switching.current) return false
+    switching.current = true
+    setSwitchingVisible('loggingOut')
+    try {
+      if (!(await outboxSent())) {
+        setBlocked('logoutBlocked')
+        return false
+      }
+      await apiClient.handleLogout()
+      return true
+    } catch {
+      setBlocked('logoutBlocked')
+      return false
+    } finally {
+      switching.current = false
+      setSwitchingVisible('')
+    }
+  }, [])
 
   useEffect(() => {
     if (!sharedTablet || !profile) return undefined
@@ -152,17 +178,17 @@ export default function ProfileSessionManager({ children }) {
 
   return (
     <ProfileSessionContext.Provider
-      value={{ switchPerson, sharedTablet, setSharedTablet }}
+      value={{ switchPerson, logOut, sharedTablet, setSharedTablet }}
     >
       {children}
-      <Modal open={switchingVisible}>
+      <Modal open={!!switchingVisible}>
         <ModalDialog sx={{ alignItems: 'center' }}>
           <CircularProgress />
-          <Typography>{t('switchPerson')}</Typography>
+          <Typography>{switchingVisible && t(switchingVisible)}</Typography>
         </ModalDialog>
       </Modal>
-      <Snackbar open={blocked} onClose={() => setBlocked(false)}>
-        {t('switchBlocked')}
+      <Snackbar open={!!blocked} onClose={() => setBlocked('')}>
+        {blocked && t(blocked)}
       </Snackbar>
     </ProfileSessionContext.Provider>
   )

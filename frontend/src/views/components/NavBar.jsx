@@ -36,6 +36,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { version } from '../../../package.json'
 import AppLogo from '../../assets/logo.png'
+import { useProfileSession } from '../../components/ProfileSessionManager'
 import UserProfileAvatar from '../../components/UserProfileAvatar'
 import { useNavBarTitleContext } from '../../contexts/NavBarTitleContext'
 import { useScrollDirection } from '../../hooks/useScrollDirection'
@@ -77,6 +78,7 @@ const SHELL_FREE_PAGES = [
 
 const NavBar = () => {
   const { t } = useTranslation('common')
+  const { logOut } = useProfileSession()
   const { data: resource } = useResource()
   const { navBarConfig } = useNavBarTitleContext()
   const { openSearch } = useGlobalSearch()
@@ -357,7 +359,7 @@ const NavBar = () => {
         <Tooltip title={compact ? t('logout') : ''} placement='right'>
           <ListItemButton
             aria-label={t('logout')}
-            onClick={() => apiClient.handleLogout()}
+            onClick={() => void logOut()}
             sx={{
               borderRadius: 'md',
               gap: compact ? 0 : undefined,

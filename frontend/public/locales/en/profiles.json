@@ -11,6 +11,8 @@
   "passwordSignIn": "Sign in with password",
   "switchPerson": "Switch person",
   "switchBlocked": "Connect and sync your changes before switching.",
+  "logoutBlocked": "Connect and sync your changes before logging out.",
+  "loggingOut": "Logging out…",
   "profile": "Your profile",
   "colour": "Colour",
   "colourNumber": "Colour {{number}}",
