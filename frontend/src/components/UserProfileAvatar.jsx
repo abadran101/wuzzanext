@@ -34,6 +34,7 @@ import useStickyState from '../hooks/useStickyState'
 import { useCircleMembers, useUserProfile } from '../queries/UserQueries'
 import { resolvePhotoURL } from '../utils/Helpers'
 import UserModal from '../views/Modals/Inputs/UserModal'
+import LanguageMenuItem from './LanguageMenuItem'
 import { useProfileSession } from './ProfileSessionManager'
 
 const UserProfileAvatar = ({ showDetails = false }) => {
@@ -455,6 +456,8 @@ const UserProfileAvatar = ({ showDetails = false }) => {
               </Typography>
             </ListItemContent>
           </MenuItem>
+
+          <LanguageMenuItem />
 
           <Divider sx={{ my: 1 }} />
 

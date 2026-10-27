@@ -534,9 +534,9 @@ const NavBar = () => {
                       userSelect: 'none',
                     }}
                   >
-                    Done
+                    Wuzza
                     <Box component='span' sx={{ color: '#06b6d4' }}>
-                      tick
+                      next
                     </Box>
                   </Typography>
                 </Box>

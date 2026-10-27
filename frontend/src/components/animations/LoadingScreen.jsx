@@ -81,8 +81,8 @@ const LoadingScreen = ({ message = null, showLogo = true, size = 'lg' }) => {
                 mb: 1,
               }}
             >
-              {t('done')}
-              <span style={{ color: '#06b6d4' }}>tick</span>
+              Wuzza
+              <span style={{ color: '#06b6d4' }}>next</span>
             </Typography>
           </LogoContainer>
         )}

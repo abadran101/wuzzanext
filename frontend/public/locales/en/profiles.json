@@ -10,6 +10,7 @@
   "back": "Back to faces",
   "passwordSignIn": "Sign in with password",
   "switchPerson": "Switch person",
+  "switchLanguage": "Switch language",
   "switchBlocked": "Connect and sync your changes before switching.",
   "logoutBlocked": "Connect and sync your changes before logging out.",
   "loggingOut": "Logging out…",
