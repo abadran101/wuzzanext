@@ -178,8 +178,6 @@ const ScanPanel = ({
 
   const isProcessing = phase === 'processing'
 
-  // Attachments are a Plus feature; without it the upload would only ever
-  // surface an upgrade error, so the choice isn't offered at all.
   const keepImageToggle = !canKeepImage ? null : (
     <Checkbox
       size='sm'

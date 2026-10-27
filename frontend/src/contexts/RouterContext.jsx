@@ -36,8 +36,6 @@ import CircleSetupView from '../views/Onboarding/CircleSetupView'
 import GetStartedView from '../views/Onboarding/GetStartedView'
 import OnboardingView from '../views/Onboarding/OnboardingView'
 import WorkspaceReadyView from '../views/Onboarding/WorkspaceReadyView'
-import PaymentCancelledView from '../views/Payments/PaymentFailView'
-import PaymentSuccessView from '../views/Payments/PaymentSuccessView'
 import ProjectView from '../views/Projects/ProjectView'
 import APITokenSettings from '../views/Settings/APITokenSettings'
 import CalendarSettings from '../views/Settings/CalendarSettings'
@@ -252,14 +250,6 @@ const Router = createBrowserRouter([
       {
         path: 'circle/join',
         element: <JoinCircleView />,
-      },
-      {
-        path: 'payments/success',
-        element: <PaymentSuccessView />,
-      },
-      {
-        path: 'payments/cancel',
-        element: <PaymentCancelledView />,
       },
       {
         path: 'things',

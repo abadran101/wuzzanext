@@ -70,7 +70,6 @@ import KeyboardShortcutHint from '../../components/common/KeyboardShortcutHint'
 import NumberInput from '../../components/common/NumberInput'
 import NotificationTemplate from '../../components/NotificationTemplate.jsx'
 import { usePageShortcutScope } from '../../contexts/KeyboardShortcutScopeContext'
-import { usePaywall } from '../../contexts/PaywallContext'
 import { useDocumentScanner } from '../../hooks/useDocumentScanner'
 import {
   useArchiveChore,
@@ -92,7 +91,7 @@ import {
   UploadChoreAttachment,
 } from '../../utils/Fetcher'
 import { imageSourceToFile } from '../../utils/FileConvert'
-import { isPlusAccount, resolvePhotoURL } from '../../utils/Helpers'
+import { resolvePhotoURL } from '../../utils/Helpers'
 import { getImageSrc, removeCachedImage } from '../../utils/ImageCache'
 import Priorities from '../../utils/Priorities.jsx'
 import {
@@ -158,7 +157,6 @@ const ChoreEdit = () => {
   )
   const { data: userProfile, isLoading: isUserProfileLoading } =
     useUserProfile()
-  const { showPaywall } = usePaywall()
 
   const [chore, setChore] = useState([])
   const [choresHistory, setChoresHistory] = useState([])
@@ -616,12 +614,9 @@ const ChoreEdit = () => {
       newChoreId = null
     }
     const assignees = anyone ? [] : assignableTo
-    // The editor blocks Plus-only reminders on the way in, but a cloned task,
-    // a queued offline edit or a task created while subscribed can still carry
-    // them — so the plan is enforced once more on the way out.
+
     const planReminders = sanitizeRemindersForPlan(
       notificationMetadata?.templates,
-      isPlusAccount(userProfile),
     )
     const chore = {
       id: Number(newChoreId),
@@ -2489,15 +2484,6 @@ const ChoreEdit = () => {
                           <Checkbox
                             overlay
                             onClick={() => {
-                              // Routing reminders to a Telegram group is an extra
-                              // delivery channel, which stays a Plus capability.
-                              if (
-                                !notificationMetadata?.circleGroup &&
-                                !isPlusAccount(userProfile)
-                              ) {
-                                showPaywall(PAYWALL_REASON.REMINDER_CHANNELS)
-                                return
-                              }
                               if (notificationMetadata?.circleGroup) {
                                 delete notificationMetadata.circleGroupID
                               }

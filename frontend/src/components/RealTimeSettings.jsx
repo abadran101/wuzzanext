@@ -3,10 +3,7 @@ import { Box, Card, FormHelperText, Switch, Typography } from '@mui/joy'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { PAYWALL_REASON, usePaywall } from '../contexts/PaywallContext'
 import { useSSEContext } from '../hooks/useSSEContext'
-import { useUserProfile } from '../queries/UserQueries'
-import { isPlusAccount } from '../utils/Helpers'
 import SSEConnectionStatus from './SSEConnectionStatus'
 
 const REALTIME_TYPES = {
@@ -16,8 +13,6 @@ const REALTIME_TYPES = {
 
 const RealTimeSettings = () => {
   const { t } = useTranslation('settings')
-  const { data: userProfile } = useUserProfile()
-  const { showPaywall } = usePaywall()
 
   // SSE context
   const sseContext = useSSEContext()
@@ -31,11 +26,6 @@ const RealTimeSettings = () => {
   const [realtimeType, setRealtimeType] = useState(getCurrentRealtimeType())
 
   const handleRealtimeTypeChange = (event, newValue) => {
-    if (!isPlusAccount(userProfile)) {
-      showPaywall(PAYWALL_REASON.REALTIME_SYNC)
-      return
-    }
-
     setRealtimeType(newValue)
 
     // Update localStorage and toggle connections
@@ -125,8 +115,7 @@ const RealTimeSettings = () => {
               {t('advanced.realtime.title')}
             </Typography>
 
-            {realtimeType !== REALTIME_TYPES.DISABLED &&
-            isPlusAccount(userProfile) ? (
+            {realtimeType !== REALTIME_TYPES.DISABLED ? (
               <Sync color={context.isConnected ? 'success' : 'disabled'} />
             ) : (
               <SyncDisabled color='disabled' />
@@ -138,41 +127,21 @@ const RealTimeSettings = () => {
         </Box>
       </Box>
 
-      {/* <FormControl orientation='horizontal' sx={{ mb: 2 }}>
-        <Box sx={{ flex: 1 }}>
-          <FormLabel>Real-time Connection Type</FormLabel>
-          <FormHelperText sx={{ mt: 0 }}>
-            Choose how to receive real-time updates
-          </FormHelperText>
-        </Box>
-        <Select
-          value={realtimeType}
-          onChange={handleRealtimeTypeChange}
-          disabled={!isPlusAccount(userProfile)}
-          sx={{ minWidth: 140 }}
-        >
-          <Option value={REALTIME_TYPES.DISABLED}>Disabled</Option>
-          <Option value={REALTIME_TYPES.WEBSOCKET}>WebSocket</Option>
-          <Option value={REALTIME_TYPES.SSE}>SSE</Option>
-        </Select>
-      </FormControl> */}
-
       <FormHelperText sx={{ mb: 2 }}>{getStatusDescription()}</FormHelperText>
 
-      {realtimeType !== REALTIME_TYPES.DISABLED &&
-        isPlusAccount(userProfile) && (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
-            <Typography level='body-xs' color='neutral'>
-              {t('advanced.realtime.statusLabel')}
+      {realtimeType !== REALTIME_TYPES.DISABLED && (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
+          <Typography level='body-xs' color='neutral'>
+            {t('advanced.realtime.statusLabel')}
+          </Typography>
+          {getConnectionStatusComponent()}
+          {context.error && (
+            <Typography level='body-xs' color='danger'>
+              {context.error}
             </Typography>
-            {getConnectionStatusComponent()}
-            {context.error && (
-              <Typography level='body-xs' color='danger'>
-                {context.error}
-              </Typography>
-            )}
-          </Box>
-        )}
+          )}
+        </Box>
+      )}
     </Card>
   )
 }

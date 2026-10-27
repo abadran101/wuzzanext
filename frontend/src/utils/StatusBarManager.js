@@ -127,7 +127,7 @@ class StatusBarManager {
   /**
    * Restore the WebView frame after dismissing a full-screen native view
    * controller on iOS (SFSafariViewController, the document scanner,
-   * ASWebAuthenticationSession-backed social login, the RevenueCat paywall,
+   * ASWebAuthenticationSession-backed social login,
    * etc).
    *
    * Any of those can leave Capacitor's WebView at the full-screen frame.

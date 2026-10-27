@@ -4,16 +4,13 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
-import { useUserProfile } from '../../queries/UserQueries'
 import { GetStorageUsage } from '../../utils/Fetcher'
-import { isPlusAccount } from '../../utils/Helpers'
 import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
 import SettingsLayout from './SettingsLayout'
 
 const StorageSettings = () => {
   const { t } = useTranslation('settings')
   const Navigate = useNavigate()
-  const { data: userProfile } = useUserProfile()
   const [usage, setUsage] = useState({ used: 0, total: 0 })
   const [loading, setLoading] = useState(true)
   const [confirmModalConfig, setConfirmModalConfig] = useState({})
@@ -43,15 +40,13 @@ const StorageSettings = () => {
   }
 
   useEffect(() => {
-    if (isPlusAccount(userProfile)) {
-      GetStorageUsage().then(resp => {
-        resp.json().then(data => {
-          setUsage(data.res)
-          setLoading(false)
-        })
+    GetStorageUsage().then(resp => {
+      resp.json().then(data => {
+        setUsage(data.res)
+        setLoading(false)
       })
-    }
-  }, [userProfile])
+    })
+  }, [])
 
   const percent =
     usage.total > 0 ? Math.round((usage.used / usage.total) * 100) : 0
@@ -68,24 +63,7 @@ const StorageSettings = () => {
           <Typography level='body-sm' sx={{ mb: 1 }}>
             {t('storage.serverDescription')}
           </Typography>
-          {!isPlusAccount(userProfile) ? (
-            <>
-              <LinearProgress
-                determinate
-                value={0}
-                sx={{
-                  mb: 1,
-                  opacity: 0.4,
-                  '& .MuiLinearProgress-bar': {
-                    backgroundColor: 'var(--joy-palette-neutral-400)',
-                  },
-                }}
-              />
-              <Typography level='body-xs' sx={{ opacity: 0.6, mb: 1 }}>
-                {t('storage.usagePlaceholder')}
-              </Typography>
-            </>
-          ) : loading ? (
+          {loading ? (
             <>
               <LinearProgress sx={{ mb: 1 }} />
               <Typography level='body-xs'>{t('common.loading')}</Typography>

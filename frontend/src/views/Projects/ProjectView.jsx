@@ -37,11 +37,9 @@ import SortAndFilterMenu from '../../components/common/SortAndFilterMenu'
 import SwipeListItem, {
   SWIPE_COMMIT_THRESHOLD,
 } from '../../components/common/SwipeListItem'
-import { PAYWALL_REASON, usePaywall } from '../../contexts/PaywallContext'
 import { useChores } from '../../queries/ChoreQueries'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries'
 import { getTextColorFromBackgroundColor } from '../../utils/Colors'
-import { canCreateProject } from '../../utils/entitlements'
 import { DeleteProject } from '../../utils/Fetcher'
 import { resolvePhotoURL } from '../../utils/Helpers'
 import {
@@ -338,7 +336,6 @@ const ProjectView = () => {
   const { t } = useTranslation('projects')
   const { data: projects, isError, isProjectsLoading } = useProjects()
   const { data: userProfile } = useUserProfile()
-  const { isPlus, showPaywall } = usePaywall()
   const { data: chores = { res: [] } } = useChores(false) // false to exclude archived
   const { data: projectsData = [], isLoading: projectsLoading } = useProjects()
   const { data: circleMembersData } = useCircleMembers()
@@ -441,13 +438,9 @@ const ProjectView = () => {
   // The default project is rendered separately and isn't user-created, so the
   // allowance counts only the projects in this list.
   const handleAddProject = useCallback(() => {
-    if (!canCreateProject(projectsData.length, isPlus)) {
-      showPaywall(PAYWALL_REASON.PROJECT_LIMIT)
-      return
-    }
     setCurrentProject(null)
     setModalOpen(true)
-  }, [projectsData.length, isPlus, showPaywall])
+  }, [])
 
   const handleEditProject = project => {
     setCurrentProject(project)

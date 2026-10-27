@@ -14,23 +14,18 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useLocalization } from '../../contexts/LocalizationContext'
-import { PAYWALL_REASON, usePaywall } from '../../contexts/PaywallContext'
-import { useUserProfile } from '../../queries/UserQueries'
 import { useNotification } from '../../service/NotificationProvider'
 import {
   CreateLongLiveToken,
   DeleteLongLiveToken,
   GetLongLiveTokens,
 } from '../../utils/Fetcher'
-import { isPlusAccount } from '../../utils/Helpers'
 import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
 import TextModal from '../Modals/Inputs/TextModal'
 import SettingsLayout from './SettingsLayout'
 
 const APITokenSettings = () => {
   const { t } = useTranslation('settings')
-  const { data: userProfile } = useUserProfile()
-  const { showPaywall } = usePaywall()
   const { showNotification } = useNotification()
   const { fmt } = useLocalization()
   const [tokens, setTokens] = useState([])
@@ -185,10 +180,6 @@ const APITokenSettings = () => {
             mb: 1,
           }}
           onClick={() => {
-            if (!isPlusAccount(userProfile)) {
-              showPaywall(PAYWALL_REASON.API_TOKENS)
-              return
-            }
             setIsGetTokenNameModalOpen(true)
           }}
         >

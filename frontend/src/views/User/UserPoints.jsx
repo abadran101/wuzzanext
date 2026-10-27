@@ -37,10 +37,8 @@ import {
   YAxis,
 } from 'recharts'
 
-import { PAYWALL_REASON, usePaywall } from '../../contexts/PaywallContext.jsx'
 import { useChoresHistory } from '../../queries/ChoreQueries.jsx'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries.jsx'
-import { isPlusHistoryWindow } from '../../utils/entitlements.js'
 import { RedeemPoints } from '../../utils/Fetcher.jsx'
 import { resolvePhotoURL } from '../../utils/Helpers.jsx'
 import LoadingComponent from '../components/Loading.jsx'
@@ -51,8 +49,8 @@ import RewardsView from '../Rewards/RewardsView.jsx'
 const PERIODS = [
   { shortKey: 'tabs.short7d', value: 7 },
   { shortKey: 'tabs.short30d', value: 30 },
-  { shortKey: 'tabs.short6m', value: 6 * 30, plus: true },
-  { shortKey: 'tabs.shortAll', value: 24 * 30, plus: true },
+  { shortKey: 'tabs.short6m', value: 6 * 30 },
+  { shortKey: 'tabs.shortAll', value: 24 * 30 },
 ]
 
 const surfaceSx = {
@@ -157,7 +155,6 @@ const UserPoints = () => {
   } = useChoresHistory(7, true)
   const { data: userProfile } = useUserProfile()
   const { data: pendingRedemptions = [] } = useRedemptions('pending')
-  const { isPlus, showPaywall } = usePaywall()
 
   const circleUsers = useMemo(
     () => circleMembersData?.res || [],
@@ -178,10 +175,6 @@ const UserPoints = () => {
         : 'overview'
 
   const handlePeriodChange = nextPeriod => {
-    if (!isPlus && isPlusHistoryWindow(nextPeriod)) {
-      showPaywall(PAYWALL_REASON.HISTORY_WINDOW)
-      return
-    }
     setPeriod(nextPeriod)
     changeHistoryLimit(nextPeriod)
   }

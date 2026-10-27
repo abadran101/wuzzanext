@@ -44,7 +44,6 @@ import LABEL_COLORS, { TASK_COLOR } from '../../utils/Colors'
 import { sanitizeRemindersForPlan } from '../../utils/entitlements'
 import { CreateLabel, DeleteDraftAttachment } from '../../utils/Fetcher'
 import { imageSourceToFile } from '../../utils/FileConvert'
-import { isPlusAccount } from '../../utils/Helpers'
 import {
   filterMembersForProject,
   getProjectAudienceIds,
@@ -1386,7 +1385,6 @@ const TaskInput = ({
     // same rule as trigger frequencies.
     const planReminders = sanitizeRemindersForPlan(
       notificationMetadata?.templates,
-      isPlusAccount(userProfile),
     )
     const hasReminders = planReminders.length > 0 && !isAlwaysAvailable
 
@@ -2139,9 +2137,7 @@ const TaskInput = ({
           <ScanPanel
             open
             autoCapture={scanAutoCapture}
-            canKeepImage={
-              isPlusAccount(userProfile) && !scanImageAlreadyAttached
-            }
+            canKeepImage={!scanImageAlreadyAttached}
             onTaskExtracted={handleTaskExtracted}
             onImageCaptured={handleBackgroundScanCaptured}
             initialImageUrl={pendingPhotoUrl}

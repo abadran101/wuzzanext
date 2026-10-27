@@ -4,14 +4,10 @@ import {
   Feedback,
   InfoOutlined,
   ReportProblem,
-  Star,
 } from '@mui/icons-material'
 import {
   Avatar,
   Box,
-  Button,
-  Card,
-  CardContent,
   Chip,
   Container,
   List,
@@ -29,7 +25,6 @@ import { useNavigate } from 'react-router-dom'
 import { SETTINGS_SECTIONS } from '../../constants/settingsSections'
 import { useUserProfile } from '../../queries/UserQueries'
 import { isFeedbackSubmissionConfigured } from '../../service/FeedbackService'
-import { isPlusAccount } from '../../utils/Helpers'
 import { isParentUser } from '../../utils/UserHelpers'
 import ErrorReportModal from '../Modals/ErrorReportModal'
 import FeedbackModal from '../Modals/FeedbackModal'
@@ -46,7 +41,8 @@ const SettingsOverview = () => {
     ).map(({ icon: Icon, id, isBeta }) => ({
       id,
       title: t(`overview.sections.${id}.title`),
-      description: t(`overview.sections.${id}.description`),
+      description:
+        id === 'account' ? null : t(`overview.sections.${id}.description`),
       icon: <Icon />,
       isBeta,
     })),
@@ -119,132 +115,6 @@ const SettingsOverview = () => {
         </Stack>
       </Box>
 
-      {/* Upgrade Card - Only show if user is not a Plus member */}
-      {userProfile && !isPlusAccount(userProfile) && (
-        <Box sx={{ mb: 3 }}>
-          <Card
-            variant='outlined'
-            sx={{
-              cursor: 'pointer',
-              transition: 'all 0.2s ease-in-out',
-              background: 'linear-gradient(135deg, #0891b2 0%, #0e7490 100%)',
-              border: 'none',
-              color: 'white',
-              '&:hover': {
-                boxShadow: 'xl',
-                transform: 'translateY(-3px)',
-              },
-            }}
-            onClick={() => navigate('/settings/account')}
-          >
-            <CardContent sx={{ p: { xs: 1.5, md: 3 } }}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  flexDirection: { xs: 'column', md: 'row' },
-                  gap: { xs: 1.5, md: 2 },
-                  textAlign: { xs: 'center', md: 'left' },
-                }}
-              >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    flexDirection: { xs: 'column', md: 'row' },
-                    gap: { xs: 1, md: 3 },
-                    width: { xs: '100%', md: 'auto' },
-                  }}
-                >
-                  <Avatar
-                    sx={{
-                      '--Avatar-size': { xs: '36px', md: '60px' },
-                      background: 'rgba(255, 255, 255, 0.2)',
-                      backdropFilter: 'blur(10px)',
-                    }}
-                  >
-                    <Star
-                      sx={{ fontSize: { xs: 18, md: 30 }, color: 'white' }}
-                    />
-                  </Avatar>
-                  <Box>
-                    <Typography
-                      level='title-lg'
-                      sx={{
-                        color: 'white',
-                        mb: { xs: 0.25, md: 0.5 },
-                        fontWeight: 'bold',
-                        fontSize: { xs: '0.95rem', md: '1.25rem' },
-                      }}
-                    >
-                      {t('overview.upgrade.title')}
-                    </Typography>
-                    <Typography
-                      level='body-md'
-                      sx={{
-                        color: 'rgba(255, 255, 255, 0.9)',
-                        mb: { xs: 0.5, md: 1 },
-                        fontSize: { xs: '0.75rem', md: '1rem' },
-                        lineHeight: { xs: 1.3, md: 1.5 },
-                      }}
-                    >
-                      {t('overview.upgrade.description')}
-                    </Typography>
-                    <Box
-                      sx={{
-                        display: { xs: 'none', sm: 'flex' },
-                        flexWrap: 'wrap',
-                        gap: 1,
-                        fontSize: '0.875rem',
-                        color: 'rgba(255, 255, 255, 0.8)',
-                      }}
-                    >
-                      <span>• {t('overview.upgrade.features.richText')}</span>
-                      <span>
-                        • {t('overview.upgrade.features.notifications')}
-                      </span>
-                      <span>
-                        • {t('overview.upgrade.features.apiIntegrations')}
-                      </span>
-                      <span>
-                        • {t('overview.upgrade.features.advancedAutomation')}
-                      </span>
-                    </Box>
-                  </Box>
-                </Box>
-                <Button
-                  variant='solid'
-                  size='sm'
-                  sx={{
-                    bgcolor: 'rgba(255, 255, 255, 0.2)',
-                    color: 'white',
-                    border: '1px solid rgba(255, 255, 255, 0.3)',
-                    backdropFilter: 'blur(10px)',
-                    px: { xs: 1.5, md: 3 },
-                    py: { xs: 0.5, md: 1.5 },
-                    fontWeight: 'bold',
-                    minWidth: { xs: '80px', md: '120px' },
-                    width: { xs: '100%', md: 'auto' },
-                    fontSize: { xs: '0.75rem', md: '0.875rem' },
-                    '&:hover': {
-                      bgcolor: 'rgba(255, 255, 255, 0.3)',
-                      transform: 'scale(1.05)',
-                    },
-                  }}
-                  onClick={e => {
-                    e.stopPropagation()
-                    navigate('/settings/account')
-                  }}
-                >
-                  {t('overview.upgrade.button')}
-                </Button>
-              </Box>
-            </CardContent>
-          </Card>
-        </Box>
-      )}
-
       <Box sx={{ mx: 'auto' }}>
         <List
           sx={{
@@ -304,13 +174,15 @@ const SettingsOverview = () => {
                       </Chip>
                     )}
                   </Box>
-                  <Typography
-                    level='body-sm'
-                    color='neutral'
-                    sx={{ lineHeight: 1.4 }}
-                  >
-                    {setting.description}
-                  </Typography>
+                  {setting.description && (
+                    <Typography
+                      level='body-sm'
+                      color='neutral'
+                      sx={{ lineHeight: 1.4 }}
+                    >
+                      {setting.description}
+                    </Typography>
+                  )}
                 </ListItemContent>
                 <ChevronRight
                   sx={{ color: 'text.tertiary', fontSize: '20px' }}

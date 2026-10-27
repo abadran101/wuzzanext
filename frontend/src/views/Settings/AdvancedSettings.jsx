@@ -13,11 +13,8 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import RealTimeSettings from '../../components/RealTimeSettings'
-import { PAYWALL_REASON, usePaywall } from '../../contexts/PaywallContext'
-import { useUserProfile } from '../../queries/UserQueries'
 import { useNotification } from '../../service/NotificationProvider'
 import { GetUserCircle, PutWebhookURL } from '../../utils/Fetcher'
-import { isPlusAccount } from '../../utils/Helpers'
 import { offlineDB } from '../../utils/OfflineDB'
 import {
   clearBrowserCacheStorage,
@@ -31,8 +28,6 @@ import SettingsLayout from './SettingsLayout'
 
 const AdvancedSettings = () => {
   const { t } = useTranslation('settings')
-  const { data: userProfile } = useUserProfile()
-  const { showPaywall } = usePaywall()
   const queryClient = useQueryClient()
   const { showNotification } = useNotification()
 
@@ -185,10 +180,6 @@ const AdvancedSettings = () => {
               <Checkbox
                 checked={webhookURL !== null}
                 onClick={() => {
-                  if (!isPlusAccount(userProfile)) {
-                    showPaywall(PAYWALL_REASON.WEBHOOKS)
-                    return
-                  }
                   if (webhookURL === null) {
                     setWebhookURL('')
                   } else {

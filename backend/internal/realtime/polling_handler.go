@@ -80,14 +80,6 @@ func (h *PollingHandler) HandleSSETicket(c *gin.Context) {
 		return
 	}
 
-	if !user.IsPlusMember() {
-		c.JSON(http.StatusForbidden, gin.H{
-			"error": "Access denied for non-plus members",
-			"code":  "ACCESS_DENIED",
-		})
-		return
-	}
-
 	// Throttle ticket minting per user+IP using a dedicated counter that is
 	// separate from the SSE-connection counter. This ensures that minting a
 	// ticket doesn't block the immediate follow-up /sse request, while still
@@ -403,7 +395,7 @@ func (h *PollingHandler) validateSSERequest(c *gin.Context, user *uModel.User) e
 	}
 
 	// Check if user is disabled
-	if user.Disabled || user.Expiration.Before(time.Now().UTC()) {
+	if user.Disabled {
 		h.logger.Warnw("Disabled user attempted SSE connection", "userId", user.ID, "clientIP", c.ClientIP())
 		return fmt.Errorf("user account is disabled")
 	}

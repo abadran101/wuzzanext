@@ -54,9 +54,7 @@ import AppModal from '../../../components/common/AppModal'
 import ActiveFilterChips from '../../../components/common/filter/ActiveFilterChips'
 import KeyboardShortcutHint from '../../../components/common/KeyboardShortcutHint'
 import SortAndFilterMenu from '../../../components/common/SortAndFilterMenu'
-import { PAYWALL_REASON, usePaywall } from '../../../contexts/PaywallContext'
 import { FILTER_COLORS } from '../../../utils/Colors'
-import { canCreateQuickFilter } from '../../../utils/entitlements'
 import Priorities from '../../../utils/Priorities'
 import ProjectSelector from '../../components/ProjectSelector'
 import CustomFilterChips from './CustomFilterChips'
@@ -240,7 +238,6 @@ const ChoreToolbar = ({
   viewMode = 'default',
 }) => {
   const { t } = useTranslation('chores')
-  const { isPlus, showPaywall } = usePaywall()
   const [filterSheetOpen, setFilterSheetOpen] = useState(false)
   const [displaySheetOpen, setDisplaySheetOpen] = useState(false)
   const [localSelections, setLocalSelections] = useState(defaultSelections())
@@ -498,16 +495,8 @@ const ChoreToolbar = ({
 
   // ── save filter ───────────────────────────────────────────────────────────────
 
-  // Saving the current selections as a new named filter counts against the
-  // free allowance; updating one that already exists doesn't.
-  const canSaveNewFilter = canCreateQuickFilter(savedFilters.length, isPlus)
-
   const startSavingNewFilter = () => {
     setSaveMenuOpen(false)
-    if (!canSaveNewFilter) {
-      showPaywall(PAYWALL_REASON.QUICK_FILTER_LIMIT)
-      return
-    }
     setSaveFilterName(
       editingSavedFilter ? `${editingSavedFilter.name} Copy` : '',
     )
@@ -517,11 +506,6 @@ const ChoreToolbar = ({
   const handleSaveFilter = () => {
     const name = saveFilterName.trim()
     if (!name) return
-    if (!canSaveNewFilter) {
-      showPaywall(PAYWALL_REASON.QUICK_FILTER_LIMIT)
-      setSavingFilter(false)
-      return
-    }
     const conditions = selectionsToConditions(localSelections)
     if (conditions.length === 0) return
 

@@ -15,7 +15,6 @@ import PageTransition from './components/animations/PageTransition'
 import { ImpersonateUserProvider } from './contexts/ImpersonateUserContext'
 import { KeyboardShortcutScopeProvider } from './contexts/KeyboardShortcutScopeContext'
 import { NavBarTitleProvider } from './contexts/NavBarTitleContext'
-import { PaywallProvider } from './contexts/PaywallContext'
 import SSEProvider from './contexts/SSEContext'
 import useAppBadgeSync from './hooks/useAppBadgeSync'
 import { AuthProvider } from './hooks/useAuth.jsx'
@@ -220,9 +219,7 @@ function App() {
         <SSEProvider>
           <GlobalSearchProvider>
             <KeyboardShortcutScopeProvider>
-              <PaywallProvider>
-                <AppContent />
-              </PaywallProvider>
+              <AppContent />
             </KeyboardShortcutScopeProvider>
           </GlobalSearchProvider>
         </SSEProvider>

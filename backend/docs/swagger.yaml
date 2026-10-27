@@ -2510,7 +2510,7 @@ paths:
           schema:
             type: string
         "403":
-          description: Invalid calendar token, or the owner is not a plus member
+          description: Invalid calendar token or disabled owner
           schema:
             type: string
         "500":
@@ -2537,12 +2537,6 @@ paths:
             additionalProperties:
               type: string
             type: object
-        "403":
-          description: 'error: Only plus members can access this endpoint'
-          schema:
-            additionalProperties:
-              type: string
-            type: object
       security:
       - JWTKeyAuth: []
       - APIKeyAuth: []
@@ -2563,12 +2557,6 @@ paths:
             type: object
         "401":
           description: 'error: Authentication failed'
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "403":
-          description: 'error: Only plus members can access this endpoint'
           schema:
             additionalProperties:
               type: string
@@ -2609,12 +2597,6 @@ paths:
             additionalProperties:
               type: string
             type: object
-        "403":
-          description: 'error: Only plus members can access this endpoint'
-          schema:
-            additionalProperties:
-              type: string
-            type: object
       security:
       - JWTKeyAuth: []
       - APIKeyAuth: []
@@ -2636,12 +2618,6 @@ paths:
             type: object
         "401":
           description: 'error: Authentication failed'
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "403":
-          description: 'error: Only plus members can access this endpoint'
           schema:
             additionalProperties:
               type: string

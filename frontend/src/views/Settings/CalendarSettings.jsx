@@ -20,7 +20,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useLocalization } from '../../contexts/LocalizationContext'
-import { PAYWALL_REASON, usePaywall } from '../../contexts/PaywallContext'
 import { useNotification } from '../../service/NotificationProvider'
 import {
   CreateCalendarURL,
@@ -34,7 +33,6 @@ import SettingsLayout from './SettingsLayout'
 const CalendarSettings = () => {
   const { t } = useTranslation('settings')
   const { fmt } = useLocalization()
-  const { isPlanKnown, isPlus, showPaywall } = usePaywall()
   const { showNotification } = useNotification()
   const [calendar, setCalendar] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -43,12 +41,6 @@ const CalendarSettings = () => {
   const [confirmModalConfig, setConfirmModalConfig] = useState({})
 
   const loadCalendar = useCallback(async () => {
-    if (!isPlanKnown) return
-    if (!isPlus) {
-      setLoading(false)
-      return
-    }
-
     setLoading(true)
     setLoadError(false)
     try {
@@ -65,10 +57,9 @@ const CalendarSettings = () => {
     } finally {
       setLoading(false)
     }
-  }, [isPlanKnown, isPlus])
+  }, [])
 
   useEffect(() => {
-    // Fetch when the account plan becomes available or changes.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadCalendar()
   }, [loadCalendar])
@@ -143,7 +134,7 @@ const CalendarSettings = () => {
       <Stack spacing={3} sx={{ maxWidth: 720, pb: 4 }}>
         <Typography level='body-md'>{t('calendar.description')}</Typography>
 
-        {loading || !isPlanKnown ? (
+        {loading ? (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, py: 3 }}>
             <CircularProgress size='sm' />
             <Typography level='body-sm'>{t('common.loading')}</Typography>
@@ -299,10 +290,6 @@ const CalendarSettings = () => {
                 loading={action === 'create'}
                 disabled={Boolean(action)}
                 onClick={() => {
-                  if (!isPlus) {
-                    showPaywall(PAYWALL_REASON.CALENDAR_SYNC)
-                    return
-                  }
                   runAction(
                     'create',
                     CreateCalendarURL,

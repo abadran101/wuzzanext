@@ -63,28 +63,17 @@ for (const plus of [false, true]) {
   const context = {
     notificationMetadata: { circleGroup: false },
     userProfile: { plus },
-    isPlusAccount: profile => profile.plus,
-    PAYWALL_REASON: { REMINDER_CHANNELS: 'reminder-channels' },
-    showPaywall: reason => {
-      context.paywall = reason
-    },
     setNotificationMetadata: value => {
       context.updated = value
     },
   }
   evaluate(editor, callback, context)()
-  if (plus) assert.equal(context.updated.circleGroup, true)
-  else {
-    assert.equal(context.paywall, 'reminder-channels')
-    assert.equal(context.updated, undefined)
-  }
-  // Removing an existing group channel remains possible after Plus expires.
+  assert.equal(context.updated.circleGroup, true)
+  // Removing an existing group channel remains possible for everyone.
   context.notificationMetadata = { circleGroup: true, circleGroupID: -123 }
-  context.paywall = undefined
   evaluate(editor, callback, context)()
   assert.equal(context.updated.circleGroup, false)
   assert.equal(context.updated.circleGroupID, undefined)
-  assert.equal(context.paywall, undefined)
 }
 
 const repeat = sourceFile('RepeatSection.jsx')
@@ -100,11 +89,6 @@ const modeCallback = attribute(modeSelect, 'onChange').value.expression
 for (const plus of [false, true]) {
   const context = {
     userProfile: { plus },
-    isPlusAccount: profile => profile.plus,
-    PAYWALL_REASON: { THING_TRIGGERS: 'thing-triggers' },
-    showPaywall: reason => {
-      context.paywall = reason
-    },
     onFrequencyTypeUpdate: value => {
       context.frequency = value
     },
@@ -113,11 +97,7 @@ for (const plus of [false, true]) {
     },
   }
   evaluate(repeat, modeCallback, context)(null, 'trigger')
-  if (plus) assert.equal(context.frequency, 'trigger')
-  else {
-    assert.equal(context.paywall, 'thing-triggers')
-    assert.equal(context.frequency, undefined)
-  }
+  assert.equal(context.frequency, 'trigger')
   evaluate(repeat, modeCallback, context)(null, 'once')
   assert.equal(context.frequency, 'once')
   assert.equal(context.trigger, null)
@@ -158,5 +138,5 @@ evaluate(trigger, effect.arguments[0].expression, context)()
 assert.equal(context.updated, undefined)
 assert.equal(context.valid, false)
 console.log(
-  'Editor preserves upstream Plus gating and zero-valued Thing triggers',
+  'Editor allows reminder channels and Thing triggers for every account',
 )

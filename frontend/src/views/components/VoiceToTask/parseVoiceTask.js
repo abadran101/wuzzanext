@@ -2,7 +2,6 @@ import * as chrono from 'chrono-node'
 import moment from 'moment'
 
 import { sanitizeRemindersForPlan } from '../../../utils/entitlements'
-import { isPlusAccount } from '../../../utils/Helpers'
 import { generateUUID } from '../../../utils/UUID'
 import {
   parseAssignees,
@@ -193,10 +192,7 @@ export const buildChorePayload = (
 
   // Every plan gets reminders, capped to the plan's allowance. The flag is what
   // makes the backend schedule them, so metadata alone is not enough.
-  const planReminders = sanitizeRemindersForPlan(
-    templates,
-    isPlusAccount(userProfile),
-  )
+  const planReminders = sanitizeRemindersForPlan(templates)
   const hasReminders = planReminders.length > 0
 
   if (parsed.frequency) {

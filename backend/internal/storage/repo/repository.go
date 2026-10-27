@@ -22,9 +22,6 @@ func NewStorageRepository(db *gorm.DB, config *config.Config) *StorageRepository
 }
 
 func (r *StorageRepository) AddMediaRecord(ctx context.Context, media *st.StorageFile, user *uModel.UserDetails) error {
-	if !user.IsPlusMember() {
-		return errorx.ErrNotAPlusMember
-	}
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		// Check total circle-wide usage against quota (all members share the same pool).
 		var circleUsed int64

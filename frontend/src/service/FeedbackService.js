@@ -177,7 +177,6 @@ export const collectFeedbackContext = async ({ feature, userProfile } = {}) => {
     tasksCompleted: state.completions,
     daysSinceSignup,
     userId: userProfile?.id ?? null,
-    subscription: userProfile?.subscription ?? null,
     recentErrors: recentErrors.map(error => error.message),
     submittedAt: new Date().toISOString(),
   }

@@ -154,21 +154,7 @@ type MFAVerifyRequest struct {
 }
 
 func (u User) IsPlusMember() bool {
-	// For child users, they inherit parent's subscription status
-	// Note: This method signature cannot be changed to accept a repository parameter
-	// The actual parent subscription check should be implemented at the service layer
-	if u.UserType == UserTypeChild && u.ParentUserID != nil {
-		// Child users will need their subscription status checked via the parent user
-		// This is a placeholder - the actual check should be done in the service layer
-		return false // Will be properly implemented in service layer
-	}
-
-	// For parent users, check their own subscription
-	if u.Expiration != nil {
-		return u.Expiration.After(time.Now().UTC())
-	}
-
-	return false
+	return true
 }
 
 func (u User) IsAdminOrManager(circleUsers []*cModel.UserCircleDetail) bool {
@@ -261,7 +247,7 @@ func (u User) ValidateParentUser() error {
 		return errors.New("parent user cannot have a parent user ID")
 	}
 
-	// Parent user must have an email for authentication and subscription management
+	// Parent user must have an email for authentication.
 	if u.Email == "" {
 		return errors.New("parent user must have an email")
 	}
