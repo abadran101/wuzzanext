@@ -9,8 +9,8 @@ The product is described in `docs/BRIEF.md`.
 
 | # | Milestone | Status |
 |---|---|---|
-| 0 | Setup: record, Codex hand-off, build tools on the dev machine | In progress (001 done, 002 waits on owner) |
-| 1 | Fork and rebrand: Donetick imported, builds and tests green, renamed Wuzzanext, logo everywhere, source link in the app | Proposed |
+| 0 | Setup: record, Codex hand-off, build tools on the dev machine | Done |
+| 1 | Fork and rebrand: Donetick imported, builds and tests green, renamed Wuzzanext, logo everywhere, source link in the app | In progress (003 done) |
 | 2 | Family profiles: name, avatar, color, 4-digit PIN, quick person switcher | Proposed |
 | 3 | Chores: one-time/recurring, rotation, instructions and pictures, photo proof with thumbs-up, points and weekly leaderboard, simple fun UI | Proposed |
 | 4 | Meals: recipe picker from the local recipes page, meal entries, week view, cook's to-do, polls, shopping list | Proposed |
@@ -27,8 +27,8 @@ everything on the dev machine is readable by Codex.
 | # | Task | Status | Shares |
 |---|---|---|---|
 | 001 | Dev machine setup check; brief and plan into docs | Done | Nothing |
-| 002 | Build tools on the dev machine (Go, Node, JDK, Android SDK), installed by the owner | Proposed, waits on owner | Nothing |
-| 003 | Import Donetick backend and frontend at pinned upstream releases (keeping history), build, run tests | Proposed | Everything after |
+| 002 | Build tools on the dev machine (Go, Node, JDK, Android SDK), installed by the owner | Done | Nothing |
+| 003 | Import Donetick backend and frontend at pinned upstream releases (keeping history), build, run tests | Done | Everything after |
 | 004 | Rebrand to Wuzzanext: names, texts, AGPL notice and "source code" link | Proposed | 003 |
 | 005 | Logo: transparent PNG, app icon, favicon, Android launcher icons | Proposed | 004 |
 | 006 | Inventory: what Donetick already does against the brief (recurrence, rotation, points, photos, approvals, notifications), gap list | Proposed | 003 |
@@ -37,7 +37,7 @@ everything on the dev machine is readable by Codex.
 | 009 | Photo proof and thumbs-up approval by the assigner | Proposed | 006, 008 |
 | 010 | Points and weekly leaderboard | Proposed | 006 |
 | 011 | Simplified fun UI pass: icons, little text, few options | Proposed | 007-010 |
-| 012 | Recipe reader for the local recipes page (from owner-provided sample pages), ingredients and servings | Proposed, waits on samples | 003 |
+| 012 | Recipe reader for the local recipes page (from owner-provided sample pages), ingredients and servings | Waits on samples (owner, later) | 003 |
 | 013 | Meals: add meal, week view, cook's to-do entry | Proposed | 012 |
 | 014 | Meal polls: up to 3 recipes, chosen voters, majority, random tie-break | Proposed | 013 |
 | 015 | Shopping list from planned meals, scaled to servings | Proposed | 012, 013 |
@@ -50,4 +50,6 @@ everything on the dev machine is readable by Codex.
 
 - 2026-10-26: the name is Wuzzanext, not Wuzzanikist (owner, through the orchestrator).
 - 2026-10-26: project, folder and repository are all `wuzzanext` (owner, through the
+  orchestrator).
+- 2026-10-26: plan approved; build now, recipe samples later (owner, through the
   orchestrator).

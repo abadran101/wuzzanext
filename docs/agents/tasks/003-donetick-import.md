@@ -1,9 +1,9 @@
 # Task 003: import Donetick at pinned releases
 
-- **Status:** in progress
+- **Status:** done (2026-10-26)
 - **Branch and worktree:** `task/003-donetick-import` from `task/002-build-tools` (58e2e16),
   in `C:\dev\wt\wuzzanext-003-donetick-import`
-- **Hand-off:** supervisor for the import (needs network); Codex for any build fixes
+- **Hand-off:** supervisor (Codex was at its usage limit when the one fix was needed)
 - **Shares:** everything after it builds on this
 - **Your time:** ~15 min (review and merge)
 - **Who:** Claude -> Codex (if fixes are needed) -> You
@@ -56,9 +56,40 @@ Latest stable (non-beta) tags on 2026-10-26. Imported with `git subtree add` wit
 
 ## Result (filled in before the push, in the task's own branch)
 
-- In progress. Steps 1 and 2 done on 2026-10-26: `a1a8c93e` (server) and `6f2c1884` (web
-  interface); both trees match the pinned tags exactly (`backend` 23a8265, `frontend` 4fa5f22).
-- Blocked at step 3: the supervisor's permission check denied running the imported code
-  (`go mod download && go build ./... && go test ./...`, reason "Code from External"). Building
-  and testing upstream code needs the owner's permission rule; nothing was worked around.
-  `npm ci`/build/tests (step 4) need the same.
+- **Commits:**
+  - `da5c74c6d83e42a2ec2030e629933745fa9ddef5`: this task file.
+  - `a1a8c93ee285f7f7052074e8231b893abf2609ef`: server v0.1.83 into `backend/`, with history.
+  - `6f2c1884b40a4cbe8629ff95747fada3d0065dde`: web interface v1.2.62 into `frontend/`, with
+    history.
+  - `e5ab9627b29cdfbbb16fef4cfea4a25627ef50b4`: record of the build permission block.
+  - `ea4fdf66e7e7f070a5eb39ee0ad044b8f0ec8e18`: test fix (below).
+  - Then this closing commit.
+- **Imports:** both trees match the pinned tags exactly (`backend` 23a8265, `frontend`
+  4fa5f22). Upstream lock and licence files unchanged.
+- **Permission:** the first build attempt was refused by the supervisor's permission check
+  ("Code from External"); the owner then approved building and testing in this worktree.
+- **Server (`backend/`):** `go mod download` and `go build ./...` succeed.
+  - `go test ./...` first run: 66 FAIL lines, all on Windows only: tests left their SQLite file
+    open, so `t.TempDir()` cleanup could not delete it; 0 assertion failures, 0 panics.
+  - Fix `ea4fdf6`: close the `sql.DB` in a `t.Cleanup` registered after `t.TempDir()` at 12
+    test setup sites, as upstream's `internal/chore/api_permissions_test.go` already does. Test
+    files only, 50 lines.
+  - After the fix: 23 packages pass, 49 have no tests, 0 failures.
+  - `go vet ./internal/... ./config/`: one upstream finding, left as is
+    (`internal/realtime/pool.go:218`, return copies a lock value). Upstream CI doesn't run vet.
+- **Web interface (`frontend/`):**
+  - `npm ci`: 1323 packages, lock file unchanged. npm 11 skipped the 6 install scripts
+    (`@posthog/cli`, `@swc/core`, `core-js`, `esbuild`, `sharp`, `yarn`); the build works
+    without them.
+  - `npm run build`: succeeds (Vite, 3 min 39 s, PWA with 58 precache entries).
+  - `npm run lint`: 0 errors, 1981 warnings; Prettier clean; i18n audit "all keys resolve".
+  - `node --test "tests/*.test.mjs"` (Node 24 needs the glob): 3 tests, 2 pass, 1 fails.
+    `tests/task-editor-compatibility.test.mjs` can't find its target: SWC 1.13.5 returns only
+    3 of the 7 `<Checkbox>` elements in `ChoreEdit.jsx`. The file has LF endings and the parse
+    is deterministic, so this is an upstream test problem, not Windows. Upstream CI runs only
+    build and lint. Left as is.
+- **Found for later tasks:** `@posthog/cli` (PostHog analytics tooling) and Plus/paywall gating
+  (`backend/external/payment`, `PAYWALL_REASON`) conflict with the "no cloud services, no
+  analytics" limit; tasks 004 and 006.
+- **Owner must:** review and merge the pull request (tasks 002 and 003, plus the folder-name fix
+  `b36c5c2`).
