@@ -2,6 +2,7 @@ import { Capacitor } from '@capacitor/core'
 import {
   ChevronRight,
   Feedback,
+  Group,
   InfoOutlined,
   ReportProblem,
 } from '@mui/icons-material'
@@ -23,7 +24,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import { SETTINGS_SECTIONS } from '../../constants/settingsSections'
-import { useUserProfile } from '../../queries/UserQueries'
+import { useCircleMembers, useUserProfile } from '../../queries/UserQueries'
 import { isFeedbackSubmissionConfigured } from '../../service/FeedbackService'
 import { isParentUser } from '../../utils/UserHelpers'
 import ErrorReportModal from '../Modals/ErrorReportModal'
@@ -33,9 +34,25 @@ const SettingsOverview = () => {
   const { t } = useTranslation('settings')
   const navigate = useNavigate()
   const { data: userProfile } = useUserProfile()
+  const { data: members } = useCircleMembers()
+  const isAdmin =
+    !localStorage.getItem('impersonatedUserId') &&
+    members?.res?.some(
+      member => member.userId === userProfile?.id && member.role === 'admin',
+    )
   const [feedbackOpen, setFeedbackOpen] = useState(false)
   const [bugReportOpen, setBugReportOpen] = useState(false)
   const settingsCards = [
+    ...(isAdmin
+      ? [
+          {
+            id: 'family',
+            title: t('profiles:family'),
+            icon: <Group />,
+            onSelect: () => navigate('/settings/profile#family'),
+          },
+        ]
+      : []),
     ...SETTINGS_SECTIONS.filter(
       section => !section.nativeOnly || Capacitor.isNativePlatform(),
     ).map(({ icon: Icon, id, isBeta }) => ({

@@ -12,6 +12,7 @@ import NavBar from '@/views/components/NavBar'
 
 import { registerCapacitorListeners } from './CapacitorListener'
 import PageTransition from './components/animations/PageTransition'
+import ProfileSessionManager from './components/ProfileSessionManager'
 import { ImpersonateUserProvider } from './contexts/ImpersonateUserContext'
 import { KeyboardShortcutScopeProvider } from './contexts/KeyboardShortcutScopeContext'
 import { NavBarTitleProvider } from './contexts/NavBarTitleContext'
@@ -216,13 +217,15 @@ function App() {
       <NetworkBanner />
 
       <AuthProvider>
-        <SSEProvider>
-          <GlobalSearchProvider>
-            <KeyboardShortcutScopeProvider>
-              <AppContent />
-            </KeyboardShortcutScopeProvider>
-          </GlobalSearchProvider>
-        </SSEProvider>
+        <ProfileSessionManager>
+          <SSEProvider>
+            <GlobalSearchProvider>
+              <KeyboardShortcutScopeProvider>
+                <AppContent />
+              </KeyboardShortcutScopeProvider>
+            </GlobalSearchProvider>
+          </SSEProvider>
+        </ProfileSessionManager>
       </AuthProvider>
     </div>
   )

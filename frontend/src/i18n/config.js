@@ -28,6 +28,7 @@ i18n
     },
 
     ns: [
+      'profiles',
       'auth',
       'common',
       'settings',

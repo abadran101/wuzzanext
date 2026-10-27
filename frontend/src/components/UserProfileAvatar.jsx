@@ -35,9 +35,11 @@ import { useCircleMembers, useUserProfile } from '../queries/UserQueries'
 import { apiClient } from '../utils/ApiClient'
 import { resolvePhotoURL } from '../utils/Helpers'
 import UserModal from '../views/Modals/Inputs/UserModal'
+import { useProfileSession } from './ProfileSessionManager'
 
 const UserProfileAvatar = ({ showDetails = false }) => {
   const { t } = useTranslation('common')
+  const { switchPerson } = useProfileSession()
   const navigate = useNavigate()
   const { mode, setMode } = useColorScheme()
   const { data: userProfile } = useUserProfile()
@@ -280,6 +282,12 @@ const UserProfileAvatar = ({ showDetails = false }) => {
             </Box>
           </Sheet>
 
+          <MenuItem onClick={switchPerson}>
+            <ListItemDecorator>
+              <SwapHoriz />
+            </ListItemDecorator>
+            <ListItemContent>{t('profiles:switchPerson')}</ListItemContent>
+          </MenuItem>
           {isAdmin && (
             <>
               <MenuItem

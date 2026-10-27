@@ -31,6 +31,7 @@ import { UpdateUserDetails } from '../../utils/Fetcher'
 import { resolvePhotoURL } from '../../utils/Helpers'
 import { getCroppedImg } from '../../utils/imageCropUtils'
 import LoadingComponent from '../components/Loading'
+import HouseholdProfileSettings from './HouseholdProfileSettings'
 import SettingsLayout from './SettingsLayout'
 
 const surfaceSx = {
@@ -180,7 +181,7 @@ const ProfileContent = ({ refetchUserProfile, userProfile }) => {
             <Avatar
               src={resolvePhotoURL(userProfile.image)}
               sx={{
-                bgcolor: 'primary.softBg',
+                bgcolor: userProfile.colour || 'primary.softBg',
                 color: 'primary.softColor',
                 fontSize: '1.75rem',
                 fontWeight: 650,
@@ -202,7 +203,7 @@ const ProfileContent = ({ refetchUserProfile, userProfile }) => {
                 borderRadius: '50%',
                 bottom: -3,
                 position: 'absolute',
-                right: -3,
+                insetInlineEnd: -3,
               }}
             >
               <AddAPhotoRounded sx={{ fontSize: 17 }} />
@@ -309,6 +310,7 @@ const ProfileContent = ({ refetchUserProfile, userProfile }) => {
         </Sheet>
       </Box>
 
+      <HouseholdProfileSettings key={userProfile.id} />
       <AppModal
         open={showCropper}
         onClose={closeCropper}

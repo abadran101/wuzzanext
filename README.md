@@ -4,6 +4,21 @@ A family app for chores and meal planning, run on a home server and used from a 
 or an Android app. It is a fork of [Donetick](https://github.com/donetick/donetick), renamed
 and reshaped for one family: fun and simple, few options, little text.
 
+## Profiles and PIN sign-in
+
+The sign-in screen shows household faces. Tap a person and enter their four-digit
+PIN; admins can also use the password link as a backup. Empty or unavailable profile
+lists fall back to password sign-in. In Settings → Profile, choose a colour and
+English or Arabic, change your PIN, or enable **Shared tablet** on this device.
+Shared tablets return to faces after five minutes without touch or keyboard input,
+including time in the background. Switching waits for queued offline changes to sync.
+The device's language remains the fallback when signed out.
+
+Household admins can add people and reset PINs in the **Family** section of Profile
+settings. Set `household.circle_id` in the server configuration to the household's
+circle ID. With no value, the server uses the only circle if exactly one exists;
+otherwise the faces list is empty until a household is configured.
+
 ## License and origin
 
 Wuzzanext is a modified version of Donetick, and like Donetick it is licensed under the
