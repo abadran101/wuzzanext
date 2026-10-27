@@ -1,4 +1,4 @@
-# wuzzanikist-website: guide for the supervisor (Claude Code on the dev machine)
+# wuzzanext: guide for the supervisor (Claude Code on the dev machine)
 
 Read this whole file at the start of every session, then `docs/agents/STATUS.md` and
 `docs/agents/PLAN.md`. The coding rules shared with Codex are in `AGENTS.md`, imported here:
@@ -47,7 +47,7 @@ Read this whole file at the start of every session, then `docs/agents/STATUS.md`
   the AI provider, so request only output permitted by the project's privacy rules.
 - **On development:** you run as the standard account `devagent` and work only in
   `C:\dev`. Other projects live there too. Their folders are read-only to you, so stay in
-  `C:\dev\wuzzanikist-website`, your worktrees and `C:\dev\scratch`. "Access denied" is the fence
+  `C:\dev\wuzzanext`, your worktrees and `C:\dev\scratch`. "Access denied" is the fence
   working: stop and ask the owner, never look for a way around it.
 - **No production data here,** ever: no database copies, backups, private lists or keys.
 - A rules file in `C:\Program Files\ClaudeCode\` that you can't change blocks pushes to `main`
@@ -75,7 +75,7 @@ Read this whole file at the start of every session, then `docs/agents/STATUS.md`
 1. **A task file** in `docs/agents/tasks/` (copy `TEMPLATE.md`), numbered. Codex reads it, so it
    carries nothing private.
 2. **A branch and a worktree:** `task/NNN-short-name` from the default branch
-   (`main`), in `C:\dev\wt\wuzzanikist-website-NNN-short-name`, with its own virtual
+   (`main`), in `C:\dev\wt\wuzzanext-NNN-short-name`, with its own virtual
    environment before Codex starts (Codex's sandbox has no network).
 3. **Plan first for anything large:** a read-only Codex run that answers with a plan and
    questions. Review it, then a run that may write.

@@ -41,12 +41,11 @@ Update this file at every stop. Output from the real machines beats anything wri
 2. Owner answers the open questions from the 001 report: build tools, offline conflict rule,
    reminders, logo cut-out, sample recipe pages, HTTPS/Docker on the home server, repository
    public. The orchestrator takes them to the owner one at a time.
-3. `CLAUDE.md` and `AGENTS.md` still name the old folder `wuzzanikist-website` (title, work
-   folder, worktree paths). The supervisor uses `C:\dev\wuzzanext` and
-   `C:\dev\wt\wuzzanext-NNN-short-name`; the owner updates those files or says to.
 
 ## Decisions (newest first)
 
+- 2026-10-26: `CLAUDE.md` and `AGENTS.md` use `C:\dev\wuzzanext` and
+  `C:\dev\wt\wuzzanext-NNN-short-name` (owner, in the supervisor's window).
 - 2026-10-26: task 001 may be closed and its pull request opened (owner, through the
   orchestrator).
 - 2026-10-26: the project was re-added as Wuzzanext: folder `C:\dev\wuzzanext`, environment
