@@ -5,7 +5,6 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
-import { track } from '../../analytics'
 import Logo from '../../Logo'
 import { useUserProfile } from '../../queries/UserQueries'
 import { isOfficialDonetickInstance } from '../../utils/FeatureToggle'
@@ -72,7 +71,6 @@ const WorkspaceReadyView = () => {
       console.log('Paywall skipped:', error)
     } finally {
       setBusy(false)
-      track('onboarding_completed')
       enterApp()
     }
   }

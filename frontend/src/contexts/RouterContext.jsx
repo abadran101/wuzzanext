@@ -34,7 +34,6 @@ import LabelDetailView from '../views/Labels/LabelDetailView'
 import LabelView from '../views/Labels/LabelView'
 import CircleSetupView from '../views/Onboarding/CircleSetupView'
 import GetStartedView from '../views/Onboarding/GetStartedView'
-import HeardAboutView from '../views/Onboarding/HeardAboutView'
 import OnboardingView from '../views/Onboarding/OnboardingView'
 import WorkspaceReadyView from '../views/Onboarding/WorkspaceReadyView'
 import PaymentCancelledView from '../views/Payments/PaymentFailView'
@@ -47,7 +46,6 @@ import LayoutSettings from '../views/Settings/LayoutSettings'
 import LocalizationSettings from '../views/Settings/LocalizationSettings'
 import MFASettings from '../views/Settings/MFASettings'
 import NotificationSetting from '../views/Settings/NotificationSetting'
-import PrivacyAnalyticsSettings from '../views/Settings/PrivacyAnalyticsSettings'
 import ProfileSettings from '../views/Settings/ProfileSettings'
 import StorageSettings from '../views/Settings/StorageSettings'
 import WidgetSettings from '../views/Settings/WidgetSettings'
@@ -145,10 +143,6 @@ const Router = createBrowserRouter([
             element: <AdvancedSettings />,
           },
           {
-            path: 'privacy',
-            element: <PrivacyAnalyticsSettings />,
-          },
-          {
             path: 'developer',
             element: <DeveloperSettings />,
           },
@@ -225,10 +219,6 @@ const Router = createBrowserRouter([
       {
         path: '/circle-setup',
         element: <CircleSetupView />,
-      },
-      {
-        path: '/heard-about',
-        element: <HeardAboutView />,
       },
 
       {

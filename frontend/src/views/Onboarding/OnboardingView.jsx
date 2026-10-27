@@ -7,7 +7,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
-import { track } from '../../analytics'
 import Logo from '../../Logo'
 import {
   haptic,
@@ -92,10 +91,6 @@ const OnboardingView = () => {
 
   const isLast = activeIndex === SLIDES.length - 1
   const asksPermission = Boolean(SLIDES[activeIndex].permission)
-
-  useEffect(() => {
-    track('onboarding_started')
-  }, [])
 
   const finish = useCallback(() => {
     markOnboardingSeen()

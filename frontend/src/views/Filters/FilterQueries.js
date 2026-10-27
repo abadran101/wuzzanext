@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { track } from '../../analytics'
 import { PAYWALL_REASON, usePaywall } from '../../contexts/PaywallContext'
 import { canCreateQuickFilter } from '../../utils/entitlements'
 import {
@@ -134,7 +133,6 @@ export const useCreateFilter = () => {
         const response = await CreateFilter(filterData)
         if (response.ok) {
           const data = await response.json()
-          track('filter_created', {})
           return data.res || data
         }
         const errorData = await response.json()

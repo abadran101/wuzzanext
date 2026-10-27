@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { track } from '../../analytics'
 import { PAYWALL_REASON, usePaywall } from '../../contexts/PaywallContext'
 import { canCreateProject } from '../../utils/entitlements'
 import {
@@ -76,7 +75,6 @@ export const useCreateProject = () => {
         throw await errorFrom(response, 'Failed to create project')
       }
       const data = await response.json()
-      track('project_created', {})
       return data.res || data
     },
     onSuccess: newProject => {

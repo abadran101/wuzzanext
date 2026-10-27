@@ -1,10 +1,9 @@
 import { Check, Star } from '@mui/icons-material'
 import { Box, Card, Chip, Divider, Radio, Typography } from '@mui/joy'
 import PropTypes from 'prop-types'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { track } from '../analytics'
 import { useNotification } from '../service/NotificationProvider'
 import {
   FREE_PROJECT_LIMIT,
@@ -32,14 +31,6 @@ const SubscriptionModal = ({ invoker, onClose, open, reason }) => {
   const [selectedPlan, setSelectedPlan] = useState('yearly')
   const [isLoading, setIsLoading] = useState(false)
   const { showError } = useNotification()
-
-  useEffect(() => {
-    if (!open) return
-    track('paywall_shown', {
-      provider: 'stripe',
-      invoker: invoker ?? reason ?? 'unknown',
-    })
-  }, [invoker, open, reason])
 
   const plans = {
     yearly: {

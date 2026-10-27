@@ -10,11 +10,6 @@ import { useRegisterSW } from 'virtual:pwa-register/react'
 import MobileBottomNav from '@/views/components/MobileBottomNav'
 import NavBar from '@/views/components/NavBar'
 
-import {
-  initialize as initializeAnalytics,
-  installGlobalErrorHandlers,
-} from './analytics'
-import useAnalyticsIdentity from './analytics/useAnalyticsIdentity'
 import { registerCapacitorListeners } from './CapacitorListener'
 import PageTransition from './components/animations/PageTransition'
 import { ImpersonateUserProvider } from './contexts/ImpersonateUserContext'
@@ -134,7 +129,6 @@ const WebServiceWorkerManager = () => {
 const AppContent = () => {
   const location = useLocation()
   useSyncOnReconnect()
-  useAnalyticsIdentity()
   useAppBadgeSync()
 
   // Every route renders through this Outlet, so one listener here gives crash
@@ -217,11 +211,6 @@ function App() {
   useEffect(() => {
     registerCapacitorListeners(navigate)
   }, [navigate])
-
-  useEffect(() => {
-    initializeAnalytics()
-    installGlobalErrorHandlers()
-  }, [])
 
   return (
     <div>

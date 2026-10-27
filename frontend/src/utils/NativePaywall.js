@@ -1,6 +1,5 @@
 import { Capacitor } from '@capacitor/core'
 
-import { track } from '../analytics'
 import statusBarManager from './StatusBarManager'
 
 export const NATIVE_PAYWALL_INVOKER = {
@@ -94,37 +93,27 @@ export const presentNativePaywall = async ({ appUserID, invoker }) => {
   if (!isNativePurchasePlatform()) return null
 
   const paywallInvoker = invoker ?? 'unknown'
-  track('paywall_shown', {
-    provider: 'revenuecat',
-    invoker: paywallInvoker,
-  })
 
+  // Never return a Capacitor plugin proxy from an async function. Promise
+  // resolution probes returned values for `.then`; Capacitor interprets that
+  // probe as a native `Purchases.then()` call and the flow stops before the
+  // paywall is presented.
+  await ensureRevenueCatConfigured(appUserID)
+  const { Purchases, RevenueCatUI } = await loadNativePaywallModules()
+  const { current: offering } = await Purchases.getOfferings()
+
+  let result
   try {
-    // Never return a Capacitor plugin proxy from an async function. Promise
-    // resolution probes returned values for `.then`; Capacitor interprets that
-    // probe as a native `Purchases.then()` call and the flow stops before the
-    // paywall is presented.
-    await ensureRevenueCatConfigured(appUserID)
-    const { Purchases, RevenueCatUI } = await loadNativePaywallModules()
-    const { current: offering } = await Purchases.getOfferings()
-
-    let result
-    try {
-      ;({ result } = await RevenueCatUI.presentPaywall({
-        ...(offering ? { offering } : {}),
-        customVariables: { paywall_invoker: paywallInvoker },
-      }))
-    } finally {
-      // The paywall is a full-screen native view controller on iOS, so
-      // dismissing it can leave the WebView laid out under the status bar —
-      // same as SFSafariViewController. See
-      // StatusBarManager.restoreAfterNativeOverlayDismissal.
-      void statusBarManager.restoreAfterNativeOverlayDismissal()
-    }
-    track('paywall_result', { invoker: paywallInvoker, result })
-    return result
-  } catch (error) {
-    track('paywall_result', { invoker: paywallInvoker, result: 'ERROR' })
-    throw error
+    ;({ result } = await RevenueCatUI.presentPaywall({
+      ...(offering ? { offering } : {}),
+      customVariables: { paywall_invoker: paywallInvoker },
+    }))
+  } finally {
+    // The paywall is a full-screen native view controller on iOS, so
+    // dismissing it can leave the WebView laid out under the status bar —
+    // same as SFSafariViewController. See
+    // StatusBarManager.restoreAfterNativeOverlayDismissal.
+    void statusBarManager.restoreAfterNativeOverlayDismissal()
   }
+  return result
 }

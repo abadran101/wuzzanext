@@ -18,7 +18,6 @@ import {
   useLocalization,
 } from '@/contexts/LocalizationContext'
 
-import { track } from '../../analytics'
 import SettingsLayout from './SettingsLayout'
 
 const LocalizationSettings = () => {
@@ -61,10 +60,6 @@ const LocalizationSettings = () => {
             value={language}
             onChange={(_, value) => {
               setLanguage(value)
-              track('localization_setting_changed', {
-                setting: 'language',
-                value,
-              })
             }}
             sx={{ maxWidth: '300px' }}
           >
@@ -94,10 +89,6 @@ const LocalizationSettings = () => {
             value={dateFormat}
             onChange={(_, value) => {
               setDateFormat(value)
-              track('localization_setting_changed', {
-                setting: 'date_format',
-                value,
-              })
             }}
             sx={{ maxWidth: '300px' }}
           >
@@ -136,10 +127,6 @@ const LocalizationSettings = () => {
             value={timeFormat}
             onChange={(_, value) => {
               setTimeFormat(value)
-              track('localization_setting_changed', {
-                setting: 'time_format',
-                value,
-              })
             }}
             sx={{ maxWidth: '300px' }}
           >
@@ -192,10 +179,6 @@ const LocalizationSettings = () => {
               variant={firstDayOfWeek === 0 ? 'solid' : 'outlined'}
               onClick={() => {
                 setFirstDayOfWeek(0)
-                track('localization_setting_changed', {
-                  setting: 'first_day_of_week',
-                  value: 'sunday',
-                })
               }}
             >
               {t('localization.sunday')}
@@ -204,10 +187,6 @@ const LocalizationSettings = () => {
               variant={firstDayOfWeek === 1 ? 'solid' : 'outlined'}
               onClick={() => {
                 setFirstDayOfWeek(1)
-                track('localization_setting_changed', {
-                  setting: 'first_day_of_week',
-                  value: 'monday',
-                })
               }}
             >
               {t('localization.monday')}
@@ -216,10 +195,6 @@ const LocalizationSettings = () => {
               variant={firstDayOfWeek === 6 ? 'solid' : 'outlined'}
               onClick={() => {
                 setFirstDayOfWeek(6)
-                track('localization_setting_changed', {
-                  setting: 'first_day_of_week',
-                  value: 'saturday',
-                })
               }}
             >
               {t('localization.saturday')}

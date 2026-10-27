@@ -9,7 +9,6 @@ import {
   Notifications,
   Palette,
   Person,
-  PrivacyTip,
   Security,
   Settings,
   Storage,
@@ -38,6 +37,5 @@ export const SETTINGS_SECTIONS = [
   { id: 'widgets', icon: Widgets, nativeOnly: true },
   { id: 'localization', icon: Language, isBeta: true },
   { id: 'advanced', icon: Settings },
-  { id: 'privacy', icon: PrivacyTip },
   { id: 'developer', icon: Code },
 ]

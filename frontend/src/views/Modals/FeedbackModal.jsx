@@ -14,12 +14,10 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 
-import { track } from '../../analytics'
 import { useResponsiveModal } from '../../hooks/useResponsiveModal.js'
 import { useUserProfile } from '../../queries/UserQueries'
 import {
   FEEDBACK_CATEGORIES,
-  getFeedbackState,
   isFeedbackSubmissionConfigured,
   markSentiment,
   SENTIMENTS,
@@ -52,7 +50,6 @@ const FeedbackModal = ({ onClose, onDismiss, open, source = 'settings' }) => {
   const [message, setMessage] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [submissionFailed, setSubmissionFailed] = useState(false)
-  const [shownCount, setShownCount] = useState(0)
 
   useEffect(() => {
     if (open) {
@@ -62,11 +59,6 @@ const FeedbackModal = ({ onClose, onDismiss, open, source = 'settings' }) => {
       setMessage('')
       setSubmitting(false)
       setSubmissionFailed(false)
-      getFeedbackState().then(state => {
-        const count = state.shownCount || 0
-        setShownCount(count)
-        track('feedback_prompt_shown', { source, shown_count: count })
-      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
@@ -77,24 +69,12 @@ const FeedbackModal = ({ onClose, onDismiss, open, source = 'settings' }) => {
     if (step === STEP.SENTIMENT) {
       onDismiss?.()
     }
-    // Tracked for both steps even though only one affects the cooldown:
-    // "closed without answering" and "answered, then gave up on the form"
-    // are the two drop-off points worth telling apart.
-    if (step === STEP.SENTIMENT || step === STEP.DETAILS) {
-      track('feedback_prompt_dismissed', {
-        source,
-        shown_count: shownCount,
-        step,
-        sentiment,
-      })
-    }
     onClose()
   }
 
   const handleSentiment = async value => {
     setSentiment(value)
     await markSentiment(value)
-    track('feedback_sentiment_selected', { sentiment: value })
 
     setStep(STEP.DETAILS)
   }
@@ -110,12 +90,6 @@ const FeedbackModal = ({ onClose, onDismiss, open, source = 'settings' }) => {
       userProfile,
     })
     setSubmitting(false)
-    track('feedback_submitted', {
-      category,
-      has_message: message.trim().length > 0,
-      result,
-      sentiment,
-    })
 
     if (result !== SUBMIT_RESULT.SENT) {
       setSubmissionFailed(true)
