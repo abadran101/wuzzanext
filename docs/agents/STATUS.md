@@ -55,13 +55,17 @@ Update this file at every stop. Output from the real machines beats anything wri
    orchestrator takes them to the owner one at a time. Recipe tasks 012-015 wait for the samples.
 2. Upstream brings `@posthog/cli` (PostHog analytics tooling) and Plus/paywall gating
    (`backend/external/payment`, `PAYWALL_REASON` in the web interface). Both conflict with the
-   "no cloud services, no analytics" limit; tasks 004 and 006 handle them.
+   "no cloud services, no analytics" limit. Task 006 lists every outside connection and Plus
+   check (`docs/INVENTORY.md`); task 004 removes them in their own commits for the owner to
+   review (the owner has not objected, but has not explicitly decided).
 3. Upstream findings left as they are: one `go vet` finding
    (`backend/internal/realtime/pool.go:218`, copies a lock), one failing upstream web test, 1981
    lint warnings.
 
 ## Decisions (newest first)
 
+- 2026-10-26: PR #2 merged; start 006, then 004 and onward; recipe tasks stay parked (owner,
+  through the orchestrator).
 - 2026-10-26: the owner approved building and testing the imported Donetick code in the task
   003 worktree (owner, in the supervisor's window).
 - 2026-10-26: start building now; recipe samples come later, so 012-015 wait (owner, through the
