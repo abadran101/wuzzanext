@@ -55,8 +55,8 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 1. Sample recipe pages from the owner (tasks 012-015 wait for them). All other questions from
    the 001 report are answered (Decisions, 2026-10-26).
-2. How the source is offered while the repository is private: task 004 adds an About page with
-   a download link; the proposed task 020 packages the source archive. Owner to decide.
+2. Dependency cleanup (owner decision, to raise after 004): drop the now-unused PostHog and
+   Stripe/RevenueCat packages from `package.json`/`package-lock.json` and `go.mod`/`go.sum`.
 3. Upstream brings `@posthog/cli` (PostHog analytics tooling) and Plus/paywall gating
    (`backend/external/payment`, `PAYWALL_REASON` in the web interface). Both conflict with the
    "no cloud services, no analytics" limit. Task 006 lists every outside connection and Plus
@@ -67,6 +67,10 @@ Update this file at every stop. Output from the real machines beats anything wri
    lint warnings.
 
 ## Decisions (newest first)
+
+- 2026-10-26: task 020 approved: the build puts a `git archive` of the exact commit into the web
+  files, served as `/wuzzanext-source.tar.gz` and linked from the About page; the repository
+  stays private; 020 comes before the first release (019) (owner, through the orchestrator).
 
 - 2026-10-26: 019: the home server runs Wuzzanext as a Windows service (Docker is available but
   not wanted), behind the existing Nginx Proxy Manager on HTTPS, home network only, nothing
@@ -84,7 +88,7 @@ Update this file at every stop. Output from the real machines beats anything wri
   character alone; both transparent PNGs from `assets/logo/logo-original.jpg` (owner, through
   the orchestrator).
 - 2026-10-26: the repository `abadran101/wuzzanext` is private and stays private (owner,
-  through the orchestrator). AGPL source offer: see open item 4.
+  through the orchestrator). AGPL source offer: task 020.
 - 2026-10-26: PR #3 (task 006) merged (owner, through the orchestrator).
 - 2026-10-26: the owner approved building and testing the imported code in every task worktree
   (owner, in the supervisor's window).

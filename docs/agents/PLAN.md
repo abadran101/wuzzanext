@@ -44,8 +44,8 @@ everything on the dev machine is readable by Codex.
 | 016 | Android APK build (signed by the owner), home-server address setting | Proposed | 005 |
 | 017 | Offline copy and outbox sync with the conflict rule (decided 2026-10-26) | Proposed | 016 |
 | 018 | Due-task reminders as local phone notifications | Proposed | 016, 017 |
-| 019 | Home-server packaging as a Windows service behind Nginx Proxy Manager, first deployment | Proposed | all |
-| 020 | Source archive of the exact commit packaged into each build, offered on the About page (AGPL, private repository) | Proposed, owner to decide | 004, 019 |
+| 019 | Home-server packaging as a Windows service behind Nginx Proxy Manager, first deployment | Proposed | all, 020 first |
+| 020 | Source archive of the exact commit packaged into each build, offered on the About page (AGPL, private repository) | Approved (2026-10-26), before 019 | 004 |
 
 ## Settled: don't propose these again
 

@@ -53,8 +53,8 @@ analytics and has no paid "Plus" tier or purchase screens: every account has eve
   "Download source code" link to the relative path `/wuzzanext-source.tar.gz`, which the
   server serves from its embedded web files (`backend/frontend/handler.go`). In the Android
   app the link uses the configured server address. Packaging that archive (a `git archive`
-  of the exact commit, placed in the built web files) is a separate task (020) for the owner
-  to decide; until then the link returns "not found".
+  of the exact commit, placed in the built web files) is task 020 (approved by the owner
+  2026-10-26); until then the link returns "not found".
 - Donetick Bridge (hosted push relay): its settings UI and routes are removed. Backend
   Bridge code stays, off by configuration (task 019 sets the outside-service policy).
 - iOS (`frontend/ios/`) is not built for this family; leave it unchanged.
