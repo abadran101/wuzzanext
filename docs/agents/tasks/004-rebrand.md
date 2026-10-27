@@ -120,4 +120,10 @@ Commit 3, Plus and payment:
 
 ## Result (filled in before the push, in the task's own branch)
 
-- 
+- Progress (2026-10-26): commit 1 (rename and links) is
+  2ecdf5bf14440f5ad2eec3e80da09ee7271c74f0. Checks after it: go build/vet clean (only the
+  known `pool.go:218`), go test 23 packages ok after updating one calendar test expectation;
+  npm run build ok; npm run lint exit 0 (0 errors, 1916 warnings; 19 Prettier/import-sort
+  errors from Codex fixed with eslint --fix; one i18n key made explicit `common:`); node
+  tests: only the known `task-editor-compatibility.test.mjs` failure. Codex run 2
+  (analytics) next, then run 3 (Plus/payment).
