@@ -17,6 +17,9 @@ import (
 func TestLeavingACircleDropsProjectShares(t *testing.T) {
 	db, err := gorm.Open(sqlite.Open(filepath.Join(t.TempDir(), "c.db")), &gorm.Config{})
 	require.NoError(t, err)
+	sqlDB, err := db.DB()
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = sqlDB.Close() })
 	require.NoError(t, db.AutoMigrate(&cModel.UserCircle{}, &pModel.ProjectMember{}))
 	r := &CircleRepository{db: db}
 

@@ -145,6 +145,9 @@ func TestJoiningAnotherCircleKeepsSharedProjectTasksWithTheOwner(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	db, err := gorm.Open(sqlite.Open(filepath.Join(t.TempDir(), "join.db")), &gorm.Config{})
 	require.NoError(t, err)
+	sqlDB, err := db.DB()
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = sqlDB.Close() })
 	require.NoError(t, database.Migration(db))
 	cfg := &config.Config{}
 	cfg.Database.Type = "sqlite"

@@ -20,6 +20,11 @@ func newTestRepo(t *testing.T) (*CalendarRepository, *gorm.DB) {
 	if err != nil {
 		t.Fatalf("failed to open sqlite: %v", err)
 	}
+	sqlDB, err := db.DB()
+	if err != nil {
+		t.Fatalf("failed to get sql.DB: %v", err)
+	}
+	t.Cleanup(func() { _ = sqlDB.Close() })
 	if err := db.AutoMigrate(&calModel.CalendarToken{}); err != nil {
 		t.Fatalf("AutoMigrate failed: %v", err)
 	}

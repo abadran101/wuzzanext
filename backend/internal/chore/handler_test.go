@@ -175,6 +175,9 @@ func newEditChoreTestRouter(t *testing.T) (*gin.Engine, *gorm.DB) {
 	// queries run, so it needs more than one connection to the same database.
 	db, err := gorm.Open(sqlite.Open(filepath.Join(t.TempDir(), "edit.db")), &gorm.Config{})
 	require.NoError(t, err)
+	sqlDB, err := db.DB()
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = sqlDB.Close() })
 	require.NoError(t, database.Migration(db))
 	require.NoError(t, db.Create(&cModel.UserCircle{UserID: 1, CircleID: 1, Role: cModel.UserRoleAdmin, IsActive: true}).Error)
 
