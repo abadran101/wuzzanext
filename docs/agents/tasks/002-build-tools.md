@@ -1,13 +1,13 @@
 # Task 002: build tools on the dev machine
 
-- **Status:** ready (blocked: two findings for the owner, see Result)
+- **Status:** done (2026-10-26)
 - **Branch and worktree:** `task/002-build-tools` from `main` (1224ad8), in the main clone
-  (records only, no code)
+  (records only, no code); reaches `main` with task 003's pull request
 - **Hand-off:** supervisor
 - **Shares:** nothing; task 003 needs Go and Node.js from it
 - **Your time:** ~10 min (two fixes on the dev machine)
 - **Who:** You -> Claude
-- **Waits on:** the owner's fixes for the Android SDK layout and the JDK
+- **Waits on:** nothing
 
 ## Goal
 
@@ -42,5 +42,15 @@ scopes, since the session started before the installs):
 
 - Go and Node.js are enough for task 003 (Donetick server and web interface).
 - The JDK and the Android SDK are needed from task 016 (Android APK).
-- Left for the owner: move the command-line tools into `cmdline-tools\latest`, and either install
-  Temurin 21 with `JAVA_HOME` set or keep 25 and set `JAVA_HOME` to it.
+- The owner then moved the command-line tools into `cmdline-tools\latest` and installed Temurin
+  21 with `JAVA_HOME` set. Re-checked from the supervisor's session on 2026-10-26:
+  - `java -version`: Temurin 21.0.12.1 LTS, first on PATH
+    (`C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot\bin`).
+  - `JAVA_HOME` (machine): `C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot\`.
+  - `ANDROID_HOME` (machine): `C:\tools\Android`.
+  - `sdkmanager --version` from `C:\tools\Android\cmdline-tools\latest\bin`: 22.0 (prints a
+    deprecation notice pointing at the new `android` CLI; it still works).
+- Temurin 25 is still installed but no longer first on PATH; it can stay.
+- Commits: `58e2e16beb7f84a7aed4b7ddec775320d125b038` (first check), then this update on
+  `task/003-donetick-import`.
+- Nothing left for the owner from 002.
