@@ -60,5 +60,12 @@ the record.
   `CLAUDE.md` section 7.
 - **New home:** branch merged with `main` 128c3ff (a merge, not a rebase); records moved to
   `C:\dev\wuzzanext`, environment "wuzzanext dev", repository `abadran101/wuzzanext`.
+- **Commits:** `50a272ffac3f6b255407ffb737a3ea62cfa09bc2` (setup check, brief, draft plan,
+  logo), `a86be5b405d3b49d5832a7ad8a53709ef64a4e50` (repository rename recorded),
+  `e6c87e433f4130e68f539b8fe9ddeb14c3cdbf71` (merge of `main` 128c3ff),
+  `4b80e29177baced45b24f8c3568b67d216b43baf` (records moved to the new home), then this
+  closing commit.
+- **Owner must:** review the filled-in defaults in `CLAUDE.md` and `AGENTS.md`, merge this pull
+  request, install the build tools (task 002) and answer the seven questions.
 - **Left open:** seven owner questions (STATUS open item 2) and the old folder name still in
   `CLAUDE.md` and `AGENTS.md` (STATUS open item 3).
