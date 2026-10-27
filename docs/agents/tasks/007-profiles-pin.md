@@ -1,6 +1,6 @@
 # Task 007: profiles with PIN sign-in and a person switcher
 
-- **Status:** proposed (plan run first)
+- **Status:** ready (owner answered the plan questions, 2026-10-27)
 - **Branch and worktree:** `task/007-profiles-pin` from `main` (724a3e1), in
   `C:\dev\wt\wuzzanext-007-profiles-pin`
 - **Hand-off:** Codex, read-only plan first, then a write run; supervisor reviews
@@ -8,7 +8,7 @@
   sign-in views, profile settings; 009 and 010 build on the profiles
 - **Your time:** ~15 min (answer the plan's questions, try sign-in, merge)
 - **Who:** Claude -> Codex -> You
-- **Waits on:** the owner's answers to the plan's questions
+- **Waits on:** a working coding hand-off (Codex's sandbox can't read this worktree)
 
 ## Goal
 
@@ -38,6 +38,18 @@ the server is reachable only on the home network.
 - Every new text goes through i18n (`frontend/public/locales/`), in English and Arabic, and
   the new screens work right to left (owner requirement of 2026-10-27; the toggle itself is
   task 022). The picker and PIN pad are the first screens, so they must be usable in Arabic.
+
+## Owner's answers (2026-10-27, through the orchestrator)
+
+- Everyone is an adult; roles are admin and regular user, no child accounts.
+- The faces screen (profile picker) shows to anyone who opens the app; the server is on the
+  home network only.
+- Admins create profiles and can reset any PIN; each person changes their own PIN.
+- Admins sign in by PIN too; their password stays as a backup.
+- 5 wrong PINs: that profile waits 1 minute.
+- Per-device on/off setting: a shared tablet returns to the faces after 5 minutes unused;
+  personal phones stay signed in.
+- The language choice is stored per person on the server (used by task 022).
 
 ## What to do
 

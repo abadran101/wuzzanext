@@ -63,6 +63,15 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## Decisions (newest first)
 
+- 2026-10-27: "I accept your recommendations" (owner, through the orchestrator). 007: the
+  faces screen shows to anyone who opens the app at home; admins create profiles and can
+  reset any PIN, each person changes their own; admins sign in by PIN too, password kept as
+  a backup; 5 wrong PINs make that profile wait 1 minute; an on/off setting per device sends
+  a shared tablet back to the faces after 5 minutes unused. Language is remembered per
+  person. 023: only chore names, chore details and recipe names are sent (never profile
+  names), names inside chore text as they are; a daily quota in Google Cloud keeps usage in
+  the free allowance, and the owner checks pricing before choosing the newer LLM model; the
+  server connects out to the translation endpoint only.
 - 2026-10-27: no child accounts; everyone is an adult, roles are admin and regular user, no
   restrictions for kids (owner, through the orchestrator; changes 007 question 5).
 - 2026-10-27: family-typed text should be translated with Google Cloud Translation (free up
