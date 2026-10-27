@@ -63,9 +63,14 @@ Update this file at every stop. Output from the real machines beats anything wri
 4. Upstream findings left as they are: one `go vet` finding
    (`backend/internal/realtime/pool.go:218`, copies a lock), one failing upstream web test, 1904
    lint warnings (after 007).
+5. For 017: a forced sign-out when a session expires still empties the offline queue (as
+   upstream does), so changes made offline and not yet sent are lost. Needs one queue per
+   person. Log out, Switch person and the tablet idle switch already wait for sync (007).
 
 ## Decisions (newest first)
 
+- 2026-10-27: 007's Log out waits for offline changes to sync, like Switch person; the
+  forced sign-out on session expiry goes to 017 (owner, through the orchestrator: "yes").
 - 2026-10-27: PR #6 (task 005) merged (owner, through the orchestrator: "#6 merged").
 - 2026-10-27: Codex is back (owner, through the orchestrator: "codex is back"); its
   sandbox read and wrote the 007 worktree again.
