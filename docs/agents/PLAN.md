@@ -29,7 +29,7 @@ everything on the dev machine is readable by Codex.
 | 001 | Dev machine setup check; brief and plan into docs | Done | Nothing |
 | 002 | Build tools on the dev machine (Go, Node, JDK, Android SDK), installed by the owner | Done | Nothing |
 | 003 | Import Donetick backend and frontend at pinned upstream releases (keeping history), build, run tests | Done | Everything after |
-| 004 | Rebrand to Wuzzanext: names, texts, AGPL notice and "source code" link (About page); PostHog and Plus/payment removed | Done (PR) | 003 |
+| 004 | Rebrand to Wuzzanext: names, texts, AGPL notice and "source code" link (About page); PostHog and Plus/payment removed | Done | 003 |
 | 005 | Logo: transparent PNG, app icon, favicon, Android launcher icons | Proposed | 004 |
 | 006 | Inventory: what Donetick already does against the brief (recurrence, rotation, points, photos, approvals, notifications), gap list | Done | 003 |
 | 007 | Profiles with avatar and color; 4-digit PIN sign-in; person switcher | Proposed | 003 |
@@ -46,6 +46,7 @@ everything on the dev machine is readable by Codex.
 | 018 | Due-task reminders as local phone notifications | Proposed | 016, 017 |
 | 019 | Home-server packaging as a Windows service behind Nginx Proxy Manager, first deployment | Proposed | all, 020 first |
 | 020 | Source archive of the exact commit packaged into each build, offered on the About page (AGPL, private repository) | Approved (2026-10-26), before 019 | 004 |
+| 021 | Remove unused PostHog, RevenueCat and Stripe packages; README brought up to date | Done (PR) | 004 |
 
 ## Settled: don't propose these again
 

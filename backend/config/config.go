@@ -32,9 +32,6 @@ type Config struct {
 	Server                 ServerConfig        `mapstructure:"server" yaml:"server"`
 	SchedulerJobs          SchedulerConfig     `mapstructure:"scheduler_jobs" yaml:"scheduler_jobs"`
 	EmailConfig            EmailConfig         `mapstructure:"email" yaml:"email"`
-	StripeConfig           StripeConfig        `mapstructure:"stripe" yaml:"stripe"`
-	RevenueCatConfig       RevenueCatConfig    `mapstructure:"revenuecat" yaml:"revenuecat"`
-	IAPConfig              IAPConfig           `mapstructure:"iap" yaml:"iap"`
 	OAuth2Config           OAuth2Config        `mapstructure:"oauth2" yaml:"oauth2"`
 	WebhookConfig          WebhookConfig       `mapstructure:"webhook" yaml:"webhook"`
 	RealTimeConfig         RealTimeConfig      `mapstructure:"realtime" yaml:"realtime"`
@@ -146,45 +143,6 @@ type SchedulerConfig struct {
 	DueJob     time.Duration `mapstructure:"due_job" yaml:"due_job"`
 	OverdueJob time.Duration `mapstructure:"overdue_job" yaml:"overdue_job"`
 	PreDueJob  time.Duration `mapstructure:"pre_due_job" yaml:"pre_due_job"`
-}
-
-type StripeConfig struct {
-	APIKey         string         `mapstructure:"api_key"`
-	WhitelistedIPs []string       `mapstructure:"whitelisted_ips"`
-	Prices         []StripePrices `mapstructure:"prices"`
-	SuccessURL     string         `mapstructure:"success_url"`
-	CancelURL      string         `mapstructure:"cancel_url"`
-}
-
-type StripePrices struct {
-	PriceID string `mapstructure:"id"`
-	Name    string `mapstructure:"name"`
-}
-
-type RevenueCatConfig struct {
-	AuthSecret       string   `mapstructure:"auth_secret" yaml:"auth_secret"`
-	WhitelistedIPs   []string `mapstructure:"whitelisted_ips" yaml:"whitelisted_ips"`
-	SharedSecret     string   `mapstructure:"shared_secret" yaml:"shared_secret"`
-	EnableValidation bool     `mapstructure:"enable_validation" yaml:"enable_validation"`
-}
-
-type IAPConfig struct {
-	Apple  AppleIAPConfig  `mapstructure:"apple" yaml:"apple"`
-	Google GoogleIAPConfig `mapstructure:"google" yaml:"google"`
-}
-
-type AppleIAPConfig struct {
-	BundleID     string `mapstructure:"bundle_id" yaml:"bundle_id"`
-	SharedSecret string `mapstructure:"shared_secret" yaml:"shared_secret"`
-	Sandbox      bool   `mapstructure:"sandbox" yaml:"sandbox"`
-	KeyID        string `mapstructure:"key_id" yaml:"key_id"`
-	IssuerID     string `mapstructure:"issuer_id" yaml:"issuer_id"`
-	PrivateKey   string `mapstructure:"private_key" yaml:"private_key"`
-}
-
-type GoogleIAPConfig struct {
-	PackageName        string `mapstructure:"package_name" yaml:"package_name"`
-	ServiceAccountJSON string `mapstructure:"service_account_json" yaml:"service_account_json"`
 }
 
 type FCMConfig struct {

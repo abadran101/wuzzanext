@@ -1,5 +1,9 @@
 # Inventory: Donetick v0.1.83 / web v1.2.62 against the brief
 
+> Snapshot of the upstream code taken by task 006, before the rebrand. Task 004 has since
+> removed the analytics, the Plus/payment code, the landing, privacy and terms pages and the
+> Bridge settings, and task 021 their packages, so some paths cited below no longer exist.
+
 ## Summary
 
 Static source review against `docs/BRIEF.md`, following `docs/agents/tasks/006-inventory.md` and `docs/agents/PLAN.md`. No network, builds or tests. “Have” means implementation found, not runtime verification. “Missing” means not found in the inspected code; it is not proof of absence in dependencies. Paths are repository-relative; symbols identify the evidence.
