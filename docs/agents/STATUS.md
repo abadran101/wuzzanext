@@ -10,11 +10,9 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## GitHub
 
-- Repository `abadran101/wuzzanext`. Default branch `main` at 1224ad8 (PR #1, task 001,
-  merged 2026-10-26).
-- Open branch: `task/003-donetick-import` (tasks 002 and 003, one pull request). It also carries
-  `8023fbc` (the `CLAUDE.md`/`AGENTS.md` folder names), which was pushed to the task 001 branch
-  after PR #1 merged and so is not in `main`; it is cherry-picked here as `b36c5c2`.
+- Repository `abadran101/wuzzanext`. Default branch `main` at c6dd678 (PR #2, tasks 002-003
+  and the folder-name fix, merged 2026-10-26; PR #1, task 001, merged before it).
+- Open branch: `task/006-inventory` (pull request for task 006).
 - Remote `origin` is `https://github.com/abadran101/wuzzanext.git`, confirmed with
   `git ls-remote origin` on 2026-10-26.
 - Agents push task branches with the fine-grained token the orchestrator lists (it covers only the
@@ -48,7 +46,7 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 002 build tools and 003 Donetick import: done, one pull request for the owner to merge.
+- 006 inventory: done, pull request for the owner to merge. Next: 004 rebrand.
 
 ## Open items
 

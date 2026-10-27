@@ -31,7 +31,7 @@ everything on the dev machine is readable by Codex.
 | 003 | Import Donetick backend and frontend at pinned upstream releases (keeping history), build, run tests | Done | Everything after |
 | 004 | Rebrand to Wuzzanext: names, texts, AGPL notice and "source code" link | Proposed | 003 |
 | 005 | Logo: transparent PNG, app icon, favicon, Android launcher icons | Proposed | 004 |
-| 006 | Inventory: what Donetick already does against the brief (recurrence, rotation, points, photos, approvals, notifications), gap list | Proposed | 003 |
+| 006 | Inventory: what Donetick already does against the brief (recurrence, rotation, points, photos, approvals, notifications), gap list | Done | 003 |
 | 007 | Profiles with avatar and color; 4-digit PIN sign-in; person switcher | Proposed | 003 |
 | 008 | Chore content: instructions, "done means" text, pictures | Proposed | 006 |
 | 009 | Photo proof and thumbs-up approval by the assigner | Proposed | 006, 008 |
