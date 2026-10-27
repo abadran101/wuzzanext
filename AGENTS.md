@@ -8,7 +8,7 @@
 - Development happens in `C:\dev` on the dev machine, as the standard account `devagent`.
   Each task has a branch `task/NNN-short-name` from the default branch (`main`)
   and its own worktree under
-  `C:\dev\wt\wuzzanikist-website-NNN-short-name`.
+  `C:\dev\wt\wuzzanext-NNN-short-name`.
 - When the supervisor runs you in a task worktree: don't commit, stage, stash, switch branches
   or touch `.git`. Leave every change in the working tree for review.
 - For Codex: no network access, AI calls, real keys or real data. Tests use made-up data only.
