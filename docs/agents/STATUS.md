@@ -11,9 +11,9 @@ Update this file at every stop. Output from the real machines beats anything wri
 ## GitHub
 
 - Repository `abadran101/wuzzanext`, private (stays private, owner 2026-10-26). Default branch
-  `main` at b90b8f3 (PR #4, task 004, merged 2026-10-27; PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1,
-  task 001, before it).
-- Open branch: `task/021-dependency-cleanup` (PR open, waiting on the owner).
+  `main` at 71262c6 (PR #5, task 021, merged 2026-10-27; PR #4, task 004, merged 2026-10-27;
+  PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1, task 001, before it).
+- Open branch: `task/005-logo` (PR open, waiting on the owner).
 - Remote `origin` is `https://github.com/abadran101/wuzzanext.git`, confirmed with
   `git ls-remote origin` on 2026-10-26.
 - Agents push task branches with the fine-grained token the orchestrator lists (it covers only the
@@ -48,8 +48,8 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 021 dependency cleanup and README: done, PR open for the owner (task file Result).
-- Next: 005 (logo), then 007 onward; 012-015 stay parked.
+- 005 logo: done, PR open for the owner (task file Result).
+- Next: 007 onward; 012-015 stay parked.
 
 ## Open items
 
@@ -63,6 +63,8 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## Decisions (newest first)
 
+- 2026-10-27: PR #5 (task 021) merged; merge that main into the 005 branch before its PR,
+  then carry on with the plan (owner, through the orchestrator).
 - 2026-10-27: README and docs are kept current: brought up to date in the next commit, and
   updated with every commit that changes what they describe, so anyone can pick up the
   project (owner, through the orchestrator; a standing rule in `CLAUDE.md` needs the owner's

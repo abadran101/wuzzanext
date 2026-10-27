@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@mui/joy'
 
-import LogoSVG from '@/assets/logo.svg'
+import LogoImage from '@/assets/logo.png'
 
 import { version } from '../../../package.json'
 import DiscordIcon from '../../components/icons/DiscordIcon'
@@ -103,7 +103,7 @@ const Footer = () => {
             <Box sx={{ mb: 4 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <img
-                  src={LogoSVG}
+                  src={LogoImage}
                   alt='Donetick Logo'
                   width='48px'
                   height='48px'

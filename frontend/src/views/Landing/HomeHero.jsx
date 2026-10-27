@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid'
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import Logo from '@/assets/logo.svg'
+import Logo from '@/assets/logo.png'
 import screenShotMyChore from '@/assets/screenshot-my-chore.png'
 import screenShotMyChoreDark from '@/assets/screenshot-my-chore-dark.png'
 
