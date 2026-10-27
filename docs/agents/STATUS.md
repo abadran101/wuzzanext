@@ -63,6 +63,19 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## Decisions (newest first)
 
+- 2026-10-27: no child accounts; everyone is an adult, roles are admin and regular user, no
+  restrictions for kids (owner, through the orchestrator; changes 007 question 5).
+- 2026-10-27: family-typed text should be translated with Google Cloud Translation (free up
+  to 500,000 characters a month; "the data shared is not sensitive") (owner, through the
+  orchestrator). The owner then changed `CLAUDE.md` section 3 in the supervisor's window
+  (same day): the home server may call Google Cloud Translation for chore names, chore details
+  and recipe names between English and Arabic; the API key lives only in the home server's
+  configuration. Planned as task 023; design questions sent to the owner.
+- 2026-10-27: new requirement, very important: "the web and mobile apps need to have an easy
+  toggle button that switches the language of the entire app's content to be displayed in
+  arabic" (owner, through the orchestrator). Planned as task 022; every new screen from 007
+  on ships English and Arabic texts and works right to left.
+- 2026-10-27: continue with 007 (owner, through the orchestrator).
 - 2026-10-27: PR #5 (task 021) merged; merge that main into the 005 branch before its PR,
   then carry on with the plan (owner, through the orchestrator).
 - 2026-10-27: README and docs are kept current: brought up to date in the next commit, and
