@@ -1,6 +1,6 @@
 # Task 005: logo
 
-- **Status:** ready
+- **Status:** done
 - **Branch and worktree:** `task/005-logo` from `main` (b90b8f3), in
   `C:\dev\wt\wuzzanext-005-logo`
 - **Hand-off:** supervisor. The cut-outs need checking by eye after each step, which Codex
@@ -53,4 +53,30 @@ logo is left.
 
 ## Result (filled in before the push, in the task's own branch)
 
-- Pending.
+- **Done** (2026-10-27) by the supervisor in one commit,
+  6135eec241121e7a9400ee486d3748d1f9ef2ba2, then main (71262c6, task 021) merged in
+  (99fa1ac842c5d2bac3aa7979035802a609936f7f, no conflicts).
+- `assets/logo/make-logo.mjs` makes `logo-tile.png` (1748 x 1748: the rounded tile with
+  its flames; the outline is a measured superellipse, anti-aliased) and
+  `logo-character.png` (1462 x 1462: the character with its hat and head flames, cut by
+  colour from the teal and kept as the largest connected shape). Both checked by eye: clean
+  edges, no teal halo.
+- `assets/logo/make-icons.mjs` renders from them: favicons (16, 32, .ico), Android Chrome,
+  PWA (64, 192, 512; 64 was referenced but missing), maskable (character on the tile's
+  teal), Windows tile, Apple touch icons (on white), the in-app logo
+  `frontend/src/assets/logo.png`, the Capacitor sources in `frontend/resources/`, and
+  every Android launcher icon (square, round, adaptive foreground at a size that fits the
+  circle mask) and splash screen (character on white, or #111 for night). Contact sheet
+  checked by eye.
+- The navigation bar, `Logo.jsx`, the landing footer and hero use the PNG. Removed: the
+  Donetick `logo.svg` (public and src), `safari-pinned-tab.svg`, the stale
+  `public/manifest.webmanifest` (vite-plugin-pwa writes the real one), the unused
+  `src/manifest/` and `frontend/icons/`. Windows tile colour set to the logo's teal.
+  README describes `assets/logo/` and how to regenerate the icons.
+- **Checked:** `npm run build` ok (built manifest lists the new icons, no SVG logo in
+  `dist`); `npm run lint` exit 0 (0 errors, 1906 warnings); node tests: only the known
+  upstream failure; no `logo.svg` or `safari-pinned-tab` reference left in `src`,
+  `public`, `index.html` or `vite.config.mjs`.
+- **Left:** `frontend/assets/` (pictures for the upstream frontend README), the Android
+  widget previews in `drawable-nodpi` and iOS stay as they are; the APK itself is task 016.
+- **Owner:** look at the icons in the PR, then merge.

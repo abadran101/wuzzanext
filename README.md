@@ -27,7 +27,7 @@ stores or community.
 | `frontend/` | React (Vite) web interface, imported from Donetick web v1.2.62. Source in `src/`, node tests in `tests/` |
 | `frontend/android/` | Capacitor Android app that wraps the web interface (`com.wuzzanext.app`) |
 | `frontend/ios/` | Upstream iOS project, unchanged and not built for this project |
-| `assets/logo/` | The owner's original logo, the source for the app icons (task 005) |
+| `assets/logo/` | The owner's original logo (`logo-original.jpg`), its two transparent cut-outs (`logo-tile.png` for icons, `logo-character.png` for in-app graphics) and the scripts that make them and every app icon (task 005) |
 | `docs/BRIEF.md` | What the family asked for: the build brief |
 | `docs/INVENTORY.md` | What Donetick already did against the brief (snapshot from before the rebrand) |
 | `docs/agents/PLAN.md` | Milestones and the numbered task list with each task's status |
@@ -74,6 +74,12 @@ For a single server that also serves the web interface, copy the contents of
 `frontend/dist` into `backend/frontend/dist` before building the server; it embeds that
 folder and serves it when `server.serve_frontend` is true.
 
+App icons and splash screens all come from the owner's logo. After `npm ci` in `frontend/`,
+run from the repository root `node assets/logo/make-logo.mjs` (the two cut-outs) and then
+`node assets/logo/make-icons.mjs` (web icons in `frontend/public/`, the in-app logo
+`frontend/src/assets/logo.png`, Capacitor sources in `frontend/resources/`, Android launcher
+icons and splash screens). Check the results by eye before committing them.
+
 The Android app: `npm run android` in `frontend/` builds the web interface and syncs it into
 `frontend/android`; Gradle builds the APK from there. Signing keys never live in this
 repository (task 016).
@@ -90,6 +96,6 @@ The owner deploys a merged commit, named by its full hash.
 
 See `docs/agents/STATUS.md` for the details and `docs/agents/PLAN.md` for what comes next.
 In short: Donetick is imported and builds, the rebrand and the removal of analytics and
-payments are merged, and nothing is deployed yet. Next come the logo (task 005), family
-profiles with PIN sign-in, chore content, photo proof, points, the Android APK, offline use
+payments are merged, the family's logo replaces Donetick's everywhere (task 005), and
+nothing is deployed yet. Next come family profiles with PIN sign-in, chore content, photo proof, points, the Android APK, offline use
 and reminders. The meal-planning tasks wait for sample recipe pages.
