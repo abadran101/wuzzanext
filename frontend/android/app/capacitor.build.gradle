@@ -29,8 +29,6 @@ dependencies {
     implementation project(':capgo-capacitor-nfc')
     implementation project(':capgo-capacitor-social-login')
     implementation project(':jcesarmobile-capacitor-ocr')
-    implementation project(':revenuecat-purchases-capacitor')
-    implementation project(':revenuecat-purchases-capacitor-ui')
     implementation project(':supernotes-capacitor-send-intent')
     implementation project(':capacitor-plugin-safe-area')
 

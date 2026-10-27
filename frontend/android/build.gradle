@@ -24,7 +24,7 @@ allprojects {
     }
 
     configurations.configureEach {
-        // The app does not use Advertising ID. Exclude RevenueCat's transitive
+        // The app does not use Advertising ID. Exclude any transitive
         // ads identifier dependency so Play Console does not require an AD_ID declaration.
         exclude group: 'com.google.android.gms', module: 'play-services-ads-identifier'
     }
