@@ -11,9 +11,10 @@ Update this file at every stop. Output from the real machines beats anything wri
 ## GitHub
 
 - Repository `abadran101/wuzzanext`, private (stays private, owner 2026-10-26). Default branch
-  `main` at 71262c6 (PR #5, task 021, merged 2026-10-27; PR #4, task 004, merged 2026-10-27;
-  PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1, task 001, before it).
-- Open branch: `task/005-logo` (PR open, waiting on the owner).
+  `main` at 724a3e1 (PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
+  merged 2026-10-27; PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1,
+  task 001, before it).
+- Open branch: `task/007-profiles-pin` (PR open, waiting on the owner).
 - Remote `origin` is `https://github.com/abadran101/wuzzanext.git`, confirmed with
   `git ls-remote origin` on 2026-10-26.
 - Agents push task branches with the fine-grained token the orchestrator lists (it covers only the
@@ -48,8 +49,10 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 005 logo: done, PR open for the owner (task file Result).
-- Next: 007 onward; 012-015 stay parked.
+- 007 profiles and PIN sign-in: done, PR open for the owner (task file Result); the owner
+  tries the faces screen and PIN sign-in by hand.
+- Next: 022 (Arabic toggle, owner reviews the wording), then 023 (translation), then 008
+  onward; 012-015 stay parked.
 
 ## Open items
 
@@ -58,11 +61,14 @@ Update this file at every stop. Output from the real machines beats anything wri
 2. Resolved by task 021: the unused PostHog, RevenueCat and Stripe packages are removed.
 3. Resolved by task 004 (merged): analytics and Plus/payment code removed.
 4. Upstream findings left as they are: one `go vet` finding
-   (`backend/internal/realtime/pool.go:218`, copies a lock), one failing upstream web test, 1906
-   lint warnings (after 004).
+   (`backend/internal/realtime/pool.go:218`, copies a lock), one failing upstream web test, 1904
+   lint warnings (after 007).
 
 ## Decisions (newest first)
 
+- 2026-10-27: PR #6 (task 005) merged (owner, through the orchestrator: "#6 merged").
+- 2026-10-27: Codex is back (owner, through the orchestrator: "codex is back"); its
+  sandbox read and wrote the 007 worktree again.
 - 2026-10-27: the owner reviews the Arabic wording when task 022 is done: "I can review it"
   (owner, through the orchestrator).
 - 2026-10-27: "I accept your recommendations" (owner, through the orchestrator). 007: the

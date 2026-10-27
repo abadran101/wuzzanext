@@ -1,6 +1,6 @@
 # Task 007: profiles with PIN sign-in and a person switcher
 
-- **Status:** ready (owner answered the plan questions, 2026-10-27)
+- **Status:** done
 - **Branch and worktree:** `task/007-profiles-pin` from `main` (724a3e1), in
   `C:\dev\wt\wuzzanext-007-profiles-pin`
 - **Hand-off:** Codex, read-only plan first, then a write run; supervisor reviews
@@ -8,7 +8,7 @@
   sign-in views, profile settings; 009 and 010 build on the profiles
 - **Your time:** ~15 min (answer the plan's questions, try sign-in, merge)
 - **Who:** Claude -> Codex -> You
-- **Waits on:** a working coding hand-off (Codex's sandbox can't read this worktree)
+- **Waits on:** nothing (owner answered, Codex access restored, 2026-10-27)
 
 ## Goal
 
@@ -71,10 +71,38 @@ the server is reachable only on the home network.
 
 ## Result (filled in before the push, in the task's own branch)
 
-- Pending.
-- Progress (2026-10-27): Codex plan run blocked (its sandbox got "Access is denied" on
-  this worktree; reported to the owner through the orchestrator, no workaround tried). The
-  supervisor wrote the plan from the code and sent six questions (who sees the faces screen,
-  who manages profiles, parents on PIN, lockout, kids' powers, tablet idle return) plus the
-  two Arabic questions. Next: the owner's answers and a fix for Codex's access, or a switch
-  of coding provider. Nothing committed yet besides this branch's creation.
+- **Done** (2026-10-27). Plan by Codex (read-only) after the owner's answers; code by Codex,
+  reviewed and corrected by the supervisor. Commits:
+  - 8ea6f4f67c8a9f1e6f7317371df335700de4467b: records the Arabic requirement (task 022), the
+    translation decision (task 023) and the owner's `CLAUDE.md` section 3 exception for
+    Google Cloud Translation (typed by the owner in the supervisor's window); this task file.
+  - c38e02fc6bfb8134e36d17581ad48b49032dd4d0 and c603e8eef977a9bbfcd8f371b9959aea814deac1:
+    the owner's answers; the owner reviews the Arabic wording in 022.
+  - 705c3283b76553d155aad810cc11b145f2908d9f: server. Colour (8-colour palette), language and
+    bcrypt PIN hash per user; public `GET /auth/profiles` (household members only: name,
+    picture, colour, PIN set; no email, role or secrets); `POST /auth/pin` signs in through
+    the same token, refresh-cookie and MFA path as the password; 5 wrong PINs lock the
+    profile for 60 s (atomic compare-and-swap, capped retries); admins create adult profiles
+    and reset PINs, impersonation refused; everyone changes their own PIN; household =
+    the only circle, or `household.circle_id` in the server's configuration; migration
+    gives existing users a colour. Supervisor fixes: field placement and column tags, retry
+    cap on the PIN check.
+  - dedd2c0efb51d4bd24f688c44ba4420bef26548b: web and Android. Faces screen with PIN pad
+    (keypad stays left to right in Arabic, shake on wrong PIN, lock countdown), password form
+    kept as a backup; Switch person in the user menu (syncs first, refuses while offline
+    changes wait, clears cached data); per-device shared-tablet setting (back to the faces
+    after 5 idle minutes, background time included); profile colour, language saved per
+    person, PIN change; admins' Family section; child-account screens hidden; English and
+    Arabic texts; README section. Supervisor fix: sign-in clears the offline outbox again as
+    upstream did, so one person's queued changes are never sent as another's.
+- **Checked:** `go build ./...` ok; `go vet` only the known `pool.go:218`; `go test ./...`
+  25 packages ok (9 new tests: PIN sign-in and refresh, lockout and expiry, concurrent wrong
+  PINs, profile list scope and no secrets, admin rules, own PIN rules, preferences, MFA,
+  colour migration); gofmt clean. `npm run build` ok; `npm run lint` exit 0 (0 errors, 1904
+  warnings); node tests 8 pass, only the known upstream failure (new: PIN input, lock
+  countdown, idle timer, switch guard, every new text in English and Arabic).
+- **Left:** the by-hand check in a browser and on a phone (faces, PIN, switch, wrong PIN,
+  right-to-left) was not run on the dev machine; the owner tries it. The one-tap Arabic
+  toggle is task 022.
+- **Owner:** review the PR (it also carries the `CLAUDE.md` change), try the faces screen and
+  PIN sign-in, merge.
