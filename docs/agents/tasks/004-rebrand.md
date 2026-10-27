@@ -1,32 +1,30 @@
 # Task 004: rebrand to Wuzzanext
 
 - **Status:** ready
-- **Branch and worktree:** `task/004-rebrand` from `main` (c6dd678), in
+- **Branch and worktree:** `task/004-rebrand` from `main` (11e3996), in
   `C:\dev\wt\wuzzanext-004-rebrand`
 - **Hand-off:** Codex (default model): one read-only planning run, then three writing runs,
   one per commit (rename, analytics removal, Plus/payment removal). The supervisor reviews
   and commits each.
 - **Shares:** `frontend/` and `backend/` with every later task; 005 (logo) builds on it
-- **Your time:** ~20 min (review three commits, merge). One open question: the repository
-  must be public for the "source code" link to work.
+- **Your time:** ~20 min (review three commits, merge), plus a decision on how the source is
+  offered (the repository stays private; see the source-code decision below).
 - **Who:** Claude -> Codex -> Claude -> You
-- **Waits on:** nothing to start; the owner's answer on the public repository before the link
-  works for the family
+- **Waits on:** nothing
 
 ## Goal
 
 The app says Wuzzanext everywhere a family member can see it: web title, app name, Android
 app name and ID, emails and notifications. It no longer points to Donetick's hosted service,
 store pages or community. It keeps Donetick's AGPL-3.0 license and credits Donetick, and
-every user (signed in or not) can find a "Source code" link to this fork. It sends no
+every user (signed in or not) can reach an About page that offers this fork's source. It sends no
 analytics and has no paid "Plus" tier or purchase screens: every account has every feature.
 
 ## Read first
 
 - `docs/BRIEF.md` (Starting point; Look and feel), `AGENTS.md`.
-- The inventory from task 006: the sections "Outside connections", "Plus and paywall
-  gating" and "Branding to change (task 004)". It is not on this branch yet (its pull
-  request is still open); the supervisor gives its path in the prompt.
+- `docs/INVENTORY.md` (task 006): the sections "Outside connections", "Plus and paywall
+  gating" and "Branding to change (task 004)".
 
 ## Limits that apply
 
@@ -48,9 +46,22 @@ analytics and has no paid "Plus" tier or purchase screens: every account has eve
   with the Java package moved to match. URL scheme: `wuzzanext://`.
 - The verified Android app link to `app.donetick.com` is removed (the app has no hosted
   site).
-- Source link: `https://github.com/abadran101/wuzzanext`. License link: the AGPL text in the
-  same repository (`https://github.com/abadran101/wuzzanext/blob/main/backend/LICENSE.md`; there is
-  no root license file).
+- Source code: the repository `abadran101/wuzzanext` stays private (owner, 2026-10-26), so the
+  app offers its own source. An in-app About page (route `/about`, no sign-in needed) shows:
+  "Wuzzanext, based on Donetick" with a link to `https://github.com/donetick/donetick`; the
+  AGPL-3.0 notice with a link to `https://www.gnu.org/licenses/agpl-3.0.html`; and a
+  "Download source code" link to the relative path `/wuzzanext-source.tar.gz`, which the
+  server serves from its embedded web files (`backend/frontend/handler.go`). In the Android
+  app the link uses the configured server address. Packaging that archive (a `git archive`
+  of the exact commit, placed in the built web files) is a separate task (020) for the owner
+  to decide; until then the link returns "not found".
+- Donetick Bridge (hosted push relay): its settings UI and routes are removed. Backend
+  Bridge code stays, off by configuration (task 019 sets the outside-service policy).
+- iOS (`frontend/ios/`) is not built for this family; leave it unchanged.
+- Feedback and error-report links to GitHub issues, the support email and store-review
+  prompts are removed (private repository, no store listing). The optional feedback webhook
+  stays off unless configured.
+- Email: only templates in this repository change; SMTP2Go-hosted templates are out of scope.
 - The marketing site (`MarketingApp.jsx`, landing pages) is not served: the app always opens
   the app. Removing the marketing files themselves is optional; not routing to them is
   required.
@@ -70,9 +81,9 @@ Commit 1, rename and links:
    translation site, invite base URL, feedback and error-report GitHub issue links, store
    review prompts). Invite links use the app's own configured address. Remove the
    marketing redirect and host-based marketing bundle selection in `main.jsx`.
-4. AGPL notice: a "Source code" link and a "License (AGPL-3.0)" link, plus the "Based on
-   Donetick" credit, visible without signing in (sign-in page footer) and when signed in
-   (for example an About entry in Settings). Small and unobtrusive.
+4. AGPL notice: the About page described above, linked from the sign-in page footer (signed
+   out) and from Settings for every signed-in user, children included. Small and
+   unobtrusive.
 5. Remote resources in email templates (Google Fonts, CDN images) are removed.
 
 Commit 2, analytics:
@@ -103,6 +114,8 @@ Commit 3, Plus and payment:
   license notices and the kept internal names, each listed in the Result.
 - No `posthog`, `plausible` or `wannaknow` reference left in `frontend/src` or
   `frontend/index.html`; no Stripe or RevenueCat calls left in source.
+- `/about` opens without signing in and shows the credit, the license notice and the source
+  download link.
 - Three separate commits as above.
 
 ## Result (filled in before the push, in the task's own branch)

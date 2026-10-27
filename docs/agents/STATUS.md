@@ -10,9 +10,10 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## GitHub
 
-- Repository `abadran101/wuzzanext`. Default branch `main` at c6dd678 (PR #2, tasks 002-003
-  and the folder-name fix, merged 2026-10-26; PR #1, task 001, merged before it).
-- Open branch: `task/006-inventory` (pull request for task 006).
+- Repository `abadran101/wuzzanext`, private (stays private, owner 2026-10-26). Default branch
+  `main` at 11e3996 (PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1,
+  task 001, before it).
+- Open branch: `task/004-rebrand` (local, not yet pushed).
 - Remote `origin` is `https://github.com/abadran101/wuzzanext.git`, confirmed with
   `git ls-remote origin` on 2026-10-26.
 - Agents push task branches with the fine-grained token the orchestrator lists (it covers only the
@@ -41,28 +42,52 @@ Update this file at every stop. Output from the real machines beats anything wri
 - Locked rules: `git push --dry-run origin main` refused without a prompt on 2026-10-26, again
   from `C:\dev\wuzzanext` the same day.
 - Running upstream code (builds and tests of `backend/` and `frontend/`) needs the owner's
-  approval in the supervisor's window; given for the task 003 worktree on 2026-10-26.
+  approval in the supervisor's window; given for the task 003 worktree, then for every task
+  worktree, on 2026-10-26.
 - Fence last tested with Tokenmaxximus' security check: not run in this session.
 
 ## In flight
 
-- 006 inventory: done, pull request for the owner to merge. Next: 004 rebrand.
+- 004 rebrand: task file written, Codex plan reviewed; three writing runs next (rename,
+  analytics, Plus/payment), one commit each.
 
 ## Open items
 
-1. Owner answers the open questions from the 001 report: offline conflict rule, reminders, logo
-   cut-out, sample recipe pages, HTTPS/Docker on the home server, repository public. The
-   orchestrator takes them to the owner one at a time. Recipe tasks 012-015 wait for the samples.
-2. Upstream brings `@posthog/cli` (PostHog analytics tooling) and Plus/paywall gating
+1. Sample recipe pages from the owner (tasks 012-015 wait for them). All other questions from
+   the 001 report are answered (Decisions, 2026-10-26).
+2. How the source is offered while the repository is private: task 004 adds an About page with
+   a download link; the proposed task 020 packages the source archive. Owner to decide.
+3. Upstream brings `@posthog/cli` (PostHog analytics tooling) and Plus/paywall gating
    (`backend/external/payment`, `PAYWALL_REASON` in the web interface). Both conflict with the
    "no cloud services, no analytics" limit. Task 006 lists every outside connection and Plus
    check (`docs/INVENTORY.md`); task 004 removes them in their own commits for the owner to
    review (the owner has not objected, but has not explicitly decided).
-3. Upstream findings left as they are: one `go vet` finding
+4. Upstream findings left as they are: one `go vet` finding
    (`backend/internal/realtime/pool.go:218`, copies a lock), one failing upstream web test, 1981
    lint warnings.
 
 ## Decisions (newest first)
+
+- 2026-10-26: 019: the home server runs Wuzzanext as a Windows service (Docker is available but
+  not wanted), behind the existing Nginx Proxy Manager on HTTPS, home network only, nothing
+  reachable from outside; local file storage, not S3; the owner deploys through Tokenmaxximus
+  by the merged full hash. No server hostnames or addresses in the repository (owner, through
+  the orchestrator).
+- 2026-10-26: 018: the Android app shows due-task reminders as local notifications from its own
+  copy of the data, no Google push service; browser users get no push reminders (owner,
+  through the orchestrator).
+- 2026-10-26: 017: the most recent change wins, per record, by the time the change was made on
+  the phone. Completions, photos and votes are their own entries and never overwritten; a
+  delete beats an older edit; no field-by-field merging (owner, through the orchestrator).
+- 2026-10-26: 005: for the app icon, Android launcher icon and favicon, remove only the outer
+  teal background and keep the rounded tile with the flames; for in-app graphics, cut out the
+  character alone; both transparent PNGs from `assets/logo/logo-original.jpg` (owner, through
+  the orchestrator).
+- 2026-10-26: the repository `abadran101/wuzzanext` is private and stays private (owner,
+  through the orchestrator). AGPL source offer: see open item 4.
+- 2026-10-26: PR #3 (task 006) merged (owner, through the orchestrator).
+- 2026-10-26: the owner approved building and testing the imported code in every task worktree
+  (owner, in the supervisor's window).
 
 - 2026-10-26: PR #2 merged; start 006, then 004 and onward; recipe tasks stay parked (owner,
   through the orchestrator).

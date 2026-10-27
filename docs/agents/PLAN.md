@@ -29,7 +29,7 @@ everything on the dev machine is readable by Codex.
 | 001 | Dev machine setup check; brief and plan into docs | Done | Nothing |
 | 002 | Build tools on the dev machine (Go, Node, JDK, Android SDK), installed by the owner | Done | Nothing |
 | 003 | Import Donetick backend and frontend at pinned upstream releases (keeping history), build, run tests | Done | Everything after |
-| 004 | Rebrand to Wuzzanext: names, texts, AGPL notice and "source code" link | Proposed | 003 |
+| 004 | Rebrand to Wuzzanext: names, texts, AGPL notice and "source code" link (About page); PostHog and Plus/payment removed | In progress | 003 |
 | 005 | Logo: transparent PNG, app icon, favicon, Android launcher icons | Proposed | 004 |
 | 006 | Inventory: what Donetick already does against the brief (recurrence, rotation, points, photos, approvals, notifications), gap list | Done | 003 |
 | 007 | Profiles with avatar and color; 4-digit PIN sign-in; person switcher | Proposed | 003 |
@@ -42,9 +42,10 @@ everything on the dev machine is readable by Codex.
 | 014 | Meal polls: up to 3 recipes, chosen voters, majority, random tie-break | Proposed | 013 |
 | 015 | Shopping list from planned meals, scaled to servings | Proposed | 012, 013 |
 | 016 | Android APK build (signed by the owner), home-server address setting | Proposed | 005 |
-| 017 | Offline copy and outbox sync with the conflict rule | Proposed, waits on conflict decision | 016 |
+| 017 | Offline copy and outbox sync with the conflict rule (decided 2026-10-26) | Proposed | 016 |
 | 018 | Due-task reminders as local phone notifications | Proposed | 016, 017 |
-| 019 | Home-server packaging and first deployment block | Proposed | all |
+| 019 | Home-server packaging as a Windows service behind Nginx Proxy Manager, first deployment | Proposed | all |
+| 020 | Source archive of the exact commit packaged into each build, offered on the About page (AGPL, private repository) | Proposed, owner to decide | 004, 019 |
 
 ## Settled: don't propose these again
 
