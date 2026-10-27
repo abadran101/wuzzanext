@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { LoginSocialGoogle } from 'reactjs-social-login'
 
+import { useProfileSession } from '../../components/ProfileSessionManager'
 import { GOOGLE_CLIENT_ID, REDIRECT_URL } from '../../Config'
 import { useAuth } from '../../hooks/useAuth.jsx'
 import { useResource } from '../../queries/ResourceQueries'
@@ -38,6 +39,7 @@ import MFAVerificationModal from './MFAVerificationModal'
 
 const LoginView = () => {
   const { t } = useTranslation('auth')
+  const { logOut } = useProfileSession()
   // Use React Query client directly to invalidate the user profile query
   const queryClient = useQueryClient()
   const { data: userProfile } = useUserProfile()
@@ -454,7 +456,7 @@ const LoginView = () => {
             variant='plain'
             color='neutral'
             sx={authButtonSx}
-            onClick={() => apiClient.handleLogout()}
+            onClick={() => void logOut()}
           >
             {t('useDifferentAccount')}
           </Button>

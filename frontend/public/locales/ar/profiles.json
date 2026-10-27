@@ -11,6 +11,8 @@
   "passwordSignIn": "الدخول بكلمة المرور",
   "switchPerson": "تبديل الشخص",
   "switchBlocked": "اتصل وزامن تغييراتك قبل تبديل الشخص.",
+  "logoutBlocked": "اتصل وزامن تغييراتك قبل تسجيل الخروج.",
+  "loggingOut": "جارٍ تسجيل الخروج…",
   "profile": "ملفك الشخصي",
   "colour": "اللون",
   "colourNumber": "اللون {{number}}",

@@ -32,14 +32,13 @@ import { useNavigate } from 'react-router-dom'
 import { useImpersonateUser } from '../contexts/ImpersonateUserContext'
 import useStickyState from '../hooks/useStickyState'
 import { useCircleMembers, useUserProfile } from '../queries/UserQueries'
-import { apiClient } from '../utils/ApiClient'
 import { resolvePhotoURL } from '../utils/Helpers'
 import UserModal from '../views/Modals/Inputs/UserModal'
 import { useProfileSession } from './ProfileSessionManager'
 
 const UserProfileAvatar = ({ showDetails = false }) => {
   const { t } = useTranslation('common')
-  const { switchPerson } = useProfileSession()
+  const { logOut, switchPerson } = useProfileSession()
   const navigate = useNavigate()
   const { mode, setMode } = useColorScheme()
   const { data: userProfile } = useUserProfile()
@@ -61,7 +60,7 @@ const UserProfileAvatar = ({ showDetails = false }) => {
   const isAdmin = canImpersonate(userProfile, circleMembersData?.res)
 
   const handleLogout = () => {
-    apiClient.handleLogout()
+    void logOut()
   }
 
   const isDarkMode = themeMode === 'dark'

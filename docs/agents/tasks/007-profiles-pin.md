@@ -95,6 +95,9 @@ the server is reachable only on the home network.
     person, PIN change; admins' Family section; child-account screens hidden; English and
     Arabic texts; README section. Supervisor fix: sign-in clears the offline outbox again as
     upstream did, so one person's queued changes are never sent as another's.
+  - 01972a98b985086982da40798f40bc6f7ca83c33: Log out (user menu, side bar, "use a different account") waits for
+    offline changes to sync like Switch person, and refuses with a short message while they
+    can't be sent (owner, through the orchestrator, 2026-10-27: "yes").
 - **Checked:** `go build ./...` ok; `go vet` only the known `pool.go:218`; `go test ./...`
   25 packages ok (9 new tests: PIN sign-in and refresh, lockout and expiry, concurrent wrong
   PINs, profile list scope and no secrets, admin rules, own PIN rules, preferences, MFA,
@@ -103,6 +106,7 @@ the server is reachable only on the home network.
   countdown, idle timer, switch guard, every new text in English and Arabic).
 - **Left:** the by-hand check in a browser and on a phone (faces, PIN, switch, wrong PIN,
   right-to-left) was not run on the dev machine; the owner tries it. The one-tap Arabic
-  toggle is task 022.
+  toggle is task 022. For 017 (STATUS open item 5): a forced sign-out when a session expires
+  still empties the offline queue, as upstream does; it needs one queue per person.
 - **Owner:** review the PR (it also carries the `CLAUDE.md` change), try the faces screen and
   PIN sign-in, merge.
