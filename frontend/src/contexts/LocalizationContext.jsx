@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { createContext, useContext, useEffect } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import useStickyState from '@/hooks/useStickyState'
@@ -129,7 +129,9 @@ export const LocalizationProvider = ({ children }) => {
     0,
     'firstDayOfWeek',
   ) // 0 = Sunday, 1 = Monday
-  const [language, setLanguageRaw] = useStickyState('en', 'language')
+  const [deviceLanguage, setLanguageRaw] = useStickyState('en', 'language')
+  const [profileLanguage, setProfileLanguage] = useState('')
+  const language = profileLanguage || deviceLanguage
 
   const setLanguage = code => {
     setLanguageRaw(code)
@@ -211,6 +213,7 @@ export const LocalizationProvider = ({ children }) => {
     setFirstDayOfWeek,
     language,
     setLanguage,
+    setProfileLanguage,
     isRTL,
     fmt,
     availableLanguages: AVAILABLE_LANGUAGES,

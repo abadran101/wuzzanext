@@ -97,3 +97,7 @@ bridge:
   instance_id: ""
   instance_token: ""
   timeout_seconds: 15
+# Optional household circle for the public profile picker. When omitted, only
+# an instance with exactly one circle exposes profiles.
+# household:
+#   circle_id: 1

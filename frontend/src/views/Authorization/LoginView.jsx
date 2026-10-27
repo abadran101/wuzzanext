@@ -23,7 +23,6 @@ import { apiClient } from '../../utils/ApiClient'
 import { getPendingInvite } from '../../utils/PendingInvite'
 import statusBarManager from '../../utils/StatusBarManager'
 import { saveTokens } from '../../utils/TokenStorage'
-import { buildChildUsername, getUserDisplayInfo } from '../../utils/UserHelpers'
 import {
   AuthDivider,
   AuthPasswordField,
@@ -34,56 +33,8 @@ import {
 } from './AuthFields'
 import AuthShell from './AuthShell'
 import { authButtonSx } from './authStyles'
+import FacesPicker from './FacesPicker'
 import MFAVerificationModal from './MFAVerificationModal'
-
-const SegmentedControl = ({ onChange, options, value }) => (
-  <Box
-    role='tablist'
-    sx={{
-      display: 'flex',
-      p: 0.5,
-      gap: 0.5,
-      borderRadius: '12px',
-      bgcolor: 'neutral.softBg',
-      mb: 2.5,
-    }}
-  >
-    {options.map(option => {
-      const selected = option.value === value
-      return (
-        <Box
-          key={option.value}
-          component='button'
-          type='button'
-          role='tab'
-          aria-selected={selected}
-          onClick={() => onChange(option.value)}
-          sx={{
-            flex: 1,
-            border: 'none',
-            cursor: 'pointer',
-            borderRadius: '9px',
-            py: 1,
-            fontSize: '0.875rem',
-            fontFamily: 'inherit',
-            fontWeight: 600,
-            color: selected ? 'text.primary' : 'text.secondary',
-            bgcolor: selected ? 'background.surface' : 'transparent',
-            boxShadow: selected ? 'xs' : 'none',
-            transition: 'background-color 180ms ease, color 180ms ease',
-            '&:focus-visible': {
-              outline: '2px solid',
-              outlineColor: 'primary.500',
-              outlineOffset: '2px',
-            },
-          }}
-        >
-          {option.label}
-        </Box>
-      )
-    })}
-  </Box>
-)
 
 const LoginView = () => {
   const { t } = useTranslation('auth')
@@ -96,20 +47,28 @@ const LoginView = () => {
   const [mfaSessionToken, setMfaSessionToken] = useState('')
   const [isAppleSignInSupported, setIsAppleSignInSupported] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [profiles, setProfiles] = useState([])
+  const [passwordMode, setPasswordMode] = useState(false)
 
-  // Child login state
-  const [loginType, setLoginType] = useState('primary')
-  const [parentUsername, setParentUsername] = useState('')
-  const [childName, setChildName] = useState('')
+  useEffect(() => {
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 10000)
+    apiClient
+      .get('/auth/profiles', {
+        skipAuthRecovery: true,
+        signal: controller.signal,
+      })
+      .then(async response => {
+        if (response.ok) setProfiles((await response.json()).profiles || [])
+      })
+      .catch(() => {})
+      .finally(() => clearTimeout(timeout))
+    return () => {
+      clearTimeout(timeout)
+      controller.abort()
+    }
+  }, [])
 
-  // Clear fields when switching login modes
-  const handleLoginModeChange = newValue => {
-    setLoginType(newValue)
-    setUsername('')
-    setParentUsername('')
-    setChildName('')
-    setPassword('')
-  }
   const { data: resource } = useResource()
   const { showError } = useNotification()
   const { isAuthenticated, login: authLogin, user } = useAuth()
@@ -154,36 +113,15 @@ const LoginView = () => {
       }
     }
   }, [isAuthenticated, user, Navigate])
-  const handleSubmit = async e => {
-    e.preventDefault()
+  const handleSubmit = async (e, pinCredentials) => {
+    e?.preventDefault()
 
-    // Validation for child login
-    if (loginType === 'sub') {
-      if (!parentUsername.trim()) {
-        showError({
-          title: t('validationError'),
-          message: t('primaryUsernameRequired'),
-        })
-        return
-      }
-      if (!childName.trim()) {
-        showError({
-          title: t('validationError'),
-          message: t('subNameRequired'),
-        })
-        return
-      }
-    } else {
-      if (!username.trim()) {
-        showError({
-          title: t('validationError'),
-          message: t('usernameRequired'),
-        })
-        return
-      }
+    if (!pinCredentials && !username.trim()) {
+      showError({ title: t('validationError'), message: t('usernameRequired') })
+      return
     }
 
-    if (!password) {
+    if (!pinCredentials && !password) {
       showError({
         title: t('validationError'),
         message: t('passwordRequired'),
@@ -191,22 +129,19 @@ const LoginView = () => {
       return
     }
 
-    // Determine the actual username to send
-    const actualUsername =
-      loginType === 'sub'
-        ? buildChildUsername(parentUsername, childName)
-        : username
-
     setIsSubmitting(true)
     let result
     try {
-      result = await authLogin({ username: actualUsername, password })
+      result = await authLogin(
+        pinCredentials || { username, password },
+        pinCredentials ? '/auth/pin' : '/auth/login',
+      )
     } catch (error) {
       showError({
         title: t('loginFailed'),
         message: error?.message || t('genericError'),
       })
-      return
+      return { success: false }
     } finally {
       setIsSubmitting(false)
     }
@@ -215,7 +150,7 @@ const LoginView = () => {
       if (result.data?.mfaRequired) {
         setMfaSessionToken(result.data.sessionToken)
         setMfaModalOpen(true)
-        return
+        return result
       }
 
       // Refetch user profile after successful login
@@ -228,12 +163,13 @@ const LoginView = () => {
       } else {
         Navigate('/')
       }
-    } else {
+    } else if (!pinCredentials) {
       showError({
         title: t('loginFailed'),
         message: result.error || t('genericError'),
       })
     }
+    return result
   }
 
   const loggedWithProvider = async function (provider, data) {
@@ -328,6 +264,7 @@ const LoginView = () => {
   }
 
   const handleMFASuccess = async data => {
+    localStorage.setItem('profileLastInput', String(Date.now()))
     // Save all tokens including refresh tokens
     await saveTokens({
       accessToken: data.token,
@@ -474,7 +411,18 @@ const LoginView = () => {
         ) : null
       }
     >
-      {userProfile ? (
+      {passwordMode && profiles.length > 0 && !userProfile && (
+        <Button variant='plain' onClick={() => setPasswordMode(false)}>
+          {t('profiles:back')}
+        </Button>
+      )}
+      {!userProfile && profiles.length > 0 && !passwordMode ? (
+        <FacesPicker
+          profiles={profiles}
+          onLogin={credentials => handleSubmit(null, credentials)}
+          onPassword={() => setPasswordMode(true)}
+        />
+      ) : userProfile ? (
         <Box
           sx={{
             display: 'flex',
@@ -490,11 +438,6 @@ const LoginView = () => {
           />
           <Box sx={{ textAlign: 'center' }}>
             <Typography level='title-md'>{displayName}</Typography>
-            {getUserDisplayInfo(userProfile).userType === 'child' && (
-              <Typography level='body-xs' sx={{ color: 'text.secondary' }}>
-                {t('subAccount')}
-              </Typography>
-            )}
           </Box>
 
           <Button
@@ -522,49 +465,17 @@ const LoginView = () => {
           onSubmit={handleSubmit}
           sx={{ display: 'flex', flexDirection: 'column' }}
         >
-          <SegmentedControl
-            value={loginType}
-            onChange={handleLoginModeChange}
-            options={[
-              { value: 'primary', label: t('primaryAccount') },
-              { value: 'sub', label: t('subAccount') },
-            ]}
-          />
-
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {loginType === 'primary' ? (
-              <AuthTextField
-                label={t('username')}
-                id='username'
-                name='username'
-                autoComplete='username'
-                placeholder={t('yourUsername')}
-                autoFocus
-                value={username}
-                onChange={e => setUsername(e.target.value)}
-              />
-            ) : (
-              <>
-                <AuthTextField
-                  label={t('primaryAccountUsernameLabel')}
-                  id='parentUsername'
-                  name='parentUsername'
-                  autoComplete='username'
-                  placeholder={t('primaryUsernamePlaceholder')}
-                  autoFocus
-                  value={parentUsername}
-                  onChange={e => setParentUsername(e.target.value)}
-                />
-                <AuthTextField
-                  label={t('subAccountNameLabel')}
-                  id='childName'
-                  name='childName'
-                  placeholder={t('subNamePlaceholder')}
-                  value={childName}
-                  onChange={e => setChildName(e.target.value)}
-                />
-              </>
-            )}
+            <AuthTextField
+              label={t('username')}
+              id='username'
+              name='username'
+              autoComplete='username'
+              placeholder={t('yourUsername')}
+              autoFocus
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+            />
 
             <Box>
               <AuthPasswordField
@@ -591,7 +502,7 @@ const LoginView = () => {
           </Box>
 
           <AuthSubmitButton loading={isSubmitting} sx={{ mt: 3 }}>
-            {loginType === 'sub' ? t('signInAsSubAccount') : t('signIn')}
+            {t('signIn')}
           </AuthSubmitButton>
         </Box>
       )}

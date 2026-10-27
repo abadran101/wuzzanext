@@ -59,11 +59,15 @@ Read this whole file at the start of every session, then `docs/agents/STATUS.md`
 - The app (Wuzzanext, a fork of Donetick, AGPL-3.0) runs on the owner's home server and talks
   only to that server and the owner's local recipes page. No cloud services, no analytics, no
   push service outside the home network. (default, owner can change)
+- **One exception (owner, in the supervisor's window, 2026-10-27):** the home server may call
+  Google Cloud Translation to translate chore names, chore details and recipe names between
+  English and Arabic. That text may go to Google. The API key lives only in the home server's
+  configuration. Nothing else goes there; tests use a fake translator, never the real service.
 - Secrets (server keys, signing keystore for the APK) live on the home server or with the owner,
   never in this repository or on the dev machine.
-- Family data (names, photos, PINs, real recipes) never goes to an AI provider. Tests and docs use
-  made-up families and sample recipes only. Internal hostnames stay out of the repository; the
-  app reads them from its configuration.
+- Family data (names, photos, PINs, real recipes) never goes to an AI provider (the translation
+  exception above aside). Tests and docs use made-up families and sample recipes only.
+  Internal hostnames stay out of the repository; the app reads them from its configuration.
 - The owner decides on: dependency lock files (`go.sum`, `package-lock.json`/`yarn.lock`), code
   imported from upstream Donetick, the license files, and the APK signing setup.
 - Updates on the home server: avoid family meal times; the owner picks the time. (default)

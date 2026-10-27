@@ -11,9 +11,10 @@ Update this file at every stop. Output from the real machines beats anything wri
 ## GitHub
 
 - Repository `abadran101/wuzzanext`, private (stays private, owner 2026-10-26). Default branch
-  `main` at 71262c6 (PR #5, task 021, merged 2026-10-27; PR #4, task 004, merged 2026-10-27;
-  PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1, task 001, before it).
-- Open branch: `task/005-logo` (PR open, waiting on the owner).
+  `main` at 724a3e1 (PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
+  merged 2026-10-27; PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1,
+  task 001, before it).
+- Open branch: `task/007-profiles-pin` (PR open, waiting on the owner).
 - Remote `origin` is `https://github.com/abadran101/wuzzanext.git`, confirmed with
   `git ls-remote origin` on 2026-10-26.
 - Agents push task branches with the fine-grained token the orchestrator lists (it covers only the
@@ -48,8 +49,10 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 005 logo: done, PR open for the owner (task file Result).
-- Next: 007 onward; 012-015 stay parked.
+- 007 profiles and PIN sign-in: done, PR open for the owner (task file Result); the owner
+  tries the faces screen and PIN sign-in by hand.
+- Next: 022 (Arabic toggle, owner reviews the wording), then 023 (translation), then 008
+  onward; 012-015 stay parked.
 
 ## Open items
 
@@ -58,11 +61,38 @@ Update this file at every stop. Output from the real machines beats anything wri
 2. Resolved by task 021: the unused PostHog, RevenueCat and Stripe packages are removed.
 3. Resolved by task 004 (merged): analytics and Plus/payment code removed.
 4. Upstream findings left as they are: one `go vet` finding
-   (`backend/internal/realtime/pool.go:218`, copies a lock), one failing upstream web test, 1906
-   lint warnings (after 004).
+   (`backend/internal/realtime/pool.go:218`, copies a lock), one failing upstream web test, 1904
+   lint warnings (after 007).
 
 ## Decisions (newest first)
 
+- 2026-10-27: PR #6 (task 005) merged (owner, through the orchestrator: "#6 merged").
+- 2026-10-27: Codex is back (owner, through the orchestrator: "codex is back"); its
+  sandbox read and wrote the 007 worktree again.
+- 2026-10-27: the owner reviews the Arabic wording when task 022 is done: "I can review it"
+  (owner, through the orchestrator).
+- 2026-10-27: "I accept your recommendations" (owner, through the orchestrator). 007: the
+  faces screen shows to anyone who opens the app at home; admins create profiles and can
+  reset any PIN, each person changes their own; admins sign in by PIN too, password kept as
+  a backup; 5 wrong PINs make that profile wait 1 minute; an on/off setting per device sends
+  a shared tablet back to the faces after 5 minutes unused. Language is remembered per
+  person. 023: only chore names, chore details and recipe names are sent (never profile
+  names), names inside chore text as they are; a daily quota in Google Cloud keeps usage in
+  the free allowance, and the owner checks pricing before choosing the newer LLM model; the
+  server connects out to the translation endpoint only.
+- 2026-10-27: no child accounts; everyone is an adult, roles are admin and regular user, no
+  restrictions for kids (owner, through the orchestrator; changes 007 question 5).
+- 2026-10-27: family-typed text should be translated with Google Cloud Translation (free up
+  to 500,000 characters a month; "the data shared is not sensitive") (owner, through the
+  orchestrator). The owner then changed `CLAUDE.md` section 3 in the supervisor's window
+  (same day): the home server may call Google Cloud Translation for chore names, chore details
+  and recipe names between English and Arabic; the API key lives only in the home server's
+  configuration. Planned as task 023; design questions sent to the owner.
+- 2026-10-27: new requirement, very important: "the web and mobile apps need to have an easy
+  toggle button that switches the language of the entire app's content to be displayed in
+  arabic" (owner, through the orchestrator). Planned as task 022; every new screen from 007
+  on ships English and Arabic texts and works right to left.
+- 2026-10-27: continue with 007 (owner, through the orchestrator).
 - 2026-10-27: PR #5 (task 021) merged; merge that main into the 005 branch before its PR,
   then carry on with the plan (owner, through the orchestrator).
 - 2026-10-27: README and docs are kept current: brought up to date in the next commit, and

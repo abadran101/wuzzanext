@@ -521,6 +521,14 @@ class SQLiteBackend {
     return null
   }
 
+  async clearServerData() {
+    await CapacitorSQLite.execute({
+      database: DB_NAME,
+      statements:
+        'DELETE FROM cached_chores; DELETE FROM sync_meta; DELETE FROM cached_history;',
+    })
+  }
+
   async clearAll() {
     await CapacitorSQLite.execute({
       database: DB_NAME,
@@ -947,6 +955,13 @@ class IndexedDBBackend {
       await this._request(store.clear())
     }
   }
+
+  async clearServerData() {
+    for (const name of ['cached_chores', 'sync_meta', 'cached_history']) {
+      const { store } = await this._tx(name, 'readwrite')
+      await this._request(store.clear())
+    }
+  }
 }
 
 // ── OfflineDB facade ──
@@ -1158,6 +1173,11 @@ class OfflineDB {
   async clearAll() {
     await this._ensureInit()
     return this.backend.clearAll()
+  }
+
+  async clearServerData() {
+    await this._ensureInit()
+    return this.backend.clearServerData()
   }
 }
 

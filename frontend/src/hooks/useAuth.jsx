@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
     await clearAllTokens()
   }
 
-  const login = async credentials => {
+  const login = async (credentials, endpoint = '/auth/login') => {
     setIsLoading(true)
     try {
       // Ensure apiClient is initialized with the correct URL
@@ -56,7 +56,10 @@ export const AuthProvider = ({ children }) => {
         config.credentials = 'include'
       }
 
-      const response = await fetch(`${currentBaseURL}/auth/login`, config)
+      const response = await fetch(`${currentBaseURL}${endpoint}`, {
+        ...config,
+        signal: AbortSignal.timeout(10000),
+      })
 
       if (!response.ok) {
         const res = await response.json()
@@ -65,6 +68,7 @@ export const AuthProvider = ({ children }) => {
         return {
           success: false,
           status: response.status,
+          retryAfter: response.headers.get('Retry-After'),
           error: res?.error || 'Login failed',
         }
       }
@@ -74,8 +78,11 @@ export const AuthProvider = ({ children }) => {
 
       if (userToken) {
         setToken(userToken)
+        localStorage.setItem('profileLastInput', String(Date.now()))
 
         try {
+          // Queued changes belong to whoever made them; switching person refuses
+          // to switch while any are waiting, so nothing of anyone's is lost here.
           await offlineDB.clearAll()
         } catch (e) {
           console.error('Error clearing offline data on login', e)
@@ -95,6 +102,8 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       setIsLoading(false)
       return { success: false, error: 'Network error' }
+    } finally {
+      setIsLoading(false)
     }
   }
 

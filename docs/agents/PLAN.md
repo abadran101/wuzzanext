@@ -32,7 +32,7 @@ everything on the dev machine is readable by Codex.
 | 004 | Rebrand to Wuzzanext: names, texts, AGPL notice and "source code" link (About page); PostHog and Plus/payment removed | Done | 003 |
 | 005 | Logo: transparent PNG, app icon, favicon, Android launcher icons | Done (PR) | 004 |
 | 006 | Inventory: what Donetick already does against the brief (recurrence, rotation, points, photos, approvals, notifications), gap list | Done | 003 |
-| 007 | Profiles with avatar and color; 4-digit PIN sign-in; person switcher | Proposed | 003 |
+| 007 | Profiles with avatar and color; 4-digit PIN sign-in; person switcher | Done (PR) | 003 |
 | 008 | Chore content: instructions, "done means" text, pictures | Proposed | 006 |
 | 009 | Photo proof and thumbs-up approval by the assigner | Proposed | 006, 008 |
 | 010 | Points and weekly leaderboard | Proposed | 006 |
@@ -47,6 +47,8 @@ everything on the dev machine is readable by Codex.
 | 019 | Home-server packaging as a Windows service behind Nginx Proxy Manager, first deployment | Proposed | all, 020 first |
 | 020 | Source archive of the exact commit packaged into each build, offered on the About page (AGPL, private repository) | Approved (2026-10-26), before 019 | 004 |
 | 021 | Remove unused PostHog, RevenueCat and Stripe packages; README brought up to date | Done | 004 |
+| 022 | Arabic: one-tap language toggle (web and Android), full right-to-left layout, missing Arabic texts filled in; the owner reviews the Arabic wording before merge | Proposed | 007 |
+| 023 | Translate chore names, chore details and recipe names English <-> Arabic on the home server (Google Cloud Translation, cached; key only in the server's configuration) | Proposed | 022 |
 
 ## Settled: don't propose these again
 

@@ -51,6 +51,7 @@ type Handler struct {
 	mfaService             *mfa.MFAService
 	oauth2Config           config.OAuth2Config
 	singleCircleInstance   bool
+	householdCircleID      int
 }
 
 func NewHandler(ur *uRepo.UserRepository, cr *cRepo.CircleRepository,
@@ -78,6 +79,7 @@ func NewHandler(ur *uRepo.UserRepository, cr *cRepo.CircleRepository,
 		mfaService:             mfaService,
 		oauth2Config:           config.OAuth2Config,
 		singleCircleInstance:   config.SingleCircleInstance,
+		householdCircleID:      config.Household.CircleID,
 	}
 }
 
@@ -948,6 +950,8 @@ func (h *Handler) UpdateUserDetails(c *gin.Context) {
 		ChatID      *int64  `json:"chatID" binding:"omitempty"`
 		Image       *string `json:"image" binding:"omitempty"`
 		Timezone    *string `json:"timezone" binding:"omitempty"`
+		Colour      *string `json:"colour"`
+		Language    *string `json:"language"`
 	}
 	user, ok := auth.CurrentUser(c)
 	if !ok {
@@ -964,6 +968,20 @@ func (h *Handler) UpdateUserDetails(c *gin.Context) {
 		return
 	}
 	// update non-nil fields:
+	if req.Colour != nil {
+		if !uModel.IsProfileColour(*req.Colour) {
+			c.JSON(400, gin.H{"error": "Invalid colour"})
+			return
+		}
+		user.Colour = *req.Colour
+	}
+	if req.Language != nil {
+		if *req.Language != "" && *req.Language != "en" && *req.Language != "ar" {
+			c.JSON(400, gin.H{"error": "Invalid language"})
+			return
+		}
+		user.Language = *req.Language
+	}
 	if req.DisplayName != nil {
 		user.DisplayName = html.EscapeString(*req.DisplayName)
 	}
@@ -1778,6 +1796,9 @@ func Routes(router *gin.Engine, h *Handler, jwtAuth *jwt.GinJWTMiddleware, multi
 		userRoutes.GET("/", h.GetAllUsers())
 		userRoutes.GET("/profile", h.GetUserProfile)
 		userRoutes.PUT("", h.UpdateUserDetails)
+		userRoutes.PUT("/pin", h.changePIN)
+		userRoutes.POST("/profiles", h.createProfile)
+		userRoutes.PUT("/profiles/:id/pin", h.resetProfilePIN)
 		userRoutes.POST("/tokens", h.CreateLongLivedToken)
 		userRoutes.GET("/tokens", h.GetAllUserToken)
 		userRoutes.DELETE("/tokens/:id", h.DeleteUserToken)
@@ -1813,6 +1834,8 @@ func Routes(router *gin.Engine, h *Handler, jwtAuth *jwt.GinJWTMiddleware, multi
 	authRoutes.Use(utils.RateLimitMiddleware(limiter))
 	{
 		authRoutes.POST("/:provider/callback", h.thirdPartyAuthCallback)
+		authRoutes.GET("/profiles", h.profiles)
+		authRoutes.POST("/pin", h.pinLogin)
 		authRoutes.POST("refresh", authHandler.RefreshTokenHandler) // Changed from GET to POST
 		authRoutes.POST("logout", authHandler.LogoutHandler)        // New logout endpoint
 		authRoutes.POST("mfa/verify", h.verifyMFA)                  // Add MFA verification endpoint
