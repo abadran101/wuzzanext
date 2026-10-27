@@ -1,0 +1,57 @@
+import type { CapacitorConfig } from '@capacitor/cli'
+
+const config: CapacitorConfig = {
+  appId: 'com.donetick.app',
+  appName: 'Donetick',
+  webDir: 'dist',
+  android: {
+    allowMixedContent: true,
+  },
+  plugins: {
+    // Keep this in native config as well as setting it at runtime. On iOS the
+    // StatusBar plugin reapplies its native config whenever the app's view
+    // appears (including after dismissing Capacitor Browser). Without this it
+    // falls back to overlay=true and the WebView jumps under the status bar.
+    StatusBar: {
+      overlaysWebView: false,
+    },
+    PushNotifications: {
+      presentationOptions: ['badge', 'sound', 'alert'],
+    },
+    // We drive the badge count ourselves from the due/overdue total (see
+    // useAppBadgeSync), so don't let a resume reset it to 0 out from under us.
+    Badge: {
+      persist: true,
+      autoClear: false,
+    },
+    LocalNotifications: {
+      smallIcon: 'ic_stat_icon_config_sample',
+      iconColor: '#488AFF',
+      sound: 'beep.wav',
+    },
+    CapacitorSQLite: {
+      // The offline cache opens databases with encrypted: false / no-encryption.
+      // @capacitor-community/sqlite defaults native encryption to true when this
+      // block is absent; on Android that can make plugin load fail with
+      // "CapacitorSQLitePlugin: null" before JS gets a chance to open the DB.
+      iosIsEncryption: false,
+      androidIsEncryption: false,
+    },
+    SocialLogin: {
+      providers: {
+        google: true,
+        facebook: false,
+        apple: true,
+        twitter: false,
+      },
+    },
+    //   GoogleAuth: {
+    //     scopes: ['profile', 'email', 'openid'],
+    //     clientId: process.env.VITE_APP_GOOGLE_CLIENT_ID,
+    //     androidClientId: process.env.VITE_APP_ANDRIOD_CLIENT_ID,
+    //     iosClientId: process.env.VITE_APP_IOS_CLIENT_ID,
+    // },
+  },
+}
+
+export default config

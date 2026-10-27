@@ -1,0 +1,296 @@
+import { Capacitor, registerPlugin } from '@capacitor/core'
+
+import { apiClient } from '../utils/ApiClient'
+import { applyFilter } from '../utils/FilterEngine'
+
+// Native bridge implemented in ios/App/App/WidgetBridgePlugin.swift and
+// android/.../widget/WidgetBridgePlugin.java. It persists the snapshot in
+// storage the home-screen widgets can read (App Group defaults on iOS,
+// SharedPreferences on Android) and asks the OS to redraw them.
+const WidgetBridge = registerPlugin('WidgetBridge')
+
+// Device-wide widget appearance, mirrored into the native side so the widgets
+// can honour it while the app is closed. Kept in localStorage (not the account)
+// because it describes this device's home screen.
+const OPACITY_STORAGE_KEY = 'widgetOpacity'
+export const DEFAULT_WIDGET_OPACITY = 100
+
+export const getWidgetOpacity = () => {
+  const stored = Number(localStorage.getItem(OPACITY_STORAGE_KEY))
+  if (!Number.isFinite(stored)) return DEFAULT_WIDGET_OPACITY
+  return Math.min(100, Math.max(0, Math.round(stored)))
+}
+
+// Widget colour scheme. 'auto' follows the phone's light/dark setting (what the
+// widgets did before this option existed); 'light'/'dark' pin them regardless of
+// the system, for wallpapers the automatic choice reads badly against.
+const THEME_STORAGE_KEY = 'widgetTheme'
+export const DEFAULT_WIDGET_THEME = 'auto'
+export const WIDGET_THEMES = ['auto', 'light', 'dark']
+
+export const getWidgetTheme = () => {
+  const stored = localStorage.getItem(THEME_STORAGE_KEY)
+  return WIDGET_THEMES.includes(stored) ? stored : DEFAULT_WIDGET_THEME
+}
+
+const WINDOW_DAYS = 7
+const MAX_TASKS = 100
+const MAX_PROJECT_TASKS = 500
+const MAX_PROJECTS = 100
+const MAX_FILTERS = 100
+const MAX_FILTER_TASKS = 100
+const MAX_MEMBERS = 12
+const PUSH_DEBOUNCE_MS = 1500
+
+const priorityRank = priority => {
+  const rank = [1, 2, 3, 4, 0].indexOf(priority || 0)
+  return rank === -1 ? 4 : rank
+}
+
+const compareDueDateThenPriority = (a, b) => {
+  if (a.dueDate !== b.dueDate) {
+    if (a.dueDate === null) return 1
+    if (b.dueDate === null) return -1
+    return a.dueDate - b.dueDate
+  }
+  return priorityRank(a.priority) - priorityRank(b.priority)
+}
+
+const isNative = () => Capacitor.isNativePlatform()
+
+// The snapshot carries every circle member's actionable tasks (due inside the
+// 7-day window, overdue included, or awaiting approval — status 3). Each task
+// records its assignee so the widgets can filter down to "mine" (the default)
+// or show everyone, per the user's widget configuration; the People widget
+// derives per-member counts from the same list. The Today widget re-derives
+// its subset natively from dueDate so one snapshot feeds all widgets.
+export const buildWidgetTasks = chores => {
+  const endOfWindow = new Date()
+  endOfWindow.setHours(23, 59, 59, 999)
+  endOfWindow.setDate(endOfWindow.getDate() + WINDOW_DAYS)
+  const cutoff = endOfWindow.getTime()
+
+  return (chores || [])
+    .map(chore => {
+      if (!chore || chore.id == null) return null
+      const approval = chore.status === 3
+      const dueDate = chore.nextDueDate
+        ? new Date(chore.nextDueDate).getTime()
+        : null
+      const inWindow = dueDate !== null && dueDate <= cutoff
+      if (!approval && !inWindow) return null
+      return {
+        id: chore.id,
+        name: chore.name || '',
+        dueDate,
+        priority: chore.priority || 0,
+        approval,
+        assignedTo: chore.assignedTo == null ? null : String(chore.assignedTo),
+      }
+    })
+    .filter(Boolean)
+    .sort((a, b) => {
+      if (a.approval !== b.approval) return a.approval ? -1 : 1
+      return compareDueDateThenPriority(a, b)
+    })
+    .slice(0, MAX_TASKS)
+}
+
+// Circle members, trimmed to what the widgets render: avatar + short name.
+// The project widget is not limited to the seven-day dashboard window.
+// Keep a separate compact list so every active task can be browsed by project.
+export const buildProjectWidgetTasks = chores =>
+  (chores || [])
+    .filter(chore => chore?.id != null)
+    .map(chore => ({
+      id: chore.id,
+      name: chore.name || '',
+      projectId: String(chore.projectId || chore.project_id || 'default'),
+      assignedTo: chore.assignedTo == null ? null : String(chore.assignedTo),
+      completed: false,
+      dueDate: chore.nextDueDate ? new Date(chore.nextDueDate).getTime() : null,
+      priority: chore.priority || 0,
+    }))
+    .sort(compareDueDateThenPriority)
+    .slice(0, MAX_PROJECT_TASKS)
+
+export const buildWidgetFilters = filters =>
+  (filters || [])
+    .filter(filter => filter?.id != null)
+    .map(filter => ({
+      id: String(filter.id),
+      name: filter.name || 'Filter',
+      color: filter.color || '#64748B',
+      conditions: filter.conditions || [],
+      operator: filter.operator || 'AND',
+    }))
+    .slice(0, MAX_FILTERS)
+
+export const buildFilterWidgetTasks = (chores, filters, userId) =>
+  buildWidgetFilters(filters).flatMap(filter =>
+    applyFilter(chores || [], filter, { userId })
+      .map(chore => ({
+        id: chore.id,
+        name: chore.name || '',
+        filterId: filter.id,
+        assignedTo: chore.assignedTo == null ? null : String(chore.assignedTo),
+        completed: false,
+        dueDate: chore.nextDueDate
+          ? new Date(chore.nextDueDate).getTime()
+          : null,
+        priority: chore.priority || 0,
+      }))
+      .sort(compareDueDateThenPriority)
+      .slice(0, MAX_FILTER_TASKS),
+  )
+
+export const buildWidgetProjects = projects => {
+  const normalized = (projects || [])
+    .filter(project => project?.id != null)
+    .map(project => ({
+      id: String(project.id),
+      name: project.name || 'Project',
+      color: project.color || '#1976D2',
+      icon: project.icon || null,
+    }))
+
+  // Tasks without a project belong to Donetick's implicit default project.
+  if (!normalized.some(project => project.id === 'default')) {
+    normalized.unshift({
+      id: 'default',
+      name: 'Default Project',
+      color: '#64748B',
+      icon: 'FolderOpen',
+    })
+  }
+  return normalized.slice(0, MAX_PROJECTS)
+}
+
+export const buildWidgetMembers = members => {
+  return (members || [])
+    .filter(member => member && member.userId != null)
+    .slice(0, MAX_MEMBERS)
+    .map(member => ({
+      id: String(member.userId),
+      name: member.displayName || member.username || '',
+      image: member.image || null,
+    }))
+}
+
+const pushSnapshot = async queryClient => {
+  const choresData = queryClient.getQueryData(['chores', false])
+  const chores = choresData?.res
+  if (!Array.isArray(chores)) return
+
+  const profileQuery = queryClient
+    .getQueryCache()
+    .findAll({ queryKey: ['userProfile'] })
+    .find(q => q.state.data?.id != null)
+  const userId = profileQuery?.state.data?.id
+  if (userId == null) return
+
+  const token = apiClient.getToken()
+  if (!token) return
+
+  const members = queryClient.getQueryData(['allCircleMembers'])?.res
+  const projects = queryClient.getQueryData(['projects']) || []
+  const filters = queryClient.getQueryData(['filters']) || []
+
+  await WidgetBridge.update({
+    data: JSON.stringify({
+      version: 4,
+      lastUpdated: Date.now(),
+      tasks: buildWidgetTasks(chores),
+      projectTasks: buildProjectWidgetTasks(chores),
+      projects: buildWidgetProjects(projects),
+      filterTasks: buildFilterWidgetTasks(chores, filters, userId),
+      filters: buildWidgetFilters(filters),
+      members: buildWidgetMembers(members),
+    }),
+    config: JSON.stringify({
+      serverUrl: apiClient.getApiURL(),
+      token,
+      userId,
+    }),
+    options: widgetOptions(),
+  })
+}
+
+// The native side stores the options blob as a whole, so every push has to
+// carry every appearance option — sending a partial object would reset the rest.
+const widgetOptions = () =>
+  JSON.stringify({ opacity: getWidgetOpacity(), theme: getWidgetTheme() })
+
+/**
+ * Push the app-wide appearance options to the native side so placed widgets
+ * redraw immediately. Stored separately from the task snapshot, so they survive
+ * logout the way the rest of the home-screen layout does.
+ */
+const pushWidgetOptions = async () => {
+  if (!isNative()) return
+  try {
+    await WidgetBridge.update({ options: widgetOptions() })
+  } catch (err) {
+    console.error('Failed to push widget options', err)
+  }
+}
+
+export const setWidgetOpacity = async percent => {
+  const value = Math.min(100, Math.max(0, Math.round(percent)))
+  localStorage.setItem(OPACITY_STORAGE_KEY, String(value))
+  await pushWidgetOptions()
+}
+
+export const setWidgetTheme = async theme => {
+  const value = WIDGET_THEMES.includes(theme) ? theme : DEFAULT_WIDGET_THEME
+  localStorage.setItem(THEME_STORAGE_KEY, value)
+  await pushWidgetOptions()
+}
+
+/**
+ * Watch the react-query cache and mirror every chores update into the
+ * home-screen widgets. Covers both fresh fetches and local mutations
+ * (complete/skip/approve write through the same cache key).
+ */
+export const initWidgetSync = queryClient => {
+  if (!isNative()) return () => {}
+
+  let timer = null
+  const schedule = () => {
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      pushSnapshot(queryClient).catch(err =>
+        console.error('Widget sync failed', err),
+      )
+    }, PUSH_DEBOUNCE_MS)
+  }
+
+  const unsubscribe = queryClient.getQueryCache().subscribe(event => {
+    const key = event?.query?.queryKey
+    if (
+      event?.type === 'updated' &&
+      (key?.[0] === 'chores' ||
+        key?.[0] === 'userProfile' ||
+        key?.[0] === 'allCircleMembers' ||
+        key?.[0] === 'projects' ||
+        key?.[0] === 'filters')
+    ) {
+      schedule()
+    }
+  })
+
+  return () => {
+    clearTimeout(timer)
+    unsubscribe()
+  }
+}
+
+/** Wipe widget storage so no task data lingers after logout. */
+export const clearWidgetData = async () => {
+  if (!isNative()) return
+  try {
+    await WidgetBridge.clear()
+  } catch (err) {
+    console.error('Failed to clear widget data', err)
+  }
+}
