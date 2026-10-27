@@ -13,7 +13,7 @@ Update this file at every stop. Output from the real machines beats anything wri
 - Repository `abadran101/wuzzanext`, private (stays private, owner 2026-10-26). Default branch
   `main` at 11e3996 (PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1,
   task 001, before it).
-- Open branch: `task/004-rebrand` (local, not yet pushed).
+- Open branch: `task/004-rebrand` (pushed, PR open, waiting on the owner).
 - Remote `origin` is `https://github.com/abadran101/wuzzanext.git`, confirmed with
   `git ls-remote origin` on 2026-10-26.
 - Agents push task branches with the fine-grained token the orchestrator lists (it covers only the
@@ -48,8 +48,8 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 004 rebrand: task file written, Codex plan reviewed; three writing runs next (rename,
-  analytics, Plus/payment), one commit each.
+- 004 rebrand: done, PR open for the owner (task file Result). Head after the record commit
+  is in the PR.
 
 ## Open items
 
@@ -57,14 +57,11 @@ Update this file at every stop. Output from the real machines beats anything wri
    the 001 report are answered (Decisions, 2026-10-26).
 2. Dependency cleanup (owner decision, to raise after 004): drop the now-unused PostHog and
    Stripe/RevenueCat packages from `package.json`/`package-lock.json` and `go.mod`/`go.sum`.
-3. Upstream brings `@posthog/cli` (PostHog analytics tooling) and Plus/paywall gating
-   (`backend/external/payment`, `PAYWALL_REASON` in the web interface). Both conflict with the
-   "no cloud services, no analytics" limit. Task 006 lists every outside connection and Plus
-   check (`docs/INVENTORY.md`); task 004 removes them in their own commits for the owner to
-   review (the owner has not objected, but has not explicitly decided).
+3. Resolved by task 004: PostHog/Plausible analytics and the Plus/payment code (Stripe,
+   RevenueCat, paywall) are removed in their own commits, for the owner to review in the PR.
 4. Upstream findings left as they are: one `go vet` finding
-   (`backend/internal/realtime/pool.go:218`, copies a lock), one failing upstream web test, 1981
-   lint warnings.
+   (`backend/internal/realtime/pool.go:218`, copies a lock), one failing upstream web test, 1906
+   lint warnings (after 004).
 
 ## Decisions (newest first)
 

@@ -1,6 +1,6 @@
 # Task 004: rebrand to Wuzzanext
 
-- **Status:** ready
+- **Status:** done
 - **Branch and worktree:** `task/004-rebrand` from `main` (11e3996), in
   `C:\dev\wt\wuzzanext-004-rebrand`
 - **Hand-off:** Codex (default model): one read-only planning run, then three writing runs,
@@ -120,13 +120,32 @@ Commit 3, Plus and payment:
 
 ## Result (filled in before the push, in the task's own branch)
 
-- Progress (2026-10-26): commit 1 (rename and links) is
-  2ecdf5bf14440f5ad2eec3e80da09ee7271c74f0. Checks after it: go build/vet clean (only the
-  known `pool.go:218`), go test 23 packages ok after updating one calendar test expectation;
-  npm run build ok; npm run lint exit 0 (0 errors, 1916 warnings; 19 Prettier/import-sort
-  errors from Codex fixed with eslint --fix; one i18n key made explicit `common:`); node
-  tests: only the known `task-editor-compatibility.test.mjs` failure. Codex run 2
-  (analytics) stopped at the Codex usage limit with no changes; the supervisor did commit 2
-  (analytics) itself: dc6b4ea6658ad2060a9772c2a51bbc1b39e08e76 (build ok, lint 0 errors,
-  1914 warnings, bundle has 0 posthog/plausible/wannaknow matches, node tests: only the known
-  failure). Run 3 (Plus/payment) goes to Codex after its limit resets (11:12 PM).
+- **Done** (2026-10-26). Three code commits, each reviewed by the supervisor:
+  1. Rename and links (Codex): 2ecdf5bf14440f5ad2eec3e80da09ee7271c74f0. Wuzzanext name in
+     texts and locales, Android id `com.wuzzanext.app`, scheme `wuzzanext://`, public About
+     page (`/about`) with the Donetick credit, the AGPL-3.0 notice and the source download link
+     `/wuzzanext-source.tar.gz` (the server answers 404 until task 020 packages the archive);
+     marketing, privacy and terms pages and the Bridge settings removed (`/privacy` and
+     `/terms` redirect to `/about`); calendar name Wuzzanext.
+  2. Analytics removal (supervisor, Codex hit its usage limit):
+     dc6b4ea6658ad2060a9772c2a51bbc1b39e08e76. PostHog code, the Plausible script, the
+     "heard about" survey and the privacy-analytics settings removed.
+  3. Plus/payment removal (Codex): 358061d9bad0d0309ba2d0d31c5cfcefea4d17cc. `external/payment`
+     (Stripe, RevenueCat) deleted with its routes and migrations; every account has every
+     feature (`IsPlusMember` is always true); Plus checks on calendar feeds, realtime,
+     uploads, webhooks and member/subaccount limits removed; user lookups keep upstream's
+     self-hosted queries; web paywall, subscription modal, payment pages and plan sections
+     removed. Existing databases keep their old Stripe tables (no data is dropped).
+- **Checked** on the final head: `go build ./...` ok; `go vet ./...` only the known
+  `pool.go:218`; `go test ./...` 24 packages ok; gofmt clean on changed Go files;
+  `npm run build` ok; `npm run lint` exit 0 (0 errors, 1906 warnings, down from 1981);
+  `node --test "tests/*.test.mjs"`: only the known upstream failure
+  (`task-editor-compatibility.test.mjs`, same assertion as before this task); built bundle
+  has no posthog, plausible, Stripe or RevenueCat matches.
+- **Left:** task 020 packages the source archive the About page links to. iOS files are
+  unchanged. NFC tags and OAuth redirects use the new `wuzzanext://` scheme, so tags written
+  for Donetick need rewriting. Calendar event UIDs keep their `@donetick` suffix so existing
+  subscriptions don't duplicate events.
+- **Owner:** review and merge the PR. Decide on the dependency cleanup (unused PostHog and
+  Stripe/RevenueCat packages in `package.json`/`package-lock.json` and `go.mod`/`go.sum`),
+  raised separately.

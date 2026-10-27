@@ -29,7 +29,7 @@ everything on the dev machine is readable by Codex.
 | 001 | Dev machine setup check; brief and plan into docs | Done | Nothing |
 | 002 | Build tools on the dev machine (Go, Node, JDK, Android SDK), installed by the owner | Done | Nothing |
 | 003 | Import Donetick backend and frontend at pinned upstream releases (keeping history), build, run tests | Done | Everything after |
-| 004 | Rebrand to Wuzzanext: names, texts, AGPL notice and "source code" link (About page); PostHog and Plus/payment removed | In progress | 003 |
+| 004 | Rebrand to Wuzzanext: names, texts, AGPL notice and "source code" link (About page); PostHog and Plus/payment removed | Done (PR) | 003 |
 | 005 | Logo: transparent PNG, app icon, favicon, Android launcher icons | Proposed | 004 |
 | 006 | Inventory: what Donetick already does against the brief (recurrence, rotation, points, photos, approvals, notifications), gap list | Done | 003 |
 | 007 | Profiles with avatar and color; 4-digit PIN sign-in; person switcher | Proposed | 003 |
