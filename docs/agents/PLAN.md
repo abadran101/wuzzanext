@@ -47,7 +47,7 @@ everything on the dev machine is readable by Codex.
 | 019 | Home-server packaging as a Windows service behind Nginx Proxy Manager, first deployment | Proposed | all, 020 first |
 | 020 | Source archive of the exact commit packaged into each build, offered on the About page (AGPL, private repository) | Approved (2026-10-26), before 019 | 004 |
 | 021 | Remove unused PostHog, RevenueCat and Stripe packages; README brought up to date | Done | 004 |
-| 022 | Arabic: one-tap language toggle (web and Android), full right-to-left layout, missing Arabic texts filled in | Proposed | 007 |
+| 022 | Arabic: one-tap language toggle (web and Android), full right-to-left layout, missing Arabic texts filled in; the owner reviews the Arabic wording before merge | Proposed | 007 |
 | 023 | Translate chore names, chore details and recipe names English <-> Arabic on the home server (Google Cloud Translation, cached; key only in the server's configuration) | Proposed | 022 |
 
 ## Settled: don't propose these again

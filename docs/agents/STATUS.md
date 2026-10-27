@@ -63,6 +63,8 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## Decisions (newest first)
 
+- 2026-10-27: the owner reviews the Arabic wording when task 022 is done: "I can review it"
+  (owner, through the orchestrator).
 - 2026-10-27: "I accept your recommendations" (owner, through the orchestrator). 007: the
   faces screen shows to anyone who opens the app at home; admins create profiles and can
   reset any PIN, each person changes their own; admins sign in by PIN too, password kept as
