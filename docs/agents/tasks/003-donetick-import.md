@@ -56,4 +56,9 @@ Latest stable (non-beta) tags on 2026-10-26. Imported with `git subtree add` wit
 
 ## Result (filled in before the push, in the task's own branch)
 
-- In progress.
+- In progress. Steps 1 and 2 done on 2026-10-26: `a1a8c93e` (server) and `6f2c1884` (web
+  interface); both trees match the pinned tags exactly (`backend` 23a8265, `frontend` 4fa5f22).
+- Blocked at step 3: the supervisor's permission check denied running the imported code
+  (`go mod download && go build ./... && go test ./...`, reason "Code from External"). Building
+  and testing upstream code needs the owner's permission rule; nothing was worked around.
+  `npm ci`/build/tests (step 4) need the same.
