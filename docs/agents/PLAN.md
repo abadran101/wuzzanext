@@ -9,7 +9,7 @@ The product is described in `docs/BRIEF.md`.
 
 | # | Milestone | Status |
 |---|---|---|
-| 0 | Setup: record, Codex hand-off, build tools on the dev machine | In progress |
+| 0 | Setup: record, Codex hand-off, build tools on the dev machine | In progress (001 done, 002 waits on owner) |
 | 1 | Fork and rebrand: Donetick imported, builds and tests green, renamed Wuzzanext, logo everywhere, source link in the app | Proposed |
 | 2 | Family profiles: name, avatar, color, 4-digit PIN, quick person switcher | Proposed |
 | 3 | Chores: one-time/recurring, rotation, instructions and pictures, photo proof with thumbs-up, points and weekly leaderboard, simple fun UI | Proposed |
@@ -26,7 +26,7 @@ everything on the dev machine is readable by Codex.
 
 | # | Task | Status | Shares |
 |---|---|---|---|
-| 001 | Dev machine setup check; brief and plan into docs | In progress | Nothing |
+| 001 | Dev machine setup check; brief and plan into docs | Done | Nothing |
 | 002 | Build tools on the dev machine (Go, Node, JDK, Android SDK), installed by the owner | Proposed, waits on owner | Nothing |
 | 003 | Import Donetick backend and frontend at pinned upstream releases (keeping history), build, run tests | Proposed | Everything after |
 | 004 | Rebrand to Wuzzanext: names, texts, AGPL notice and "source code" link | Proposed | 003 |
@@ -49,3 +49,5 @@ everything on the dev machine is readable by Codex.
 ## Settled: don't propose these again
 
 - 2026-10-26: the name is Wuzzanext, not Wuzzanikist (owner, through the orchestrator).
+- 2026-10-26: project, folder and repository are all `wuzzanext` (owner, through the
+  orchestrator).

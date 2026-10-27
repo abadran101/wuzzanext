@@ -2,7 +2,7 @@
 
 - **Status:** proposed / ready / delegated / done / live
 - **Branch and worktree:** `task/NNN-short-name` from `main`, in
-  `C:\dev\wt\wuzzanikist-website-NNN-short-name`
+  `C:\dev\wt\wuzzanext-NNN-short-name`
 - **Hand-off:** Codex model and effort, or "supervisor"
 - **Shares:** what this task shares with others, or "nothing"
 - **Your time:** the owner's hands-on time (review, merge, decisions, blocks), for example
