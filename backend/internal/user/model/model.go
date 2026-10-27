@@ -20,6 +20,12 @@ type User struct {
 	ChatID      int64            `json:"chatID" gorm:"column:chat_id"`                                               // Telegram chat ID
 	Image       string           `json:"image" gorm:"column:image"`                                                  // Image
 	Timezone    string           `json:"timezone" gorm:"column:timezone"`                                            // Timezone
+	// Household profile fields
+	Colour            string     `json:"colour" gorm:"column:colour"`                            // Profile colour from ProfileColours
+	Language          string     `json:"language" gorm:"column:language"`                        // "", "en" or "ar"
+	PINHash           string     `json:"-" gorm:"column:pin_hash;default:'';not null"`           // bcrypt hash of the 4-digit PIN
+	PINFailedAttempts int        `json:"-" gorm:"column:pin_failed_attempts;default:0;not null"` // Wrong PINs since the last success or lock
+	PINLockedUntil    *time.Time `json:"-" gorm:"column:pin_locked_until"`                       // PIN sign-in refused until this time
 	// Parent-Child relationship fields
 	ParentUserID *int     `json:"parentUserId,omitempty" gorm:"column:parent_user_id;index"`
 	UserType     UserType `json:"userType" gorm:"column:user_type;default:0"`

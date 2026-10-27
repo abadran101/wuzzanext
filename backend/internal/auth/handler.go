@@ -133,7 +133,6 @@ func (h *AuthHandler) RevokeAllHandler(c *gin.Context) {
 
 // EnhancedLoginHandler provides enhanced login with refresh tokens
 func (h *AuthHandler) EnhancedLoginHandler(c *gin.Context) {
-	logger := logging.FromContext(c)
 	var loginReq struct {
 		Username string `form:"username" json:"username" binding:"required"`
 		Password string `form:"password" json:"password" binding:"required"`
@@ -155,6 +154,12 @@ func (h *AuthHandler) EnhancedLoginHandler(c *gin.Context) {
 		return
 	}
 
+	h.CompleteLogin(c, userDetails, "password")
+}
+
+// CompleteLogin shares token issuance and MFA challenges across login methods.
+func (h *AuthHandler) CompleteLogin(c *gin.Context, userDetails *uModel.UserDetails, method string) {
+	logger := logging.FromContext(c)
 	// Check if user has MFA enabled
 	if userDetails.MFAEnabled {
 		sessionToken, err := h.mfaService.GenerateSessionToken()
@@ -167,7 +172,7 @@ func (h *AuthHandler) EnhancedLoginHandler(c *gin.Context) {
 		mfaSession := &uModel.MFASession{
 			SessionToken: sessionToken,
 			UserID:       userDetails.ID,
-			AuthMethod:   "password",
+			AuthMethod:   method,
 			Verified:     false,
 			CreatedAt:    time.Now().UTC(),
 			ExpiresAt:    time.Now().UTC().Add(10 * time.Minute),

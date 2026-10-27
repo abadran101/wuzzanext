@@ -76,6 +76,9 @@ func (r *UserRepository) GetAllUsersForSystemOnly(c context.Context) ([]*uModel.
 	return users, nil
 }
 func (r *UserRepository) CreateUser(c context.Context, user *uModel.User) (*uModel.User, error) {
+	if user.Colour == "" {
+		user.Colour = uModel.ProfileColours[0]
+	}
 	if err := r.db.WithContext(c).Create(user).Error; err != nil {
 		return nil, err
 	}
@@ -121,7 +124,7 @@ func (r *UserRepository) GetChildUserCount(c context.Context, parentID int) (int
 
 func (r *UserRepository) UpdateUser(c context.Context, user *uModel.User) error {
 	return r.db.WithContext(c).Transaction(func(tx *gorm.DB) error {
-		if err := tx.Save(user).Error; err != nil {
+		if err := tx.Omit("PINHash", "PINFailedAttempts", "PINLockedUntil").Save(user).Error; err != nil {
 			return err
 		}
 		if user.CircleID != 0 {

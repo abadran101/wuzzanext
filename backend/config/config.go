@@ -24,6 +24,7 @@ var (
 )
 
 type Config struct {
+	Household              HouseholdConfig     `mapstructure:"household" yaml:"household"`
 	Name                   string              `mapstructure:"name" yaml:"name"`
 	Telegram               TelegramConfig      `mapstructure:"telegram" yaml:"telegram"`
 	Pushover               PushoverConfig      `mapstructure:"pushover" yaml:"pushover"`
@@ -54,6 +55,10 @@ type Info struct {
 	Version   string
 	Commit    string
 	BuildDate string
+}
+
+type HouseholdConfig struct {
+	CircleID int `mapstructure:"circle_id" yaml:"circle_id"`
 }
 type StorageConfig struct {
 	StorageType string `mapstructure:"storage_type" yaml:"storage_type"`
