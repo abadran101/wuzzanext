@@ -1,1 +1,1 @@
-# wuzzanikist-website
+# wuzzanext
