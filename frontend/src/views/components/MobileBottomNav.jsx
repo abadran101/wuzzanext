@@ -22,6 +22,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import { useScrollDirection } from '../../hooks/useScrollDirection'
+import { useMenuVisibility } from '../../queries/MenuVisibilityQueries'
 import {
   getBottomNavHideLabels,
   getEnabledBottomNavItems,
@@ -149,6 +150,7 @@ NavItem.propTypes = {
 }
 
 const MobileBottomNav = () => {
+  const { isVisible } = useMenuVisibility()
   const { t } = useTranslation('common')
   const isMobile = useMediaQuery('(max-width:768px)')
   const location = useLocation()
@@ -204,21 +206,23 @@ const MobileBottomNav = () => {
           '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
         }}
       >
-        {items.map(item => (
-          <NavItem
-            key={item.id}
-            active={isItemActive(item, location.pathname)}
-            hideLabel={hideLabels}
-            icon={ICONS[item.iconName]}
-            label={t(item.translationKey, {
-              defaultValue: item.translationDefault,
-            })}
-            to={item.action ? undefined : item.to}
-            onClick={
-              item.action === 'search' ? () => navigate('/search') : undefined
-            }
-          />
-        ))}
+        {items
+          .filter(item => isVisible(item.id))
+          .map(item => (
+            <NavItem
+              key={item.id}
+              active={isItemActive(item, location.pathname)}
+              hideLabel={hideLabels}
+              icon={ICONS[item.iconName]}
+              label={t(item.translationKey, {
+                defaultValue: item.translationDefault,
+              })}
+              to={item.action ? undefined : item.to}
+              onClick={
+                item.action === 'search' ? () => navigate('/search') : undefined
+              }
+            />
+          ))}
         <NavItem
           active={false}
           hideLabel={hideLabels}

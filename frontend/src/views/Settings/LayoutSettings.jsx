@@ -35,6 +35,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { useMenuVisibility } from '../../queries/MenuVisibilityQueries'
 import {
   BOTTOM_NAV_ITEM_POOL,
   DEFAULT_BOTTOM_NAV_CONFIG,
@@ -72,6 +73,7 @@ const ICONS = {
 }
 
 const LayoutSettings = () => {
+  const { isVisible } = useMenuVisibility()
   // The nav item labels are the ones the bar itself renders, and those live
   // in the shared `common` namespace — reuse them rather than retranslating.
   const { t } = useTranslation(['settings', 'common'])
@@ -85,7 +87,8 @@ const LayoutSettings = () => {
   const [config, setConfig] = useState(getBottomNavConfig)
   const [hideLabels, setHideLabels] = useState(getBottomNavHideLabels)
 
-  const enabledCount = config.filter(item => item.enabled).length
+  const visibleConfig = config.filter(item => isVisible(item.id))
+  const enabledCount = visibleConfig.filter(item => item.enabled).length
 
   const handleHideLabelsChange = hide => {
     setHideLabels(hide)
@@ -114,7 +117,7 @@ const LayoutSettings = () => {
   const handleDragEnd = result => {
     if (!result.destination) return
 
-    const newConfig = Array.from(config)
+    const newConfig = Array.from(visibleConfig)
     const [reorderedItem] = newConfig.splice(result.source.index, 1)
     newConfig.splice(result.destination.index, 0, reorderedItem)
 
@@ -123,7 +126,10 @@ const LayoutSettings = () => {
       order: index,
     }))
 
-    saveConfig(updatedConfig)
+    saveConfig([
+      ...updatedConfig,
+      ...config.filter(item => !isVisible(item.id)),
+    ])
   }
 
   const resetToDefaults = () => {
@@ -239,13 +245,13 @@ const LayoutSettings = () => {
                     ref={provided.innerRef}
                     sx={{ gap: 1 }}
                   >
-                    {config.map((item, index) => {
+                    {visibleConfig.map((item, index) => {
                       // The stored config only keeps id/enabled/order — the
                       // icon and label live in the pool.
                       const poolItem = BOTTOM_NAV_ITEM_POOL.find(
                         entry => entry.id === item.id,
                       )
-                      if (!poolItem) return null
+                      if (!poolItem || !isVisible(item.id)) return null
 
                       const disableToggleOn =
                         !item.enabled && enabledCount >= MAX_BOTTOM_NAV_ITEMS

@@ -6,6 +6,8 @@ and reshaped for one family: fun and simple, few options, little text.
 
 ## Profiles and PIN sign-in
 
+Admins can use Settings > Family to show Archived, Things, Labels and Report an Issue for regular members. All four are hidden by default; admins always see them.
+
 The sign-in screen shows household faces. Tap a person and enter their four-digit
 PIN; admins can also use the password link as a backup. Empty or unavailable profile
 lists fall back to password sign-in. In Settings → Profile, choose a colour and

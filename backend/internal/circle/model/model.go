@@ -17,6 +17,9 @@ type Circle struct {
 	WebhookURL         *string    `json:"webhook_url" gorm:"column:webhook_url"` // Webhook URL
 	SubscriptionStatus *string    `gorm:"column:status;<-:false"`                // read one column
 	ExpiredAt          *time.Time `gorm:"column:expired_at;<-:false"`            // read one column
+
+	// Optional menu items regular members see, comma-separated (task 024).
+	MemberMenuItems string `json:"-" gorm:"column:member_menu_items;default:'';not null"`
 }
 
 type CircleDetail struct {

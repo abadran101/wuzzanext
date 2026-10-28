@@ -34,6 +34,8 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import AppModal from '../components/common/AppModal'
+import { useMenuVisibility } from '../queries/MenuVisibilityQueries'
+import { isMenuItemVisible } from '../utils/MenuVisibility'
 
 const RECENTS_KEY = 'donetick.globalSearch.recents'
 const GROUPS = [
@@ -291,7 +293,17 @@ const GlobalSearchPalette = ({
   const [recents] = useState(readRecents)
   const selectedResultRef = useRef(null)
 
-  const quickActions = useMemo(() => buildQuickActions(t), [t])
+  const { isAdmin, memberItems } = useMenuVisibility()
+  const quickActions = useMemo(
+    () =>
+      buildQuickActions(t).filter(action =>
+        isMenuItemVisible(action.route.split(/[/?]/)[1], {
+          isAdmin,
+          memberItems,
+        }),
+      ),
+    [t, isAdmin, memberItems],
+  )
   const quickActionIndex = useMemo(
     () =>
       new Fuse(quickActions, {
