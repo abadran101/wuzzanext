@@ -1,6 +1,7 @@
 import { Archive } from '@mui/icons-material'
 import { Box, Checkbox, Chip, Typography } from '@mui/joy'
 
+import { useChoreTranslation } from '../../queries/TranslationQueries'
 import {
   getPriorityColor,
   getTextColorFromBackgroundColor,
@@ -21,6 +22,7 @@ const ArchivedChoreCard = ({
   viewOnly,
 }) => {
   const { formatRelative } = useDateFormatter()
+  const shownText = useChoreTranslation(chore)
 
   const assigneeName = chore.assignedTo
     ? performers.find(p => p.userId === chore.assignedTo)?.displayName
@@ -125,6 +127,7 @@ const ArchivedChoreCard = ({
         >
           <Typography
             level='title-sm'
+            title={shownText.translated ? chore.name : undefined}
             sx={{
               fontWeight: 600,
               fontSize: 13,
@@ -136,7 +139,7 @@ const ArchivedChoreCard = ({
               textOverflow: 'ellipsis',
             }}
           >
-            {chore.name}
+            {shownText.name}
           </Typography>
           <Box
             sx={{

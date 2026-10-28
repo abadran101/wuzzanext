@@ -18,6 +18,10 @@ The device's language remains the fallback when signed out.
 
 The app has full Arabic texts and switches to right to left with the language switch in the user menu.
 
+Chore names and details can also be shown in the reader's language (English or Arabic) through
+Google Cloud Translation, called only by the home server. It is off by default; the owner's
+setup steps are in `docs/translation-setup.md`.
+
 Household admins can add people and reset PINs in the **Family** section of Profile
 settings. Set `household.circle_id` in the server configuration to the household's
 circle ID. With no value, the server uses the only circle if exactly one exists;

@@ -514,6 +514,16 @@ const GetLabels = async () => {
   return resp.json()
 }
 
+// TranslateChores asks the server for chore names and details in the target
+// language ("en" or "ar"), for at most 100 chores at a time.
+const TranslateChores = (ids, target) => {
+  return Fetch(`/translations/chores`, {
+    method: 'POST',
+    headers: HEADERS(),
+    body: JSON.stringify({ ids, target }),
+  })
+}
+
 const GetResource = async () => {
   await apiClient.init()
   const basedURL = apiManager.getApiURL()
@@ -1217,6 +1227,7 @@ export {
   StartChore,
   ToggleFilterPin,
   TrackFilterUsage,
+  TranslateChores,
   UnArchiveChore,
   UndoChoreAction,
   UnregisterDeviceToken,

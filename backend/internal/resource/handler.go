@@ -2,6 +2,7 @@ package resource
 
 import (
 	"donetick.com/core/config"
+	"donetick.com/core/internal/translation"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/ulule/limiter/v3"
@@ -18,6 +19,9 @@ type Resource struct {
 	// signup, leaving only SSO (#438).
 	DisablePasswordAuth bool `json:"disable_password_auth"`
 	BridgeEnabled       bool `json:"bridge_enabled"`
+	// TranslationEnabled tells the client it may ask for chore names and
+	// details in the reader's language.
+	TranslationEnabled bool `json:"translation_enabled"`
 }
 type identityProvider struct {
 	Auth_url  string   `json:"auth_url" binding:"omitempty"`
@@ -53,6 +57,7 @@ func (h *Handler) getResource(c *gin.Context) {
 		SingleCircleInstance:   h.config.SingleCircleInstance,
 		DisablePasswordAuth:    h.config.DisablePasswordAuth,
 		BridgeEnabled:          h.config.Bridge.Enabled,
+		TranslationEnabled:     translation.NewTranslator(&h.config) != nil,
 	})
 }
 

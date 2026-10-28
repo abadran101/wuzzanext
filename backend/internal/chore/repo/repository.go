@@ -538,6 +538,19 @@ func (r *ChoreRepository) GetChore(c context.Context, choreID int, userID int, c
 	return &chore, nil
 }
 
+// GetChoreTexts loads only the id, name and description of the given chores
+// that the user may see, with the same visibility rules as GetChore.
+func (r *ChoreRepository) GetChoreTexts(c context.Context, choreIDs []int, userID int, circleID int) ([]chModel.Chore, error) {
+	var chores []chModel.Chore
+	err := privacyJoins(r.db.WithContext(c).Model(&chModel.Chore{}), userID).
+		Select("chores.id", "chores.name", "chores.description").
+		Where("chores.id IN ? AND chores.circle_id = ?", choreIDs, circleID).
+		Where(privacyPredicate(userID)).
+		Order("chores.id").
+		Find(&chores).Error
+	return chores, err
+}
+
 // GetChoreForSystem loads a chore with the relations the notification planner and
 // realtime broadcaster need, without applying a user's visibility. Only for
 // server-side work that decides recipients itself.

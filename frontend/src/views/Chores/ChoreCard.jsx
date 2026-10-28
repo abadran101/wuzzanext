@@ -28,6 +28,7 @@ import { useTranslation } from 'react-i18next'
 import { useImpersonateUser } from '../../contexts/ImpersonateUserContext.jsx'
 import { useLocalization } from '../../contexts/LocalizationContext'
 import { usePendingCommands } from '../../hooks/usePendingCommands'
+import { useChoreTranslation } from '../../queries/TranslationQueries'
 import { useUserProfile } from '../../queries/UserQueries.jsx'
 import {
   getDueDateChipColor,
@@ -77,6 +78,7 @@ const ChoreCard = ({
   viewOnly,
 }) => {
   const { t } = useTranslation('chores')
+  const shownText = useChoreTranslation(chore)
   const { data: userProfile } = useUserProfile({ enabled: !viewOnly })
   const { timeFormat } = useLocalization()
   const { data: pendingCmds } = usePendingCommands(chore.id)
@@ -113,14 +115,14 @@ const ChoreCard = ({
     }
   }
   const getName = name => {
-    const split = Array.from(chore.name)
+    const split = Array.from(name)
     // if the first character is emoji then remove it from the name
     if (isNaN(Number(split[0])) && /\p{Emoji}/u.test(split[0])) {
       return split.slice(1).join('').trim()
     }
     return name
   }
-  const displayName = getName(chore.name)
+  const displayName = getName(shownText.name)
   const {
     after: titleAfterUrl,
     before: titleBeforeUrl,
@@ -265,7 +267,10 @@ const ChoreCard = ({
                   {Array.from(chore.name)[0]}
                 </Avatar>
                 <Box display='flex' flexDirection='column'>
-                  <Typography level='title-md'>
+                  <Typography
+                    level='title-md'
+                    title={shownText.translated ? chore.name : undefined}
+                  >
                     {titleBeforeUrl}
                     {titleUrl && (
                       <Chip
