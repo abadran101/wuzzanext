@@ -280,7 +280,7 @@ const TimerDetails = () => {
           )
           showSuccess({
             title: t('toast.startQueuedTitle'),
-            message: "You're offline — start will sync when back online",
+            message: t('toast.startQueuedMessage'),
             undoAction: async () => {
               await commandQueue.cancel(cmdId)
             },
@@ -318,7 +318,7 @@ const TimerDetails = () => {
           )
           showSuccess({
             title: t('toast.pauseQueuedTitle'),
-            message: "You're offline — pause will sync when back online",
+            message: t('toast.pauseQueuedMessage'),
             undoAction: async () => {
               await commandQueue.cancel(cmdId)
             },

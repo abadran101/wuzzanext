@@ -13,10 +13,12 @@
     "startedTitle": "Timer Started",
     "startedMessage": "Work session has been started successfully.",
     "startQueuedTitle": "Start queued",
+    "startQueuedMessage": "You're offline — start will sync when back online",
     "startFailTitle": "Failed to start timer",
     "pausedTitle": "Timer Paused",
     "pausedMessage": "Work session has been paused.",
     "pauseQueuedTitle": "Pause queued",
+    "pauseQueuedMessage": "You're offline — pause will sync when back online",
     "pauseFailTitle": "Failed to pause timer",
     "deleteSessionTitle": "Delete Session"
   },

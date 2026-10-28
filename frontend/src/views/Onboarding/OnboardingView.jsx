@@ -191,9 +191,9 @@ const OnboardingView = () => {
             level='title-md'
             sx={{ fontWeight: 700, letterSpacing: '-0.02em' }}
           >
-            Done
-            <Box component='span' sx={{ color: 'primary.500' }}>
-              tick
+            Wuzza
+            <Box component='span' sx={{ color: '#06b6d4' }}>
+              next
             </Box>
           </Typography>
         </Box>

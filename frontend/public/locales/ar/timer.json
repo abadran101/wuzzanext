@@ -13,10 +13,12 @@
     "startedTitle": "بدأ المؤقت",
     "startedMessage": "تم بدء جلسة العمل بنجاح.",
     "startQueuedTitle": "بدء التشغيل معلّق",
+    "startQueuedMessage": "أنت غير متصل — ستتم مزامنة البدء عند عودة الاتصال",
     "startFailTitle": "فشل في بدء المؤقت",
     "pausedTitle": "تم إيقاف المؤقت مؤقتًا",
     "pausedMessage": "تم إيقاف جلسة العمل مؤقتًا.",
     "pauseQueuedTitle": "الإيقاف المؤقت معلّق",
+    "pauseQueuedMessage": "أنت غير متصل — ستتم مزامنة الإيقاف المؤقت عند عودة الاتصال",
     "pauseFailTitle": "فشل إيقاف المؤقت مؤقتًا",
     "deleteSessionTitle": "حذف الجلسة"
   },

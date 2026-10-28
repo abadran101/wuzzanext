@@ -102,9 +102,9 @@ const GetStartedView = () => {
               textWrap: 'balance',
             }}
           >
-            Done
-            <Box component='span' sx={{ color: 'primary.500' }}>
-              tick
+            Wuzza
+            <Box component='span' sx={{ color: '#06b6d4' }}>
+              next
             </Box>
           </Typography>
           <Typography

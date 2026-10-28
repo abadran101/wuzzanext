@@ -329,8 +329,7 @@ export const useSSE = () => {
       console.log('SSE: Circuit breaker is open, preventing connection attempt')
       showError({
         title: t('realtime.disabledTitle'),
-        message:
-          'Connection blocked due to repeated failures. Please try again later.',
+        message: t('realtime.disabledMessage'),
       })
       return
     }
@@ -342,8 +341,7 @@ export const useSSE = () => {
       setIsCircuitBreakerOpen(true)
       showError({
         title: t('realtime.failedTitle'),
-        message:
-          'Maximum connection attempts reached. SSE disabled for 10 minutes.',
+        message: t('realtime.failedMessage'),
       })
 
       // Reset circuit breaker after timeout
