@@ -12,6 +12,10 @@
   "status": "الحالة",
   "description": "الوصف",
   "choreView": {
+    "doneMeans": "تعتبر منجزة عندما",
+    "isItDone": "هل انتهت؟",
+    "yesDone": "نعم، انتهت",
+    "notYet": "ليس بعد",
     "assignment": "التعيين",
     "assigned": "المعين",
     "last": "الأخير",
@@ -1204,6 +1208,9 @@
   "tasksForDate": "المهام ليوم {{date}}",
   "createSuggestion": "إنشاء \"{{value}}\"",
   "taskEditor": {
+    "doneMeans": "تعتبر منجزة عندما",
+    "doneMeansPlaceholder": "كيف تبدو عند الانتهاء",
+    "doneMeansAdded": "تمت إضافة معنى الإنجاز",
     "unsaved": "غير محفوظ",
     "closeTaskEditor": "إغلاق محرر المهام",
     "step": "الخطوة",

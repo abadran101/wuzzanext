@@ -252,6 +252,10 @@ func (h *Handler) GetChore(c *gin.Context) {
 		updatedDescription := h.generateUpdatedSignedDescription(c, *chore.Description)
 		chore.Description = &updatedDescription
 	}
+	if chore.DoneMeans != nil {
+		updatedDoneMeans := h.generateUpdatedSignedDescription(c, *chore.DoneMeans)
+		chore.DoneMeans = &updatedDoneMeans
+	}
 	h.signAttachments(c, chore.Attachments)
 	c.JSON(200, gin.H{
 		"res": chore,
@@ -338,6 +342,7 @@ type ChoreReq struct {
 	CompletionWindow     *int                          `json:"completionWindow" binding:"omitempty"`
 	Points               *int                          `json:"points" binding:"omitempty"`
 	Description          *string                       `json:"description" binding:"omitempty"`
+	DoneMeans            *string                       `json:"doneMeans" binding:"omitempty"`
 	SubTasks             *[]stModel.SubTask            `json:"subTasks" binding:"omitempty,dive"`
 	RequireApproval      bool                          `json:"requireApproval" binding:"omitempty"`
 	IsPrivate            *bool                         `json:"isPrivate" binding:"omitempty"`
@@ -573,6 +578,7 @@ func (h *Handler) CreateChore(c *gin.Context) {
 		Points:                 choreReq.Points,
 		CompletionWindow:       choreReq.CompletionWindow,
 		Description:            choreReq.Description,
+		DoneMeans:              choreReq.DoneMeans,
 		Priority:               *choreReq.Priority,
 		RequireApproval:        choreReq.RequireApproval,
 		IsPrivate:              *choreReq.IsPrivate,
@@ -625,9 +631,8 @@ func (h *Handler) CreateChore(c *gin.Context) {
 		}
 	}
 
-	if choreReq.Description != nil {
-		description := *choreReq.Description
-		if err := h.cleanUpUnreferencedFiles(c, currentUser.ID, storageModel.EntityTypeChoreDescription, createdChore.ID, description); err != nil {
+	if choreReq.Description != nil || choreReq.DoneMeans != nil {
+		if err := h.cleanUpUnreferencedFiles(c, currentUser.ID, storageModel.EntityTypeChoreDescription, createdChore.ID, choreText(choreReq.Description, choreReq.DoneMeans)); err != nil {
 			c.JSON(500, gin.H{
 				"error": "Error processing description",
 			})
@@ -866,11 +871,13 @@ func (h *Handler) EditChore(c *gin.Context) {
 			return
 		}
 	}
-	description := ""
-	if choreReq.Description != nil {
-		description = *choreReq.Description
+	// An edit without doneMeans (an older app, or a queued offline edit) keeps
+	// the saved text.
+	doneMeans := choreReq.DoneMeans
+	if doneMeans == nil {
+		doneMeans = oldChore.DoneMeans
 	}
-	if err := h.cleanUpUnreferencedFiles(c, currentUser.ID, storageModel.EntityTypeChoreDescription, choreReq.ID, description); err != nil { // TODO: this doesn't seem good, we clean up the request' file before adding it to the model
+	if err := h.cleanUpUnreferencedFiles(c, currentUser.ID, storageModel.EntityTypeChoreDescription, choreReq.ID, choreText(choreReq.Description, doneMeans)); err != nil { // TODO: this doesn't seem good, we clean up the request' file before adding it to the model
 		c.JSON(500, gin.H{
 			"error": "Error processing description",
 		})
@@ -907,6 +914,7 @@ func (h *Handler) EditChore(c *gin.Context) {
 		Points:                 choreReq.Points,
 		CompletionWindow:       choreReq.CompletionWindow,
 		Description:            choreReq.Description,
+		DoneMeans:              doneMeans,
 		Priority:               *choreReq.Priority,
 		RequireApproval:        choreReq.RequireApproval,
 		IsPrivate:              *choreReq.IsPrivate,
@@ -1132,6 +1140,19 @@ func (h *Handler) deleteChoreFiles(ctx *gin.Context, choreID int) {
 	for userID, userFiles := range byUser {
 		h.storageRepo.RemoveFileRecords(ctx, userFiles, userID)
 	}
+}
+
+// choreText joins a chore's description and "Done means" text. Both keep
+// their pictures under the chore description's storage, so a picture stays
+// while either text refers to it.
+func choreText(description, doneMeans *string) string {
+	var parts []string
+	for _, text := range []*string{description, doneMeans} {
+		if text != nil {
+			parts = append(parts, *text)
+		}
+	}
+	return strings.Join(parts, "\n")
 }
 
 func (h *Handler) cleanUpUnreferencedFiles(ctx *gin.Context, userID int, entityType storageModel.EntityType, entityID int, text string) error {
@@ -2713,6 +2734,10 @@ func (h *Handler) GetChoreDetail(c *gin.Context) {
 		// see if we have an <img> tag with attribute dt-data-path if so resigned the url using it's value and replace the src:
 		updatedDescription := h.generateUpdatedSignedDescription(c, *detailed.Description)
 		detailed.Description = &updatedDescription
+	}
+	if detailed.DoneMeans != nil {
+		updatedDoneMeans := h.generateUpdatedSignedDescription(c, *detailed.DoneMeans)
+		detailed.DoneMeans = &updatedDoneMeans
 	}
 	h.signAttachments(c, detailed.Attachments)
 	c.JSON(200, gin.H{

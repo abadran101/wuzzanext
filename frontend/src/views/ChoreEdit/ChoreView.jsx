@@ -14,6 +14,7 @@ import {
   Person,
   PlayArrow,
   SwitchAccessShortcut,
+  TaskAltOutlined,
   ThumbDown,
   ThumbUp,
   Translate,
@@ -59,6 +60,7 @@ import {
 import { useChoreTranslation } from '../../queries/TranslationQueries'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries.jsx'
 import { useNotification } from '../../service/NotificationProvider'
+import { hasChoreContent } from '../../utils/ChoreContent'
 import {
   ChoreHistoryStatus,
   ChoreStatus,
@@ -161,6 +163,11 @@ const ChoreView = () => {
     choreId: chore?.id,
   })
   const notesHtml = useDescriptionHtml(chore?.notes || '', {
+    choreId: chore?.id,
+  })
+  // "Done means" is shown as written (not translated, task 008).
+  const hasDoneMeans = hasChoreContent(chore?.doneMeans)
+  const doneMeansHtml = useDescriptionHtml(chore?.doneMeans || '', {
     choreId: chore?.id,
   })
 
@@ -612,6 +619,30 @@ const ChoreView = () => {
         })
       }
     }
+  }
+
+  // Before marking done from the button, show what counts as done.
+  const confirmTaskCompletion = () => {
+    if (!hasDoneMeans) {
+      handleTaskCompletion()
+      return
+    }
+    setConfirmModelConfig({
+      isOpen: true,
+      title: t('choreView.isItDone'),
+      content: (
+        <Box
+          sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+          dangerouslySetInnerHTML={{ __html: doneMeansHtml }}
+        />
+      ),
+      confirmText: t('choreView.yesDone'),
+      cancelText: t('choreView.notYet'),
+      onClose: confirmed => {
+        setConfirmModelConfig({})
+        if (confirmed) handleTaskCompletion()
+      },
+    })
   }
 
   const confirmSkipTask = () => {
@@ -1182,6 +1213,24 @@ const ChoreView = () => {
           </>
         )}
 
+        {hasDoneMeans && (
+          <>
+            <Typography
+              level='title-md'
+              startDecorator={<TaskAltOutlined color='success' />}
+              sx={{ mb: 1 }}
+            >
+              {t('choreView.doneMeans')}
+            </Typography>
+            <Sheet variant='plain' sx={{ p: 2, borderRadius: 'lg', mb: 1 }}>
+              <Box
+                sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+                dangerouslySetInnerHTML={{ __html: doneMeansHtml }}
+              />
+            </Sheet>
+          </>
+        )}
+
         {chore.notes && (
           <>
             <Typography level='title-md' sx={{ mb: 1 }}>
@@ -1467,7 +1516,7 @@ const ChoreView = () => {
                   <Button
                     fullWidth
                     size='lg'
-                    onClick={handleTaskCompletion}
+                    onClick={confirmTaskCompletion}
                     disabled={
                       notInCompletionWindow(chore) || chore.isActive === false
                     }

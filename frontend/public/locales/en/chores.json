@@ -14,6 +14,10 @@
   "status": "Status",
   "description": "Description",
   "choreView": {
+    "doneMeans": "Done means",
+    "isItDone": "Is it done?",
+    "yesDone": "Yes, done",
+    "notYet": "Not yet",
     "notFoundTitle": "Task not available",
     "notFoundDescription": "This task may have been deleted or is no longer shared with you.",
     "assignment": "Assignment",
@@ -1102,6 +1106,9 @@
     "noteTitle": "Note - {{choreName}}"
   },
   "taskEditor": {
+    "doneMeans": "Done means",
+    "doneMeansPlaceholder": "What it looks like when it is done",
+    "doneMeansAdded": "Done means added",
     "unsaved": "Unsaved",
     "closeTaskEditor": "Close task editor",
     "step": "Step",

@@ -152,11 +152,15 @@ const extractDescriptionImages = html => {
   return results
 }
 
-// Collects every image reference in a chore: description embeds and (when
-// present, i.e. detail responses) attachments. path -> { choreId, kind, src }.
+// Collects every image reference in a chore: description and "Done means"
+// embeds and (when present, i.e. detail responses) attachments.
+// path -> { choreId, kind, src }.
 const collectChoreImageRefs = (chore, referenced = new Map()) => {
   if (chore?.id == null) return referenced
-  for (const { path, src } of extractDescriptionImages(chore.description)) {
+  for (const { path, src } of [
+    ...extractDescriptionImages(chore.description),
+    ...extractDescriptionImages(chore.doneMeans),
+  ]) {
     referenced.set(path, {
       choreId: String(chore.id),
       kind: 'description',

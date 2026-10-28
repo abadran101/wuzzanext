@@ -72,6 +72,13 @@ oauth2:
 # When true, all password-based auth (signup, login, reset) is rejected and
 # the login UI hides the password form.
 # disable_password_auth: false
+# Pictures and attachments stay on this server, next to the database.
+# The app shrinks photos to about 1 MB before uploading.
+storage:
+  storage_type: "local"
+  base_path: "./uploads"
+  max_file_size: 5242880 # 5 MB per file
+  max_user_storage: 1073741824 # 1 GB per person
 # Real-time configuration
 realtime:
   enabled: true
