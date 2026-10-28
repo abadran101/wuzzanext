@@ -14,7 +14,7 @@ Update this file at every stop. Output from the real machines beats anything wri
   `main` at 963c84d (PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
   merged 2026-10-27; PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1,
   task 001, before it).
-- Open branch: `task/024-menu-visibility` (in progress).
+- Open branch: `task/024-menu-visibility` (PR open, waiting for the owner's check and merge).
 - Remote `origin` is `https://github.com/abadran101/wuzzanext.git`, confirmed with
   `git ls-remote origin` on 2026-10-26.
 - Agents push task branches with the fine-grained token the orchestrator lists (it covers only the
@@ -49,7 +49,8 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 024 menu items hidden from regular users (task file).
+- 024 menu items hidden from regular users: done, PR open (task file Result). It also fixes the
+  PR #9 language switch, which never saved the language to the server.
 - Next: 022 (missing Arabic texts and right-to-left check, owner reviews the wording), then 023 (translation), then 008
   onward; 012-015 stay parked.
 

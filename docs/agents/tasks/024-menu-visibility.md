@@ -1,6 +1,6 @@
 # Task 024: menu items hidden from regular users
 
-- **Status:** delegated
+- **Status:** done (PR open, waiting for the owner's check and merge)
 - **Branch and worktree:** `task/024-menu-visibility` from `main` (963c84d0c69926e3e7e7ae29bcb82d8a1ae71742), in
   `C:\dev\wt\wuzzanext-024-menu-visibility`
 - **Hand-off:** Codex (default model and effort), supervisor reviews
@@ -71,4 +71,28 @@ an admin can switch each of those four items on or off for all regular users at 
 
 ## Result (filled in before the push, in the task's own branch)
 
-- Commits (full hashes), tests, what was checked by hand, what is left, what the owner must do.
+- Commits: 4e5efbfa55c9194152313b84a67baaea329536a5 (task file, plan, decisions);
+  a3c5374eede47b6ee27748539048178aec4645cf (the feature, plus the PR #9 language-switch fix); this
+  record is the last commit.
+- Built: column `member_menu_items` on the circle (empty = all four hidden, no data change for
+  existing households); `GET /api/v1/circles/menu-items` (active members), `PUT` (real admin
+  only, impersonation refused, unknown names 400, fixed order). Frontend rule
+  `isMenuItemVisible` in `src/utils/MenuVisibility.js`, hook `useMenuVisibility`, used by the
+  side bar and phone drawer (divider stays after the first group), Report an Issue, the phone
+  bottom bar and its layout settings (hidden items kept when reordering), and the search
+  shortcuts. Settings > Family: "Menu for family members" with four switches, saved at once.
+- Supervisor's review fixes to Codex's work: the new column placed after the upstream fields;
+  error responses written as JSON (the 403 tests failed because a bare status is never sent
+  when the handler is called directly); the hook reuses the circle members query; the menu
+  divider no longer moves when items are hidden; an unused parameter removed; a lint error in
+  the new test.
+- Also fixed: the user-menu language switch from PR #9 sent an unencoded body, so the language
+  never reached the server and reverted at the next sign-in.
+- Checks: `go build` ok; `go vet` only `internal/realtime/pool.go:218`; `go test ./...` 25
+  packages ok (new `TestMenuItems`, 8 cases); gofmt clean. `npm run build` ok; `npm run lint`
+  exit 0, 0 errors, 1904 warnings (unchanged); `node --test` 12 pass, 1 known upstream failure
+  (4 new tests pass).
+- Live on a local test app (made-up Alex, admin, and Sam, member): Sam's PUT 403, GET 200,
+  unknown name 400.
+- Left for the owner: the by-hand check (Alex sees every item, Sam doesn't; Alex turns Things on
+  and Sam sees it after a refresh; Sam can still open `/things`), then merge.
