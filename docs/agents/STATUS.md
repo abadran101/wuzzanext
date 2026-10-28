@@ -11,10 +11,10 @@ Update this file at every stop. Output from the real machines beats anything wri
 ## GitHub
 
 - Repository `abadran101/wuzzanext`, private (stays private, owner 2026-10-26). Default branch
-  `main` at c0bd39b (PR #11, task 022, merged 2026-10-28; PR #10, task 024, merged 2026-10-27; PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
+  `main` at f9a5329 (PR #12, task 023, merged 2026-10-28; PR #11, task 022, merged 2026-10-28; PR #10, task 024, merged 2026-10-27; PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
   merged 2026-10-27; PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1,
   task 001, before it).
-- Open branch: `task/023-translation` (done, PR open).
+- Open branch: `task/008-chore-content` (in progress).
 - Remote `origin` is `https://github.com/abadran101/wuzzanext.git`, confirmed with
   `git ls-remote origin` on 2026-10-26.
 - Agents push task branches with the fine-grained token the orchestrator lists (it covers only the
@@ -49,9 +49,9 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 023 chore names and details in the other language: done, PR open (the owner merges; Google
-  key setup with the first deployment, `docs/translation-setup.md`).
-- Next: 008 onward; 012-015 stay parked.
+- 008 chore content (task file): plan run with Codex first.
+- Google key setup for 023 comes with the first deployment (`docs/translation-setup.md`).
+- Next: 009, 010, 011, 016, 017, 018, then 020 before 019; 012-015 stay parked.
 
 ## Open items
 
@@ -71,6 +71,10 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## Decisions (newest first)
 
+- 2026-10-28: PR #12 (task 023) merged, main f9a53295faf163c6f0114d9b36b3de92a6804f12 (owner,
+  through the orchestrator: "merged"; checked: merge of c0bd39bf and 4aadb5bf). Next 008 with
+  Codex; if Codex is still blocked, stop and ask (the owner has not decided yet whether the
+  supervisor writes 008).
 - 2026-10-28: the supervisor writes 023 itself after Codex lost sandbox access to the worktree
   again at 09:46 (owner, through the orchestrator: "yes, continue with Wuzzanext writing it itself
   for now"). This covers 023 only; later tasks go back to Codex once its sandbox is fixed.
