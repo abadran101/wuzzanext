@@ -11,10 +11,10 @@ Update this file at every stop. Output from the real machines beats anything wri
 ## GitHub
 
 - Repository `abadran101/wuzzanext`, private (stays private, owner 2026-10-26). Default branch
-  `main` at 19e3923 (PR #10, task 024, merged 2026-10-27; PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
+  `main` at c0bd39b (PR #11, task 022, merged 2026-10-28; PR #10, task 024, merged 2026-10-27; PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
   merged 2026-10-27; PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1,
   task 001, before it).
-- Open branch: `task/022-arabic-rtl` (done, PR open; the owner reviews the Arabic wording).
+- Open branch: `task/023-translation` (in progress).
 - Remote `origin` is `https://github.com/abadran101/wuzzanext.git`, confirmed with
   `git ls-remote origin` on 2026-10-26.
 - Agents push task branches with the fine-grained token the orchestrator lists (it covers only the
@@ -49,9 +49,8 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 022 Arabic everywhere, right to left (task file): done, PR open; the owner reviews the Arabic
-  wording and looks at the screens before merge.
-- Next: 023 (translation), then 008 onward; 012-015 stay parked.
+- 023 chore names and details in the other language (task file): plan run with Codex first.
+- Next: 008 onward; 012-015 stay parked.
 
 ## Open items
 
@@ -71,6 +70,11 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## Decisions (newest first)
 
+- 2026-10-28: PR #11 (task 022) merged, main c0bd39bf375450a0a969c5a5864f71382612a45b (owner,
+  through the orchestrator: "merged"; checked on GitHub). Before the merge the owner reviewed the
+  Arabic wording and the test app: "everything looks good" (owner, through the orchestrator); the
+  supervisor's four choices stand: Western digits in Arabic dates, the browser format for English
+  dates, the same swipe direction, English-only date phrases. Start 023 from that main.
 - 2026-10-28: the supervisor writes the rest of 022 itself after Codex lost sandbox access again
   on 2026-10-27 at 21:22 (owner, through the orchestrator: "yes" to "Should Wuzzanext write the
   rest of 022 itself?"). No workaround for Codex was tried.
