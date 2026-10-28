@@ -44,6 +44,7 @@ import {
   ChoreSorter,
   filterByProject,
 } from '../../utils/Chores'
+import { dateLocale } from '../../utils/DateLocale'
 import Priorities from '../../utils/Priorities'
 import { getSafeBottom } from '../../utils/SafeAreaUtils.js'
 import TaskInput from '../components/AddTaskModal'
@@ -300,7 +301,9 @@ const MyChores = () => {
   )
 
   const choreViewTitle = tempFilter
-    ? tempFilterMeta?.name || t('common:navigation.filters')
+    ? (INSIGHT_FILTER_DEFS[tempFilterMeta?.id]
+        ? t(INSIGHT_FILTER_DEFS[tempFilterMeta.id].nameKey)
+        : tempFilterMeta?.name) || t('common:navigation.filters')
     : activeFilterId
       ? activeFilter?.name || t('common:navigation.filters')
       : !isDefaultProject
@@ -688,7 +691,7 @@ const MyChores = () => {
     ) {
       const def = INSIGHT_FILTER_DEFS[filterId]
       applyingUrlFilterIdRef.current = rawFilterId
-      applyTempFilter(def.filter, { id: filterId, name: def.name })
+      applyTempFilter(def.filter, { id: filterId, name: t(def.nameKey) })
       return
     }
 
@@ -723,7 +726,9 @@ const MyChores = () => {
         },
         {
           id: filterId,
-          name: memberName ? `Assigned to ${memberName}` : 'Assigned to',
+          name: memberName
+            ? t('text.assignedToName', { name: memberName })
+            : t('assignedTo'),
           icon: <Person sx={{ fontSize: '2rem', color: 'primary.main' }} />,
         },
       )
@@ -1436,7 +1441,7 @@ const MyChores = () => {
               <Box sx={{ mt: 2 }}>
                 <Typography level='title-md' gutterBottom>
                   {t('tasksForDate', {
-                    date: selectedCalendarDate.toLocaleDateString(),
+                    date: selectedCalendarDate.toLocaleDateString(dateLocale()),
                   })}
                 </Typography>
                 <Box

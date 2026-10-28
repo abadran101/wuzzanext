@@ -186,5 +186,14 @@
     "allLockedTitle": "This task's history is older than {{days}} days",
     "lockedDescription": "Entries older than {{days}} days may be permanently deleted. Upgrade to Plus to keep your full history.",
     "unlock": "Upgrade to Plus"
+  },
+  "text": {
+    "scheduledOn": "Scheduled on",
+    "rescheduledOn": "Rescheduled on",
+    "skippedOn": "Skipped on",
+    "completedOn": "Completed on",
+    "previousDueDate": "Previous due date",
+    "wasDue": "Was due",
+    "dueDate": "Due date"
   }
 }

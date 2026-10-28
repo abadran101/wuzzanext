@@ -1,11 +1,15 @@
 import moment from 'moment'
 
 export const createDateFormatter = (dateFormat, timeFormat, firstDayOfWeek) => {
-  moment.updateLocale('en', {
+  // updateLocale also switches the global locale, so keep the current one
+  // (Arabic stays Arabic).
+  const current = moment.locale()
+  moment.updateLocale(current, {
     week: {
       dow: firstDayOfWeek,
     },
   })
+  moment.locale(current)
 
   return {
     formatDate: (date, customFormat) => {

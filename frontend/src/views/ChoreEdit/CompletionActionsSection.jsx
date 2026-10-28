@@ -124,8 +124,10 @@ export default function CompletionActionsSection({
             />
             <FormHelperText>
               {pointsValid
-                ? 'Awarded to the user who completes the task, after approval when required.'
-                : 'Enter a whole number from 0 to 1000.'}
+                ? t(
+                    'text.awardedToTheUserWhoCompletesTheTaskAfterApprovalWhenRequired',
+                  )
+                : t('text.enterAWholeNumberFrom0To1000')}
             </FormHelperText>
           </FormControl>
         </Card>
@@ -212,7 +214,9 @@ export default function CompletionActionsSection({
             </FormControl>
             <FormControl error={loaded && !isValid(action)}>
               <FormLabel>
-                {action.operation === 'add' ? 'Amount' : 'Value'}
+                {action.operation === 'add'
+                  ? t('text.amount')
+                  : t('text.value')}
               </FormLabel>
               {thing?.type === 'boolean' ? (
                 <Select

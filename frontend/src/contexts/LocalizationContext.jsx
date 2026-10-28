@@ -181,12 +181,13 @@ export const LocalizationProvider = ({ children }) => {
 
   const formatCalendar = date => {
     if (!date) return ''
+    const word = key => `[${i18n.t(`common:calendar.${key}`)}]`
     return moment(date).calendar(null, {
-      sameDay: `[Today] ${timeFormat}`,
-      nextDay: `[Tomorrow] ${timeFormat}`,
+      sameDay: `${word('today')} ${timeFormat}`,
+      nextDay: `${word('tomorrow')} ${timeFormat}`,
       nextWeek: `dddd ${timeFormat}`,
-      lastDay: `[Yesterday] ${timeFormat}`,
-      lastWeek: `[Last] dddd ${timeFormat}`,
+      lastDay: `${word('yesterday')} ${timeFormat}`,
+      lastWeek: `${i18n.t('common:calendar.lastWeekday')} ${timeFormat}`,
       sameElse: `${dateFormat} ${timeFormat}`,
     })
   }

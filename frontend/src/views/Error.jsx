@@ -20,33 +20,49 @@ import {
 } from '../service/ErrorReportService'
 import ErrorReportModal from './Modals/ErrorReportModal'
 
-const getErrorKind = error => {
+const getErrorKind = (error, t) => {
   if (!error)
-    return { label: 'Unknown Error', color: 'danger', Icon: ErrorRounded }
+    return {
+      label: t('text.unknownError'),
+      color: 'danger',
+      Icon: ErrorRounded,
+    }
   const status = error?.status ?? error?.response?.status
   if (status === 404)
     return {
-      label: '404 · Not Found',
+      label: t('text.404NotFound'),
       color: 'warning',
       Icon: SearchOffRounded,
     }
   if (status === 401 || status === 403)
     return {
-      label: `${status} · Unauthorized`,
+      label: t('text.statusUnauthorized', { status }),
       color: 'warning',
       Icon: LockRounded,
     }
   if (status >= 500)
     return {
-      label: `${status} · Server Error`,
+      label: t('text.statusServerError', { status }),
       color: 'danger',
       Icon: CloudOffRounded,
     }
   if (error?.name === 'TypeError')
-    return { label: 'Runtime Error', color: 'danger', Icon: BugReportRounded }
+    return {
+      label: t('text.runtimeError'),
+      color: 'danger',
+      Icon: BugReportRounded,
+    }
   if (error?.name === 'SyntaxError')
-    return { label: 'Syntax Error', color: 'danger', Icon: BugReportRounded }
-  return { label: 'Unexpected Error', color: 'danger', Icon: ErrorRounded }
+    return {
+      label: t('text.syntaxError'),
+      color: 'danger',
+      Icon: BugReportRounded,
+    }
+  return {
+    label: t('text.unexpectedError'),
+    color: 'danger',
+    Icon: ErrorRounded,
+  }
 }
 
 const safeMessage = error => {
@@ -63,7 +79,7 @@ const Error = () => {
   const [reportOpen, setReportOpen] = useState(false)
   const [reportText, setReportText] = useState('')
 
-  const { Icon, color } = getErrorKind(error)
+  const { Icon, color } = getErrorKind(error, t)
   const message = safeMessage(error)
 
   // The same bundle the report modal sends, so what the user copies and what

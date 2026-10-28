@@ -417,7 +417,7 @@ const ChoreActionMenu = ({
       label: t('choreView.schedule'),
       onClick: target => openPicker('schedule', target),
       submenu: 'schedule',
-      endDecorator: <ChevronRight fontSize='small' />,
+      endDecorator: <ChevronRight className='rtl-flip' fontSize='small' />,
     },
     onChangePriority && {
       key: 'priority',
@@ -434,7 +434,7 @@ const ChoreActionMenu = ({
           >
             {currentPriority?.name.trim() || t('actionMenu.noPriority')}
           </Chip>
-          <ChevronRight fontSize='small' />
+          <ChevronRight className='rtl-flip' fontSize='small' />
         </>
       ),
     },
@@ -453,7 +453,7 @@ const ChoreActionMenu = ({
       label: t('actionMenu.moveToProject'),
       onClick: target => openPicker('project', target),
       submenu: 'project',
-      endDecorator: <ChevronRight fontSize='small' />,
+      endDecorator: <ChevronRight className='rtl-flip' fontSize='small' />,
     },
     { key: 'divider-utilities', type: 'divider' },
     isOfficialInstance && {
@@ -587,7 +587,7 @@ const ChoreActionMenu = ({
               closeDesktopSubmenu()
             }}
           >
-            <ArrowBack fontSize='small' />
+            <ArrowBack className='rtl-flip' fontSize='small' />
             <Typography level='body-sm' fontWeight={600}>
               {t('choreView.schedule')}
             </Typography>
@@ -641,7 +641,7 @@ const ChoreActionMenu = ({
             }}
             sx={{ gap: 1 }}
           >
-            <ArrowBack fontSize='small' />
+            <ArrowBack className='rtl-flip' fontSize='small' />
             <Typography level='body-sm' fontWeight={600}>
               {t('priority')}
             </Typography>
@@ -805,7 +805,9 @@ const ChoreActionMenu = ({
               variant='plain'
               color='neutral'
               size='sm'
-              startDecorator={<ArrowBack fontSize='small' />}
+              startDecorator={
+                <ArrowBack className='rtl-flip' fontSize='small' />
+              }
               onClick={() => {
                 setShowProjectPicker(false)
                 setShowPriorityPicker(false)

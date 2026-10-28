@@ -3,6 +3,8 @@ import { LocalNotifications } from '@capacitor/local-notifications'
 import { Preferences } from '@capacitor/preferences'
 import murmurhash from 'murmurhash'
 
+import { dateLocale } from '../../utils/DateLocale'
+
 const MAX_LOCAL_NOTIFICATIONS = 64
 
 const getNotificationPreferences = async () => {
@@ -113,7 +115,7 @@ const getNotificationText = (
     (startOfDay(dueDate) - startOfDay(notificationTime)) /
       (24 * 60 * 60 * 1000),
   )
-  const time = dueDate.toLocaleTimeString([], {
+  const time = dueDate.toLocaleTimeString(dateLocale(), {
     hour: 'numeric',
     minute: '2-digit',
   })
@@ -126,7 +128,7 @@ const getNotificationText = (
   } else if (dayDifference === -1) {
     dueTime = `yesterday at ${time}`
   } else {
-    const date = dueDate.toLocaleDateString([], {
+    const date = dueDate.toLocaleDateString(dateLocale(), {
       month: 'short',
       day: 'numeric',
     })

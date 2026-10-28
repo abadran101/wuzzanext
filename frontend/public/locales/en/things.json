@@ -66,5 +66,21 @@
     "updatedMessage": "Thing state updated successfully",
     "updateFailTitle": "Unable to update thing state",
     "updateFailMessage": "An error occurred while updating the thing state"
+  },
+  "text": {
+    "intervalIncreasing": "Interval increasing",
+    "intervalDecreasing": "Interval decreasing",
+    "intervalStable": "Interval stable",
+    "updateFrequency": "Update Frequency",
+    "lastUpdated": "Last Updated",
+    "lastValue": "Last Value",
+    "updateTrend": "Update Trend",
+    "couldntLoadThisHistory": "Couldn't load this history",
+    "noHistoryYet": "No history yet",
+    "weCouldNotReachTheServerCheckYourConnectionAndTryAgain": "We could not reach the server. Check your connection and try again.",
+    "eachTimeThisThingsValueChangesTheChangeIsRecordedHere": "Each time this thing's value changes, the change is recorded here.",
+    "tryAgain": "Try again",
+    "backToThings": "Back to things",
+    "everyFrequency": "Every {{frequency}}"
   }
 }

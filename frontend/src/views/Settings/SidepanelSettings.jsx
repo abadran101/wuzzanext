@@ -42,9 +42,13 @@ const SidepanelSettings = () => {
 
   // Card names/descriptions live in the config so they can be persisted, but the
   // stored copy is English. Prefer the translated string and fall back to it.
-  const cardName = item => t(`sidepanel.cards.${item.id}.name`, item.name)
+  const cardName = item =>
+    t(item.nameKey || `sidepanel.cards.${item.id}.name`, item.name)
   const cardDescription = item =>
-    t(`sidepanel.cards.${item.id}.description`, item.description)
+    t(
+      item.descriptionKey || `sidepanel.cards.${item.id}.description`,
+      item.description,
+    )
 
   const getIcon = iconName => {
     switch (iconName) {

@@ -97,30 +97,30 @@ const ThingsHistory = () => {
         .filter(d => d !== null)
       const last = diffs[0]
       const prev = diffs[1]
-      if (last > prev) updateTrend = 'Interval increasing'
-      else if (last < prev) updateTrend = 'Interval decreasing'
-      else updateTrend = 'Interval stable'
+      if (last > prev) updateTrend = t('text.intervalIncreasing')
+      else if (last < prev) updateTrend = t('text.intervalDecreasing')
+      else updateTrend = t('text.intervalStable')
     }
 
     return [
       {
         icon: <Speed />,
-        text: 'Update Frequency',
-        subtext: `Every ${avgUpdateFrequency}`,
+        text: t('text.updateFrequency'),
+        subtext: t('text.everyFrequency', { frequency: avgUpdateFrequency }),
       },
       {
         icon: <Update />,
-        text: 'Last Updated',
+        text: t('text.lastUpdated'),
         subtext: lastUpdated,
       },
       {
         icon: <CallReceived />,
-        text: 'Last Value',
+        text: t('text.lastValue'),
         subtext: thingsHistory[0]?.state ?? '--',
       },
       {
         icon: <TrendingUp />,
-        text: 'Update Trend',
+        text: t('text.updateTrend'),
         subtext: updateTrend,
       },
     ]
@@ -163,16 +163,18 @@ const ThingsHistory = () => {
           variant={error ? 'error' : 'empty'}
           fullHeight
           icon={error ? <CloudOff /> : <EventBusy />}
-          title={error ? "Couldn't load this history" : 'No history yet'}
+          title={
+            error ? t('text.couldntLoadThisHistory') : t('text.noHistoryYet')
+          }
           description={
             error
-              ? 'We could not reach the server. Check your connection and try again.'
-              : "Each time this thing's value changes, the change is recorded here."
+              ? t('text.weCouldNotReachTheServerCheckYourConnectionAndTryAgain')
+              : t('text.eachTimeThisThingsValueChangesTheChangeIsRecordedHere')
           }
           primaryAction={
             error
-              ? { label: 'Try again', onClick: () => refetch() }
-              : { label: 'Back to things', to: '/things' }
+              ? { label: t('text.tryAgain'), onClick: () => refetch() }
+              : { label: t('text.backToThings'), to: '/things' }
           }
         />
       </Container>

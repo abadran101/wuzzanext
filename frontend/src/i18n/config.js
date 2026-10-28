@@ -1,3 +1,4 @@
+import 'moment/locale/ar'
 import 'moment/locale/cs'
 import 'moment/locale/he'
 import 'moment/locale/ru'
@@ -9,7 +10,18 @@ import 'moment/locale/it'
 import i18n from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import HttpBackend from 'i18next-http-backend'
+import moment from 'moment'
 import { initReactI18next } from 'react-i18next'
+
+// Arabic dates keep Western digits, so dates formatted for the server or for
+// inputs (YYYY-MM-DD) stay the same in every language. updateLocale also
+// makes Arabic the global locale, so switch back; LocalizationContext picks
+// the person's language.
+moment.updateLocale('ar', {
+  preparse: text => text,
+  postformat: text => text,
+})
+moment.locale('en')
 
 i18n
   .use(HttpBackend)

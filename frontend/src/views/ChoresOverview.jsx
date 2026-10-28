@@ -323,7 +323,7 @@ const ChoresOverview = () => {
         }}
         onSave={date => {
           if (activeUserId === null) {
-            alert('Please select a performer')
+            alert(t('text.pleaseSelectAPerformer'))
             return
           }
           MarkChoreComplete(choreId, null, date, activeUserId).then(

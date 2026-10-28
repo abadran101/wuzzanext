@@ -23,18 +23,18 @@
 }
 .editor-view-mode ul {
   list-style-type: disc;
-  padding-left: 20px;
+  padding-inline-start: 20px;
 }
 .editor-view-mode ol {
   list-style-type: decimal;
-  padding-left: 20px;
+  padding-inline-start: 20px;
 }
 .editor-view-mode li {
   margin-bottom: 0.5em;
 }
 .editor-view-mode blockquote {
-  border-left: 4px solid #ccc;
-  padding-left: 20px;
+  border-inline-start: 4px solid #ccc;
+  padding-inline-start: 20px;
   margin: 1em 0;
 }
 .editor-view-mode pre {
@@ -87,9 +87,14 @@
   background: transparent;
 }
 
+/* Quill aligns text left; follow the page direction instead (right in Arabic) */
+.quill-root .ql-editor {
+  text-align: start;
+}
+
 /* Style toolbar buttons with Material-UI look */
 .quill-root .ql-toolbar .ql-formats {
-  margin-right: 12px;
+  margin-inline-end: 12px;
 }
 
 .quill-root .ql-toolbar button {
@@ -173,7 +178,7 @@
   width: 1px;
   height: 20px;
   background: var(--joy-palette-divider, #e7ebf0);
-  margin-left: 8px;
+  margin-inline-start: 8px;
   vertical-align: middle;
 }
 

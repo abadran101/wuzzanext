@@ -334,7 +334,7 @@ const ChoreToolbar = ({
         return labels.find(l => l.id === value)?.name || String(value)
       }
       if (condition.type === 'project') {
-        if (value === 'default') return 'Default Project'
+        if (value === 'default') return t('toolbar.defaultProject')
         const project = projects.find(p => p.id === value)
         if (!project) return String(value)
         return project.isPrivate ? `🔒 ${project.name}` : project.name
@@ -630,7 +630,9 @@ const ChoreToolbar = ({
               }}
             >
               <ProjectSelector
-                selectedProject={selectedProject?.name || 'Default Project'}
+                selectedProject={
+                  selectedProject?.name || t('toolbar.defaultProject')
+                }
                 onProjectSelect={onProjectSelect}
                 showKeyboardShortcuts={showKeyboardShortcuts}
               />
@@ -700,12 +702,14 @@ const ChoreToolbar = ({
             sx={{ height: 32, width: 32, borderRadius: '50%' }}
             onClick={onToggleMultiSelect}
             aria-label={
-              isMultiSelectMode ? 'Exit multi-select' : 'Enter multi-select'
+              isMultiSelectMode
+                ? t('text.exitMultiselect')
+                : t('text.enterMultiselect')
             }
             title={
               isMultiSelectMode
-                ? 'Exit multi-select (Ctrl+S)'
-                : 'Multi-select (Ctrl+S)'
+                ? t('text.exitMultiselectCtrlS')
+                : t('text.multiselectCtrlS')
             }
           >
             {isMultiSelectMode ? <CheckBox /> : <CheckBoxOutlineBlank />}

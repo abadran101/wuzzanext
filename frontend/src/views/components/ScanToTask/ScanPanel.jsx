@@ -379,7 +379,9 @@ const ScanPanel = ({
               variant='plain'
               color='neutral'
               size='sm'
-              endDecorator={<ArrowForward fontSize='small' />}
+              endDecorator={
+                <ArrowForward className='rtl-flip' fontSize='small' />
+              }
               onClick={continueWithoutTask}
             >
               {t('photoTask.continueWithoutTask')}

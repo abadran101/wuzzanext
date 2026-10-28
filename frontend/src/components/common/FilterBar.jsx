@@ -12,6 +12,7 @@ import {
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { dateLocale } from '../../utils/DateLocale'
 import AppModal from './AppModal'
 import ActiveFilterChips from './filter/ActiveFilterChips'
 import ModalActions from './ModalActions'
@@ -137,7 +138,7 @@ const toInputDate = iso => (iso ? iso.split('T')[0] : '')
 const fmtDisplayDate = iso => {
   if (!iso) return null
   const dt = new Date(iso)
-  return dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+  return dt.toLocaleDateString(dateLocale(), { month: 'short', day: 'numeric' })
 }
 
 // ── Component ────────────────────────────────────────────────────────────────

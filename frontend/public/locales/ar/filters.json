@@ -51,5 +51,13 @@
     "unpinned": "غير مثبت"
   },
   "pin": "تثبيت",
-  "unpin": "إلغاء تثبيت الفلتر"
+  "unpin": "إلغاء تثبيت الفلتر",
+  "tasks_zero": "{{count}} مهمة",
+  "tasks_two": "مهمتان ({{count}})",
+  "tasks_few": "{{count}} مهام",
+  "tasks_many": "{{count}} مهمة",
+  "condition_zero": "{{count}} شرط",
+  "condition_two": "شرطان ({{count}})",
+  "condition_few": "{{count}} شروط",
+  "condition_many": "{{count}} شرطًا"
 }

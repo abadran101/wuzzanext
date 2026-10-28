@@ -82,3 +82,18 @@ body {
 [dir='rtl'] .rtl-flip {
   transform: scaleX(-1);
 }
+
+/*
+ * Swipe rows (@meauxt/react-swipeable-list) place their actions with physical
+ * CSS the plugin never sees, so the row keeps left-to-right geometry and only
+ * its content reads right to left. Swipes work as in English.
+ */
+[dir='rtl'] .swipeable-list-item {
+  direction: ltr;
+}
+
+[dir='rtl'] .swipeable-list-item__content > *,
+[dir='rtl'] .swipeable-list-item__leading-actions > * > *,
+[dir='rtl'] .swipeable-list-item__trailing-actions > * > * {
+  direction: rtl;
+}

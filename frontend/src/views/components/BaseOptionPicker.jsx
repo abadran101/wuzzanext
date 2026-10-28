@@ -2,10 +2,11 @@ import { Close } from '@mui/icons-material'
 import { Box, Button, IconButton, Sheet, Typography } from '@mui/joy'
 import { ClickAwayListener, Popper } from '@mui/material'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const BaseOptionPicker = ({
   emptyDisplay = 'icon',
-  emptyLabel = 'Select',
+  emptyLabel,
   getItemColor,
   getItemLabel = item => item.label,
   getItemValue = item => item.id,
@@ -27,6 +28,7 @@ const BaseOptionPicker = ({
   value = null,
   values = [],
 }) => {
+  const { t } = useTranslation('common')
   const [internalOpen, setInternalOpen] = useState(false)
   const isControlled = openProp !== undefined
   const isOpen = isControlled ? openProp : internalOpen
@@ -68,7 +70,7 @@ const BaseOptionPicker = ({
   const triggerText = getTriggerText
     ? getTriggerText({ selectedItems, isEmpty })
     : isEmpty
-      ? emptyLabel
+      ? (emptyLabel ?? t('text.select'))
       : getItemLabel(selectedItems[0])
 
   const triggerColor = isEmpty

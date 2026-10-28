@@ -169,7 +169,7 @@ function SortableItem({
             {expanded ? (
               <ExpandMore sx={{ fontSize: 18 }} />
             ) : (
-              <ChevronRight sx={{ fontSize: 18 }} />
+              <ChevronRight className='rtl-flip' sx={{ fontSize: 18 }} />
             )}
           </IconButton>
         ) : null}

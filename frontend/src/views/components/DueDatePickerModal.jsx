@@ -26,6 +26,12 @@ import { useTranslation } from 'react-i18next'
 import ModalActions from '../../components/common/ModalActions'
 import { useLocalization } from '../../contexts/LocalizationContext'
 import { useResponsiveModal } from '../../hooks/useResponsiveModal'
+import {
+  dateLocale,
+  EN_WEEKDAY_PAIRS,
+  shortMonth,
+  weekdayLetter,
+} from '../../utils/DateLocale'
 
 // 23:59(:59) is the app-wide "no specific time" stamp — the same one
 // ChoreEdit, AddTaskModal, and the bulk reschedule handler write. Keep this in
@@ -111,7 +117,8 @@ const DueDatePickerModal = ({
   title,
   useCustomTime,
 }) => {
-  const { t } = useTranslation('chores')
+  const { i18n, t } = useTranslation('chores')
+  const calendarLocale = dateLocale(i18n.resolvedLanguage)
   const { ResponsiveModal } = useResponsiveModal()
   const { firstDayOfWeek } = useLocalization()
 
@@ -486,26 +493,12 @@ const DueDatePickerModal = ({
               localDueDateOnly ? new Date(`${localDueDateOnly}T00:00:00`) : null
             }
             calendarType={calendarType}
+            locale={calendarLocale}
             onChange={handleCalendarChange}
-            formatShortWeekday={(locale, date) =>
-              ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'][date.getDay()]
+            formatShortWeekday={(_, date) =>
+              weekdayLetter(date, calendarLocale, EN_WEEKDAY_PAIRS)
             }
-            formatMonth={(locale, date) =>
-              [
-                'Jan',
-                'Feb',
-                'Mar',
-                'Apr',
-                'May',
-                'Jun',
-                'Jul',
-                'Aug',
-                'Sep',
-                'Oct',
-                'Nov',
-                'Dec',
-              ][date.getMonth()]
-            }
+            formatMonth={(_, date) => shortMonth(date, calendarLocale)}
           />
         </Box>
         <Typography

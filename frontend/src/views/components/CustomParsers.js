@@ -1,3 +1,57 @@
+import i18n from '../../i18n/config'
+
+const repeatWordKeys = {
+  days: 'notificationTemplate.unitName.d',
+  weeks: 'parser.units.weeks',
+  months: 'parser.units.months',
+  years: 'parser.units.years',
+  hours: 'notificationTemplate.unitName.h',
+  day: 'remind.unitDay',
+  week: 'parser.units.week',
+  month: 'parser.units.month',
+  year: 'parser.units.year',
+  hour: 'parser.units.hour',
+  first: 'parser.words.first',
+  second: 'parser.words.second',
+  third: 'parser.words.third',
+  fourth: 'parser.words.fourth',
+  last: 'repeat.ordinal.last',
+  and: 'parser.words.and',
+  morning: 'parser.words.morning',
+  noon: 'parser.words.noon',
+  afternoon: 'parser.words.afternoon',
+  evening: 'parser.words.evening',
+  night: 'parser.words.night',
+  monday: 'repeat.days.monday',
+  tuesday: 'repeat.days.tuesday',
+  wednesday: 'repeat.days.wednesday',
+  thursday: 'repeat.days.thursday',
+  friday: 'repeat.days.friday',
+  saturday: 'repeat.days.saturday',
+  sunday: 'repeat.days.sunday',
+  january: 'repeat.months.january',
+  february: 'repeat.months.february',
+  march: 'repeat.months.march',
+  april: 'repeat.months.april',
+  may: 'repeat.months.may',
+  june: 'repeat.months.june',
+  july: 'repeat.months.july',
+  august: 'repeat.months.august',
+  september: 'repeat.months.september',
+  october: 'repeat.months.october',
+  november: 'repeat.months.november',
+  december: 'repeat.months.december',
+}
+
+// Translate display words only; parsed metadata and matching stay English.
+const repeatDisplayWord = value => {
+  if (!i18n.resolvedLanguage?.startsWith('ar')) return value
+  return String(value).replace(/[A-Za-z]+/g, word => {
+    const key = repeatWordKeys[word.toLowerCase()]
+    return key ? i18n.t(`chores:${key}`) : word
+  })
+}
+
 const VALID_DAYS = {
   monday: 'Monday',
   mon: 'Monday',
@@ -183,76 +237,76 @@ export const parseRepeatV2 = inputSentence => {
     {
       frequencyType: 'day_of_the_month:every',
       regex: /(\d+)(?:th|st|nd|rd)? of every month/i,
-      name: 'Every {day} of every month',
+      name: i18n.t('chores:parser.Everydayofeverymonth'),
     },
     {
       frequencyType: 'days_of_the_week:nth_occurrence',
       regex:
         /(first|second|third|fourth|last|\d+(?:st|nd|rd|th)?) (monday|tuesday|wednesday|thursday|friday|saturday|sunday) of (?:the )?month/i,
-      name: '{occurrence} {day} of the month',
+      name: i18n.t('chores:parser.occurrencedayofthemonth'),
     },
     {
       frequencyType: 'days_of_the_week:nth_occurrence_multiple',
       regex:
         /((?:first|second|third|fourth|last|\d+(?:st|nd|rd|th)?)(?:,? (?:and |& )?))+\s+(monday|tuesday|wednesday|thursday|friday|saturday|sunday)s? of (?:the )?month/i,
-      name: '{occurrences} {day} of the month',
+      name: i18n.t('chores:parser.occurrencesdayofthemonth'),
     },
     {
       frequencyType: 'daily',
       regex: /(every day|daily|everyday)/i,
-      name: 'Every day',
+      name: i18n.t('chores:parser.Everyday'),
     },
     {
       frequencyType: 'daily:time',
       regex: /every (morning|noon|afternoon|evening|night)/i,
-      name: 'Every {time} daily',
+      name: i18n.t('chores:parser.Everytimedaily'),
     },
     {
       frequencyType: 'weekly',
       regex: /(every week|weekly)/i,
-      name: 'Every week',
+      name: i18n.t('chores:repeat.weekPattern.every_week'),
     },
     {
       frequencyType: 'monthly',
       regex: /(every month|monthly)/i,
-      name: 'Every month',
+      name: i18n.t('chores:parser.Everymonth'),
     },
     {
       frequencyType: 'yearly',
       regex: /every year/i,
-      name: 'Every year',
+      name: i18n.t('chores:parser.Everyyear'),
     },
     {
       frequencyType: 'monthly',
       regex: /every (?:other )?month/i,
-      name: 'Bi Monthly',
+      name: i18n.t('chores:parser.BiMonthly'),
       value: 2,
     },
     {
       frequencyType: 'interval:2week',
       regex: /(bi-?weekly|every other week)/i,
       value: 2,
-      name: 'Bi Weekly',
+      name: i18n.t('chores:parser.BiWeekly'),
     },
     {
       frequencyType: 'interval',
       regex: /every (\d+) (days?|weeks?|months?|years?)/i,
-      name: 'Every {frequency} {unit}',
+      name: i18n.t('chores:parser.Everyfrequencyunit'),
     },
     {
       frequencyType: 'interval:every_other',
       regex: /every other (days?|weeks?|months?|years?)/i,
-      name: 'Every other {unit}',
+      name: i18n.t('chores:parser.Everyotherunit'),
     },
     {
       frequencyType: 'days_of_the_week',
       regex: /every ([\w, ]+(?:day)?(?:, [\w, ]+(?:day)?)*)/i,
-      name: 'Every {days}',
+      name: i18n.t('chores:parser.Everydays'),
     },
     {
       frequencyType: 'day_of_the_month',
       regex: /(\d+)(?:st|nd|rd|th)? of ([\w ]+(?:(?:,| and |\s)[\w ]+)*)/i,
-      name: 'Every {day} days of {months}',
+      name: i18n.t('chores:parser.Everydaydaysofmonths'),
     },
   ]
 
@@ -296,7 +350,10 @@ export const parseRepeatV2 = inputSentence => {
           result,
           name: pattern.name
             .replace('{frequency}', result.frequency)
-            .replace('{unit}', result.frequencyMetadata.unit),
+            .replace(
+              '{unit}',
+              repeatDisplayWord(result.frequencyMetadata.unit),
+            ),
           highlight: [
             {
               text: pattern.name,
@@ -335,7 +392,7 @@ export const parseRepeatV2 = inputSentence => {
           result,
           name: pattern.name.replace(
             '{days}',
-            result.frequencyMetadata.days.join(', '),
+            result.frequencyMetadata.days.map(repeatDisplayWord).join(', '),
           ),
           highlight: [
             {
@@ -373,7 +430,10 @@ export const parseRepeatV2 = inputSentence => {
           result,
           name: pattern.name
             .replace('{day}', result.frequency)
-            .replace('{months}', result.frequencyMetadata.months.join(', ')),
+            .replace(
+              '{months}',
+              result.frequencyMetadata.months.map(repeatDisplayWord).join(', '),
+            ),
           highlight: [
             {
               text: pattern.name,
@@ -405,7 +465,7 @@ export const parseRepeatV2 = inputSentence => {
         result.frequencyType = 'daily'
         return {
           result,
-          name: pattern.name.replace('{time}', match[1]),
+          name: pattern.name.replace('{time}', repeatDisplayWord(match[1])),
           // replace every x with ''
           highlight: [
             {
@@ -464,7 +524,10 @@ export const parseRepeatV2 = inputSentence => {
         result.frequencyType = 'interval'
         return {
           result,
-          name: pattern.name.replace('{unit}', result.frequencyMetadata.unit),
+          name: pattern.name.replace(
+            '{unit}',
+            repeatDisplayWord(result.frequencyMetadata.unit),
+          ),
           highlight: [
             {
               text: pattern.name,
@@ -511,8 +574,8 @@ export const parseRepeatV2 = inputSentence => {
         return {
           result,
           name: pattern.name
-            .replace('{occurrence}', match[1])
-            .replace('{day}', VALID_DAYS[dayName]),
+            .replace('{occurrence}', repeatDisplayWord(match[1]))
+            .replace('{day}', repeatDisplayWord(VALID_DAYS[dayName])),
           highlight: [
             {
               text: inputSentence.substring(
@@ -570,8 +633,8 @@ export const parseRepeatV2 = inputSentence => {
         return {
           result,
           name: pattern.name
-            .replace('{occurrences}', match[1])
-            .replace('{day}', VALID_DAYS[dayName2]),
+            .replace('{occurrences}', repeatDisplayWord(match[1]))
+            .replace('{day}', repeatDisplayWord(VALID_DAYS[dayName2])),
           highlight: [
             {
               text: inputSentence.substring(

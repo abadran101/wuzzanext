@@ -1858,6 +1858,12 @@ const TaskInput = ({
                 />
               </Box> */}
 
+              <Typography
+                level='body-xs'
+                sx={{ color: 'text.tertiary', mb: 0.5 }}
+              >
+                {t('smartInput.englishOnlyNote')}
+              </Typography>
               <SmartTaskTitleInput
                 autoFocus
                 value={taskText}

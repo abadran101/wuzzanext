@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next'
 import ModalActions from '../../components/common/ModalActions'
 import { useResponsiveModal } from '../../hooks/useResponsiveModal'
 import { commandQueue } from '../../utils/CommandQueue'
+import { dateLocale } from '../../utils/DateLocale'
 
 const LABEL_KEYS = {
   complete_chore: 'completePending',
@@ -184,7 +185,7 @@ function PendingBadge({ commands, size = 'sm', sx = {} }) {
                   {formatCommandLabel(cmd.commandType, t)}
                 </Typography>
                 <Typography level='body-xs' sx={{ color: 'text.tertiary' }}>
-                  {new Date(cmd.createdAt).toLocaleString()}
+                  {new Date(cmd.createdAt).toLocaleString(dateLocale())}
                 </Typography>
               </ListItemContent>
 

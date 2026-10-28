@@ -33,7 +33,11 @@
     "noResultsDescription": "لا توجد مهمة في هذه التسمية تتطابق مع \"{{searchTerm}}\".",
     "notFoundTitle": "لم يتم العثور على التسمية",
     "notFoundDescription": "ربما تم حذف هذه التسمية أو لم تعد مشاركة معك.",
-    "backToLabels": "العودة إلى التسميات"
+    "backToLabels": "العودة إلى التسميات",
+    "taskCount_zero": "{{count}} مهمة",
+    "taskCount_two": "مهمتان ({{count}})",
+    "taskCount_few": "{{count}} مهام",
+    "taskCount_many": "{{count}} مهمة"
   },
   "blurb": "إدارة التسميات الخاصة بك وتنظيم المهام الخاصة بك بشكل فعال. سيتم مشاركة التسميات تلقائياً مع الدائرة الخاصة بك إذا تم استخدامها في مهمة مشتركة.",
   "modal": {
@@ -54,7 +58,11 @@
     "label": "التسميات",
     "createLabel": "إنشاء تسمية",
     "labelsCount_one": "تسمية {{count}}",
-    "labelsCount_other": "تسميات {{count}}"
+    "labelsCount_other": "تسميات {{count}}",
+    "labelsCount_zero": "{{count}} تسمية",
+    "labelsCount_two": "تسميتان ({{count}})",
+    "labelsCount_few": "{{count}} تسميات",
+    "labelsCount_many": "{{count}} تسمية"
   },
   "view": {
     "emptyTitle": "لا توجد تسميات بعد",

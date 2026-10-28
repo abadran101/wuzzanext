@@ -756,7 +756,7 @@ const Settings = () => {
           if (success) {
             showNotification({
               type: 'success',
-              message: 'Account deleted successfully',
+              message: t('accountSettings.accountDeleted'),
             })
           }
         }}

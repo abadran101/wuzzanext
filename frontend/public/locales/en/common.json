@@ -257,7 +257,9 @@
     "parseTitle": "Message Error",
     "parseMessage": "Failed to parse server message",
     "disabledTitle": "Connection Temporarily Disabled",
+    "disabledMessage": "Connection blocked due to repeated failures. Please try again later.",
     "failedTitle": "Connection Failed",
+    "failedMessage": "Maximum connection attempts reached. Live updates are off for 10 minutes.",
     "stateConnectionError": "Connection error occurred",
     "stateAuthExpired": "Authentication expired - refreshing token...",
     "stateTokenRefreshed": "Token refreshed - reconnecting...",
@@ -714,5 +716,50 @@
       "voice": "Capture by voice",
       "scan": "Scan to task"
     }
+  },
+  "options": {
+    "Default": "Default"
+  },
+  "text": {
+    "unknownError": "Unknown Error",
+    "404NotFound": "404 · Not Found",
+    "runtimeError": "Runtime Error",
+    "syntaxError": "Syntax Error",
+    "unexpectedError": "Unexpected Error",
+    "statusUnauthorized": "{{status}} · Unauthorized",
+    "statusServerError": "{{status}} · Server Error",
+    "failedToUploadFile": "Failed to upload file.",
+    "anErrorOccurredWhileProcessingTheFile": "An error occurred while processing the file.",
+    "serverUnreachableChangesWillSyncWhenConnectionIsRestored": "Server unreachable. Changes will sync when connection is restored.",
+    "noInternetConnectionSomeFeaturesMayNotBeAvailable": "No internet connection. Some features may not be available.",
+    "pauseTimer": "Pause Timer",
+    "startTimer": "Start Timer",
+    "untitledTask": "Untitled task",
+    "task": "Task",
+    "taskNote": "Task note",
+    "untitledProject": "Untitled project",
+    "project": "Project",
+    "untitledLabel": "Untitled label",
+    "label": "Label",
+    "circleMember": "Circle member",
+    "failedToWriteToNFCTag": "Failed to write to NFC tag",
+    "holdYourDeviceNearTheNFCTagToWrite": "Hold your device near the NFC tag to write",
+    "failedToStartNFCSession": "Failed to start NFC session",
+    "holdYourDeviceNearTheNFCTag": "Hold your device near the NFC tag",
+    "errorWritingToNFCTagPleaseTryAgain": "Error writing to NFC tag. Please try again.",
+    "nFCIsNotSupportedByThisBrowser": "NFC is not supported by this browser.",
+    "sessionIndexDeletionWouldBeImplementedHere": "Session #{{index}} deletion would be implemented here",
+    "sessionIndexDurationOngoing": "Session {{index}}: {{duration}} {{ongoing}}",
+    "ongoing": "(ongoing)",
+    "note": "Note",
+    "attachment": "Attachment",
+    "download": "Download",
+    "select": "Select"
+  },
+  "calendar": {
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "yesterday": "Yesterday",
+    "lastWeekday": "[Last] dddd"
   }
 }

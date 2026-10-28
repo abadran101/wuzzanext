@@ -1,4 +1,6 @@
 import { SETTINGS_SECTIONS } from '../constants/settingsSections'
+import i18n from '../i18n/config'
+import { dateLocale } from '../utils/DateLocale'
 import { stripHtml } from '../utils/Helpers'
 
 const HISTORY_STATUS = {
@@ -44,9 +46,10 @@ registerSearchProvider({
       return document('tasks', {
         id: `task:${chore.id}`,
         entityId: chore.id,
-        title: chore.name || 'Untitled task',
+        title: chore.name || i18n.t('common:text.untitledTask'),
         subtitle:
-          [project?.name, ...labels].filter(Boolean).join(' · ') || 'Task',
+          [project?.name, ...labels].filter(Boolean).join(' · ') ||
+          i18n.t('common:text.task'),
         body: description,
         keywords: [...labels, project?.name, ...assignees]
           .filter(Boolean)
@@ -70,11 +73,12 @@ registerSearchProvider({
         document('history', {
           id: `history:${entry.id}`,
           entityId: entry.id,
-          title: chore?.name || entry.choreName || 'Task note',
+          title:
+            chore?.name || entry.choreName || i18n.t('common:text.taskNote'),
           subtitle: [
             member?.displayName,
             entry.performedAt
-              ? new Date(entry.performedAt).toLocaleDateString()
+              ? new Date(entry.performedAt).toLocaleDateString(dateLocale())
               : null,
           ]
             .filter(Boolean)
@@ -97,8 +101,8 @@ registerSearchProvider({
       document('projects', {
         id: `project:${project.id}`,
         entityId: project.id,
-        title: project.name || 'Untitled project',
-        subtitle: 'Project',
+        title: project.name || i18n.t('common:text.untitledProject'),
+        subtitle: i18n.t('common:text.project'),
         body: stripHtml(project.description),
         keywords: 'folder project',
         route: `/chores?project=${encodeURIComponent(project.id)}`,
@@ -114,8 +118,8 @@ registerSearchProvider({
       document('labels', {
         id: `label:${label.id}`,
         entityId: label.id,
-        title: label.name || 'Untitled label',
-        subtitle: 'Label',
+        title: label.name || i18n.t('common:text.untitledLabel'),
+        subtitle: i18n.t('common:text.label'),
         keywords: 'tag label',
         route: `/labels/${label.id}`,
         color: label.color,
@@ -130,8 +134,11 @@ registerSearchProvider({
       document('people', {
         id: `person:${member.userId}`,
         entityId: member.userId,
-        title: member.displayName || member.username || 'Circle member',
-        subtitle: 'Circle member',
+        title:
+          member.displayName ||
+          member.username ||
+          i18n.t('common:text.circleMember'),
+        subtitle: i18n.t('common:text.circleMember'),
         keywords: `${member.username || ''} person member assignee tasks assigned`,
         route: `/chores?filterId=assignedTo:${member.userId}`,
       }),
@@ -147,7 +154,7 @@ registerSearchProvider({
           id: `setting:${id}`,
           entityId: id,
           title: t(`overview.sections.${id}.title`),
-          subtitle: 'Settings',
+          subtitle: i18n.t('common:settings'),
           body: t(`overview.sections.${id}.description`),
           keywords: `preferences configuration ${id}`,
           route: `/settings/${id}`,

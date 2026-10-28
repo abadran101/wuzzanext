@@ -73,11 +73,11 @@ function UserDeletionModal({ isOpen, onClose }) {
           setStep(3)
         }
       } else {
-        setError(data.error || 'Failed to check deletion requirements')
+        setError(data.error || t('text.failedToCheckDeletionRequirements'))
       }
     } catch (err) {
       console.error('Failed to check deletion requirements:', err)
-      setError('Failed to check deletion requirements')
+      setError(t('text.failedToCheckDeletionRequirements'))
     } finally {
       setLoading(false)
     }
@@ -123,7 +123,7 @@ function UserDeletionModal({ isOpen, onClose }) {
         handleClose(true)
         // Redirect to login or home page after successful deletion
       } else {
-        setError(data.message || 'Failed to delete account')
+        setError(data.message || t('deletion.failed'))
       }
     } catch (err) {
       console.error('Failed to delete account:', err)
@@ -292,10 +292,10 @@ function UserDeletionModal({ isOpen, onClose }) {
       size='lg'
       title={
         step === 1
-          ? 'Delete Account'
+          ? t('accountSettings.deleteAccount')
           : step === 2
-            ? 'Transfer Circle Ownership'
-            : 'Final Confirmation'
+            ? t('text.transferCircleOwnership')
+            : t('text.finalConfirmation')
       }
       role={step === 3 ? 'alertdialog' : 'dialog'}
       closeOnBackdrop={false}
@@ -308,7 +308,10 @@ function UserDeletionModal({ isOpen, onClose }) {
               onClick: () => handleClose(false),
             }}
             primary={{
-              label: step === 3 ? 'Delete Account' : 'Continue',
+              label:
+                step === 3
+                  ? t('accountSettings.deleteAccount')
+                  : t('text.continue'),
               color: step === 3 ? 'danger' : 'primary',
               onClick:
                 step === 1
