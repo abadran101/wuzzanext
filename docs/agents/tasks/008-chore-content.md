@@ -1,12 +1,12 @@
 # Task 008: chore content (instructions, "done means", pictures)
 
-- **Status:** delegated (plan run first)
+- **Status:** done (PR open)
 - **Branch and worktree:** `task/008-chore-content` from `main` (f9a53295faf163c6f0114d9b36b3de92a6804f12),
   in `C:\dev\wt\wuzzanext-008-chore-content`
-- **Hand-off:** Codex (default model and effort), a read-only plan run first; supervisor reviews
+- **Hand-off:** a read-only Codex plan run; the supervisor writes the code (Codex write runs blocked)
 - **Shares:** the chore model, the chore editor and the chore page; 009 (photo proof) builds on it
 - **Your time:** ~15 min (review in the test app, merge)
-- **Who:** Claude → Codex → Claude → You
+- **Who:** Claude → Codex (plan) → Claude → You
 - **Waits on:** nothing (PR #12 merged)
 
 ## Goal
@@ -71,6 +71,53 @@ on the chore page, and the "Done means" text again when they mark it done.
   picture, saves, shows on the chore page in English and Arabic, survives an edit; a chore
   without "Done means" looks as before.
 
+## Progress (supervisor)
+
+- 2026-10-28: the supervisor writes 008, and later tasks while Codex stays blocked (owner,
+  through the orchestrator: "yes" to "Should Wuzzanext write 008 itself, and later tasks too while
+  Codex stays blocked?"). A read-only Codex plan run is still fine; no Codex write runs, no
+  workarounds, no setting changes, until the orchestrator says Codex is fixed.
+
 ## Result (filled in before the push, in the task's own branch)
 
-- Commits (full hashes), tests, what was checked by hand, what is left, what the owner must do.
+- **Commits:** 7b7862ef008d793d08b0135bc0942c8297e84802 (task file, plan; PR #12's merge),
+  55297586456103d828c0994fdc25a6aa3691560d (code),
+  a225c9f276e12ed2aff384eacab15f58da729a29 (a test), then this record.
+- **Codex:** one read-only plan run (exit 0); the supervisor wrote the code (owner's decision).
+- **Backend:** `Chore.DoneMeans` (`chores.done_means`, text, added by the existing auto-migration),
+  returned by the chore and chore-detail reads with pictures signed like the details, accepted on
+  create and edit. An edit without `doneMeans` (older app, queued offline edit) keeps the saved
+  text; `""` clears it. Picture clean-up looks at both texts (`choreText`), so a picture in
+  either stays. The lite API's update keeps the field (it updates by field map).
+- **Pictures for a self-hosted family (what was found):** Plus membership blocks nothing
+  (`User.IsPlusMember` is always true). Two real blocks, both fixed: (1) the self-hosted config
+  template (`backend/config/selfhosted.yaml.example`, written on first start) had no `storage`
+  section, so the server fell back to cloud storage with a 0-byte file limit and refused every
+  upload (413); it now sets local storage in `./uploads`, 5 MB per file, 1 GB per person.
+  (2) PIN profiles get no storage-usage row, so `AddMediaRecord` refused their uploads (507);
+  the first upload now starts the row. A member still can't add pictures to a chore they may not
+  edit (existing edit rule, unchanged).
+- **Frontend:** a "Done means" editor (icon, title, same rich-text editor and upload path) under
+  the details in the full chore editor; a "Done means" block on the chore page; the complete
+  button shows it in an "Is it done?" confirmation (`ConfirmationModal` takes rich `content`).
+  Offline: the command queue and offline chores carry the field as is; the offline image cache
+  collects its pictures. Texts in English and Arabic. Helper `hasChoreContent` (empty editor =
+  no text).
+- **Choices (safe defaults):** no new size limit or sanitiser, the same as the details (the
+  details are rendered the same way today); not translated; not in the quick-add dialog (kept
+  simple, add it in the full editor); clone shares picture paths and offline picture uploads
+  stay as they were before.
+- **Checks:** `go build ./...` ok; `go vet ./...` only the known pool.go:218 finding;
+  `go test ./...` 27 packages ok, new: `internal/chore/content_test.go` (create, edit, omitted
+  field kept, empty clears, detail read, not readable from another circle, pictures in both texts) and
+  `internal/storage/repo/repository_test.go` (profile's first upload, circle quota kept).
+  `npm run build` ok; `npm run lint` exit 0, 0 errors, 1897 warnings; node tests 35 pass, 1 known
+  upstream failure (new: `tests/chore-content.test.mjs`).
+- **By hand (local test app, Alex and Sam, API level):** create with Arabic "Done means" reads
+  back intact; Alex's picture uploads, is signed on read, survives an edit and an edit without
+  the field; a chore without it has no field; Sam (PIN profile) uploads a draft picture and a
+  picture to Sam's own chore and saves it in "Done means"; Sam is refused on Alex's chore (403,
+  edit rule). No browser on the dev machine, so the screens were not looked at.
+- **Left for the owner:** look at the editor, the chore page and the confirmation in the test
+  app, in English and Arabic (~15 min), then merge. First deployment: keep `./uploads` on the
+  data volume (or set `DT_STORAGE_BASE_PATH`).

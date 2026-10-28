@@ -14,7 +14,7 @@ Update this file at every stop. Output from the real machines beats anything wri
   `main` at f9a5329 (PR #12, task 023, merged 2026-10-28; PR #11, task 022, merged 2026-10-28; PR #10, task 024, merged 2026-10-27; PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
   merged 2026-10-27; PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1,
   task 001, before it).
-- Open branch: `task/008-chore-content` (in progress).
+- Open branch: `task/008-chore-content` (done, PR open).
 - Remote `origin` is `https://github.com/abadran101/wuzzanext.git`, confirmed with
   `git ls-remote origin` on 2026-10-26.
 - Agents push task branches with the fine-grained token the orchestrator lists (it covers only the
@@ -49,7 +49,9 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 008 chore content (task file): plan run with Codex first.
+- 008 chore content (task file): done, PR open; waits on the owner's review in the test app and merge.
+- First deployment: keep `storage.base_path` (`./uploads`) on the data volume next to the
+  database, or pictures are lost when the container is replaced (task 008 Result).
 - Google key setup for 023 comes with the first deployment (`docs/translation-setup.md`).
 - Next: 009, 010, 011, 016, 017, 018, then 020 before 019; 012-015 stay parked.
 
@@ -71,6 +73,14 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## Decisions (newest first)
 
+- 2026-10-28: task 008 defaults (supervisor): "Done means" has no new size limit or sanitiser
+  (the same as the details), keeps the storage quota, is not translated (the owner decides
+  later), and is not in the quick-add dialog; clone sharing pictures and offline picture uploads
+  stay as they are. Self-hosted storage defaults: local, 5 MB per file, 1 GB per person.
+- 2026-10-28: the supervisor writes 008, and later tasks while Codex stays blocked (owner,
+  through the orchestrator: "yes" to "Should Wuzzanext write 008 itself, and later tasks too while
+  Codex stays blocked?"). A read-only Codex plan run is still fine; no Codex write runs, no
+  workarounds, no setting changes, until the orchestrator says Codex is fixed.
 - 2026-10-28: PR #12 (task 023) merged, main f9a53295faf163c6f0114d9b36b3de92a6804f12 (owner,
   through the orchestrator: "merged"; checked: merge of c0bd39bf and 4aadb5bf). Next 008 with
   Codex; if Codex is still blocked, stop and ask (the owner has not decided yet whether the
