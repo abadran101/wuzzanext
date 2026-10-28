@@ -126,10 +126,10 @@ function LabelModal({ isOpen, label, onClose }) {
                 type='button'
                 key={colorOption.value}
                 aria-label={t('modal.colorAriaSelect', {
-                  color: colorOption.name,
+                  color: t(colorOption.labelKey),
                 })}
                 aria-pressed={color === colorOption.value}
-                title={colorOption.name}
+                title={t(colorOption.labelKey)}
                 onClick={() => setColor(colorOption.value)}
                 sx={{
                   width: 40,

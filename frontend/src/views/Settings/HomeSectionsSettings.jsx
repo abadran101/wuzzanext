@@ -44,9 +44,12 @@ const HomeSectionsSettings = () => {
   // but the stored copy is English. Prefer the translated string and fall
   // back to it.
   const sectionName = item =>
-    t(`homeSections.sections.${item.id}.name`, item.name)
+    t(item.nameKey || `homeSections.sections.${item.id}.name`, item.name)
   const sectionDescription = item =>
-    t(`homeSections.sections.${item.id}.description`, item.description)
+    t(
+      item.descriptionKey || `homeSections.sections.${item.id}.description`,
+      item.description,
+    )
 
   const getIcon = iconName => {
     switch (iconName) {

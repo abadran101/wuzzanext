@@ -1,5 +1,6 @@
 import moment from 'moment'
 
+import i18n from '../i18n/config'
 import { TASK_COLOR } from './Colors.jsx'
 
 export const priorityOrder = [1, 2, 3, 4, 0]
@@ -202,63 +203,63 @@ export const ChoresGrouper = (groupBy, chores, filter, direction = 'asc') => {
       groups = []
       if (groupRaw['Started'].length > 0) {
         groups.push({
-          name: 'Started',
+          name: i18n.t('chores:filterBuilder.status.1'),
           content: groupRaw['Started'],
           color: TASK_COLOR.STARTED,
         })
       }
       if (groupRaw['PendingApproval'].length > 0) {
         groups.push({
-          name: 'Pending Approval',
+          name: i18n.t('chores:choreView.pendingApproval'),
           content: groupRaw['PendingApproval'],
           color: TASK_COLOR.LATE,
         })
       }
       if (groupRaw['Overdue'].length > 0) {
         groups.push({
-          name: 'Overdue',
+          name: i18n.t('chores:group.overdue'),
           content: groupRaw['Overdue'],
           color: TASK_COLOR.OVERDUE,
         })
       }
       if (groupRaw['Today'].length > 0) {
         groups.push({
-          name: 'Today',
+          name: i18n.t('chores:multiToolbar.presetToday'),
           content: groupRaw['Today'],
           color: TASK_COLOR.TODAY,
         })
       }
       if (groupRaw['Tomorrow'].length > 0) {
         groups.push({
-          name: 'Tomorrow',
+          name: i18n.t('chores:multiToolbar.presetTomorrow'),
           content: groupRaw['Tomorrow'],
           color: TASK_COLOR.TOMORROW,
         })
       }
       if (groupRaw['Next 7 Days'].length > 0) {
         groups.push({
-          name: 'Next 7 Days',
+          name: i18n.t('chores:text.next7Days'),
           content: groupRaw['Next 7 Days'],
           color: TASK_COLOR.NEXT_7_DAYS,
         })
       }
       if (groupRaw['Later This Month'].length > 0) {
         groups.push({
-          name: 'Later This Month',
+          name: i18n.t('chores:text.laterThisMonth'),
           content: groupRaw['Later This Month'],
           color: TASK_COLOR.LATER_THIS_MONTH,
         })
       }
       if (groupRaw['Future'].length > 0) {
         groups.push({
-          name: 'Future',
+          name: i18n.t('chores:text.future'),
           content: groupRaw['Future'],
           color: TASK_COLOR.FUTURE,
         })
       }
       if (groupRaw['Anytime'].length > 0) {
         groups.push({
-          name: 'Anytime',
+          name: i18n.t('chores:duePicker.anytime'),
           content: groupRaw['Anytime'],
           color: TASK_COLOR.ANYTIME,
         })
@@ -272,7 +273,7 @@ export const ChoresGrouper = (groupBy, chores, filter, direction = 'asc') => {
       groups = [...dueDateGroups]
       if (dueAnytime.length > 0) {
         groups.push({
-          name: 'Anytime',
+          name: i18n.t('chores:duePicker.anytime'),
           content: dueAnytime,
           color: TASK_COLOR.ANYTIME,
         })
@@ -285,7 +286,7 @@ export const ChoresGrouper = (groupBy, chores, filter, direction = 'asc') => {
       groups = [...createdDateGroups]
       if (createdAnytime.length > 0) {
         groups.push({
-          name: 'Unknown',
+          name: i18n.t('chores:assignee.unknown'),
           content: createdAnytime,
           color: TASK_COLOR.ANYTIME,
         })
@@ -298,7 +299,7 @@ export const ChoresGrouper = (groupBy, chores, filter, direction = 'asc') => {
       groups = [...updatedDateGroups]
       if (updatedAnytime.length > 0) {
         groups.push({
-          name: 'Unknown',
+          name: i18n.t('chores:assignee.unknown'),
           content: updatedAnytime,
           color: TASK_COLOR.ANYTIME,
         })
@@ -334,27 +335,27 @@ export const ChoresGrouper = (groupBy, chores, filter, direction = 'asc') => {
       })
       groups = [
         {
-          name: 'Priority 1',
+          name: i18n.t('chores:text.priority1'),
           content: groupRaw['p1'],
           color: TASK_COLOR.PRIORITY_1,
         },
         {
-          name: 'Priority 2',
+          name: i18n.t('chores:text.priority2'),
           content: groupRaw['p2'],
           color: TASK_COLOR.PRIORITY_2,
         },
         {
-          name: 'Priority 3',
+          name: i18n.t('chores:text.priority3'),
           content: groupRaw['p3'],
           color: TASK_COLOR.PRIORITY_3,
         },
         {
-          name: 'Priority 4',
+          name: i18n.t('chores:text.priority4'),
           content: groupRaw['p4'],
           color: TASK_COLOR.PRIORITY_4,
         },
         {
-          name: 'No Priority',
+          name: i18n.t('chores:choreView.noPriority'),
           content: groupRaw['no_priority'],
           color: TASK_COLOR.NO_PRIORITY,
         },

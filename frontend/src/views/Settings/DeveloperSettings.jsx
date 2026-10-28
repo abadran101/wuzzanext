@@ -208,8 +208,8 @@ const DeveloperSettings = () => {
   }, [accessTokenExpiry, refreshTokenExpiry, getDebugInfo])
 
   const formatTimeLeft = milliseconds => {
-    if (milliseconds === null) return 'N/A'
-    if (milliseconds === 0) return 'Expired'
+    if (milliseconds === null) return t('text.nA')
+    if (milliseconds === 0) return t('text.expired')
 
     const totalSeconds = Math.floor(milliseconds / 1000)
     const days = Math.floor(totalSeconds / 86400)
@@ -255,13 +255,13 @@ const DeveloperSettings = () => {
       } else {
         showNotification({
           type: 'error',
-          message: `Token refresh failed: ${result.error}`,
+          message: t('text.tokenRefreshFailedError', { error: result.error }),
         })
       }
     } catch (error) {
       showNotification({
         type: 'error',
-        message: `Token refresh error: ${error.message}`,
+        message: t('text.tokenRefreshErrorError', { error: error.message }),
       })
     } finally {
       setIsRefreshing(false)
@@ -294,13 +294,18 @@ const DeveloperSettings = () => {
         const error = await response.text()
         showNotification({
           type: 'error',
-          message: `Refresh token endpoint failed: ${response.status} ${error}`,
+          message: t('text.refreshTokenEndpointFailedStatusError', {
+            status: response.status,
+            error,
+          }),
         })
       }
     } catch (error) {
       showNotification({
         type: 'error',
-        message: `Refresh token endpoint error: ${error.message}`,
+        message: t('text.refreshTokenEndpointErrorError', {
+          error: error.message,
+        }),
       })
     } finally {
       setIsRefreshingDirect(false)
@@ -322,13 +327,15 @@ const DeveloperSettings = () => {
       setScheduledNotifications(sorted)
       showNotification({
         type: 'success',
-        message: `Loaded ${sorted.length} scheduled notifications`,
+        message: t('developer.loadedNotifications', { count: sorted.length }),
       })
     } catch (error) {
       console.error('Error loading scheduled notifications:', error)
       showNotification({
         type: 'error',
-        message: `Error loading notifications: ${error.message}`,
+        message: t('text.errorLoadingNotificationsError', {
+          error: error.message,
+        }),
       })
     } finally {
       setIsLoadingNotifications(false)
@@ -337,8 +344,8 @@ const DeveloperSettings = () => {
 
   const handleResetDatabaseAndResync = async () => {
     showConfirmation(
-      'This will clear local offline data and pending commands, then start a full sync from the beginning. Continue?',
-      'Clear Local DB & Re-Sync',
+      t('text.thisWillClearLocalOfflineDataAndPendingCommandsThenStartAFul'),
+      t('text.clearLocalDBReSync'),
       async () => {
         setIsResettingSync(true)
         try {
@@ -359,23 +366,24 @@ const DeveloperSettings = () => {
           } else {
             showNotification({
               type: 'warning',
-              message:
-                'Database cleared. Full sync did not run (likely offline or already syncing).',
+              message: t(
+                'text.databaseClearedFullSyncDidNotRunLikelyOfflineOrAlreadySyncin',
+              ),
             })
           }
         } catch (error) {
           console.error('Failed to reset database and resync:', error)
           showNotification({
             type: 'error',
-            message: `Reset/resync failed: ${error.message}`,
+            message: t('text.resetresyncFailedError', { error: error.message }),
           })
         } finally {
           await refreshSyncDiagnostics()
           setIsResettingSync(false)
         }
       },
-      'Clear & Re-Sync',
-      'Cancel',
+      t('text.clearReSync'),
+      t('common.cancel'),
       'danger',
     )
   }
@@ -395,7 +403,7 @@ const DeveloperSettings = () => {
     await refreshFeedbackEligibility()
     showNotification({
       type: 'success',
-      message: 'Next visit to My Chores will show the prompt after ~4s',
+      message: t('text.nextVisitToMyChoresWillShowThePromptAfter4s'),
     })
   }
 
@@ -403,8 +411,7 @@ const DeveloperSettings = () => {
     await resetPolicyUpdate()
     showNotification({
       type: 'success',
-      message:
-        'Next visit to My Chores will show the policy notice after ~1.5s',
+      message: t('text.nextVisitToMyChoresWillShowThePolicyNoticeAfter15s'),
     })
   }
 
@@ -413,7 +420,7 @@ const DeveloperSettings = () => {
     await refreshFeedbackEligibility()
     showNotification({
       type: 'success',
-      message: 'Feedback state cleared (completions, cooldown, opt-out)',
+      message: t('text.feedbackStateClearedCompletionsCooldownOptout'),
     })
   }
 
@@ -431,18 +438,19 @@ const DeveloperSettings = () => {
   }
 
   const formatDateTime = timestamp => {
-    if (!timestamp) return 'N/A'
+    if (!timestamp) return t('text.nA')
     return new Date(timestamp).toLocaleString()
   }
 
   return (
     <div className='grid gap-4 py-4' id='developer'>
-      <Typography level='h3'>Developer Settings</Typography>
+      <Typography level='h3'>
+        {t('overview.sections.developer.title')}
+      </Typography>
       <Divider />
       <Typography level='body-md'>
         {t('developer.intro')}
-        state. This information is useful for debugging and development
-        purposes.
+        {t('developer.stateThisinformationisusefulfor')}
       </Typography>
 
       <Card variant='outlined'>
@@ -456,7 +464,9 @@ const DeveloperSettings = () => {
               gap: 1,
             }}
           >
-            <Typography level='title-lg'>Authentication Tokens</Typography>
+            <Typography level='title-lg'>
+              {t('developer.AuthenticationTokens')}
+            </Typography>
             <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
               <Button
                 size='sm'
@@ -466,7 +476,7 @@ const DeveloperSettings = () => {
                 loading={isRefreshing}
                 disabled={isRefreshing || isRefreshingDirect}
               >
-                Refresh Token
+                {t('developer.RefreshToken')}
               </Button>
               <Button
                 size='sm'
@@ -477,14 +487,14 @@ const DeveloperSettings = () => {
                 loading={isRefreshingDirect}
                 disabled={isRefreshing || isRefreshingDirect}
               >
-                Call Refresh Endpoint
+                {t('developer.CallRefreshEndpoint')}
               </Button>
             </Box>
           </Box>
 
           <Box>
             <Typography level='title-sm' mb={1}>
-              Access Token
+              {t('apiTokens.accessToken')}
             </Typography>
             <Box
               sx={{
@@ -494,14 +504,15 @@ const DeveloperSettings = () => {
                 flexWrap: 'wrap',
               }}
             >
-              <Typography level='body-sm'>Time Left:</Typography>
+              <Typography level='body-sm'>{t('developer.TimeLeft')}</Typography>
               <Chip color={getExpiryStatus(timeLeft.access)} variant='soft'>
                 {formatTimeLeft(timeLeft.access)}
               </Chip>
             </Box>
             {accessTokenExpiry && (
               <Typography level='body-xs' sx={{ mt: 0.5 }} color='neutral'>
-                Expires: {new Date(accessTokenExpiry).toLocaleString()}
+                {t('developer.Expires')}{' '}
+                {new Date(accessTokenExpiry).toLocaleString()}
               </Typography>
             )}
           </Box>
@@ -510,7 +521,7 @@ const DeveloperSettings = () => {
 
           <Box>
             <Typography level='title-sm' mb={1}>
-              Refresh Token
+              {t('developer.RefreshToken')}
             </Typography>
             {isNativePlatform ? (
               <>
@@ -522,7 +533,9 @@ const DeveloperSettings = () => {
                     flexWrap: 'wrap',
                   }}
                 >
-                  <Typography level='body-sm'>Time Left:</Typography>
+                  <Typography level='body-sm'>
+                    {t('developer.TimeLeft')}
+                  </Typography>
                   <Chip
                     color={getExpiryStatus(timeLeft.refresh)}
                     variant='soft'
@@ -532,7 +545,8 @@ const DeveloperSettings = () => {
                 </Box>
                 {refreshTokenExpiry && (
                   <Typography level='body-xs' sx={{ mt: 0.5 }} color='neutral'>
-                    Expires: {new Date(refreshTokenExpiry).toLocaleString()}
+                    {t('developer.Expires')}{' '}
+                    {new Date(refreshTokenExpiry).toLocaleString()}
                   </Typography>
                 )}
               </>
@@ -547,13 +561,15 @@ const DeveloperSettings = () => {
 
       <Card variant='outlined'>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <Typography level='title-lg'>Platform Information</Typography>
+          <Typography level='title-lg'>
+            {t('developer.PlatformInformation')}
+          </Typography>
 
           <Box>
             <Typography level='body-sm'>
-              Platform:{' '}
+              {t('developer.Platform')}{' '}
               <Chip variant='soft' size='sm'>
-                {isNativePlatform ? 'Native' : 'Web'}
+                {isNativePlatform ? t('text.native') : t('text.web')}
               </Chip>
             </Typography>
           </Box>
@@ -571,33 +587,39 @@ const DeveloperSettings = () => {
               gap: 1,
             }}
           >
-            <Typography level='title-lg'>Sync & Network Diagnostics</Typography>
+            <Typography level='title-lg'>
+              {t('developer.SyncNetworkDiagnostics')}
+            </Typography>
             <Button
               size='sm'
               variant='soft'
               startDecorator={<Refresh />}
               onClick={refreshSyncDiagnostics}
             >
-              Refresh
+              {t('common.refresh')}
             </Button>
           </Box>
 
           <Divider />
 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography level='title-sm'>Network Status</Typography>
+            <Typography level='title-sm'>
+              {t('developer.NetworkStatus')}
+            </Typography>
             <Typography level='body-sm'>
-              Connection:{' '}
+              {t('developer.Connection')}{' '}
               <Chip
                 size='sm'
                 variant='soft'
                 color={syncDiagnostics.isOnline ? 'success' : 'danger'}
               >
-                {syncDiagnostics.isOnline ? 'Online' : 'Offline'}
+                {syncDiagnostics.isOnline
+                  ? t('text.online')
+                  : t('text.offline')}
               </Chip>
             </Typography>
             <Typography level='body-sm'>
-              Device Network:{' '}
+              {t('developer.DeviceNetwork')}{' '}
               <Chip
                 size='sm'
                 variant='soft'
@@ -610,54 +632,58 @@ const DeveloperSettings = () => {
                 }
               >
                 {syncDiagnostics.isNetworkOn === false
-                  ? 'Disconnected'
+                  ? t('bridge.disconnectedTitle')
                   : syncDiagnostics.isNetworkOn === true
-                    ? 'Connected'
-                    : 'Unknown'}
+                    ? t('text.connected')
+                    : t('text.unknown')}
               </Chip>
             </Typography>
             <Typography level='body-xs' color='neutral'>
-              Offline Since: {formatDateTime(syncDiagnostics.offlineSince)}
+              {t('developer.OfflineSince')}{' '}
+              {formatDateTime(syncDiagnostics.offlineSince)}
             </Typography>
             <Typography level='body-xs' color='neutral'>
-              Last Network Check: {formatDateTime(syncDiagnostics.lastChecked)}
+              {t('developer.LastNetworkCheck')}{' '}
+              {formatDateTime(syncDiagnostics.lastChecked)}
             </Typography>
           </Box>
 
           <Divider />
 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography level='title-sm'>Sync Offset Information</Typography>
+            <Typography level='title-sm'>
+              {t('developer.SyncOffsetInformation')}
+            </Typography>
             <Typography level='body-sm'>
-              Sync Cursor:{' '}
+              {t('developer.SyncCursor')}{' '}
               <Chip size='sm' variant='soft'>
-                {syncDiagnostics.cursor ?? 'N/A'}
+                {syncDiagnostics.cursor ?? t('text.nA')}
               </Chip>
             </Typography>
             <Typography level='body-sm'>
-              Last Sync:{' '}
+              {t('developer.LastSync')}{' '}
               <Chip size='sm' variant='soft' color='primary'>
                 {formatDateTime(syncDiagnostics.lastSync)}
               </Chip>
             </Typography>
             <Typography level='body-sm'>
-              Sync State:{' '}
+              {t('developer.SyncState')}{' '}
               <Chip
                 size='sm'
                 variant='soft'
                 color={syncDiagnostics.syncing ? 'warning' : 'success'}
               >
-                {syncDiagnostics.syncing ? 'Syncing' : 'Idle'}
+                {syncDiagnostics.syncing ? t('text.syncing') : t('text.idle')}
               </Chip>
             </Typography>
             <Typography level='body-sm'>
-              Pending Commands:{' '}
+              {t('developer.PendingCommands')}{' '}
               <Chip size='sm' variant='soft' color='warning'>
                 {syncDiagnostics.pendingCount}
               </Chip>
             </Typography>
             <Typography level='body-sm'>
-              Failed Commands:{' '}
+              {t('developer.FailedCommands')}{' '}
               <Chip
                 size='sm'
                 variant='soft'
@@ -668,7 +694,7 @@ const DeveloperSettings = () => {
             </Typography>
             {syncDiagnostics.syncError && (
               <Typography level='body-sm' color='danger'>
-                Sync Error: {syncDiagnostics.syncError}
+                {t('developer.SyncError')} {syncDiagnostics.syncError}
               </Typography>
             )}
           </Box>
@@ -676,10 +702,11 @@ const DeveloperSettings = () => {
           <Divider />
 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography level='title-sm'>Recovery Actions</Typography>
+            <Typography level='title-sm'>
+              {t('developer.RecoveryActions')}
+            </Typography>
             <Typography level='body-xs' color='warning'>
-              Clears local offline cache, sync cursor, and queued commands, then
-              re-syncs from the beginning.
+              {t('developer.Clearslocalofflinecachesynccursor')}
             </Typography>
             <Box>
               <Button
@@ -690,7 +717,7 @@ const DeveloperSettings = () => {
                 loading={isResettingSync}
                 disabled={isResettingSync || syncDiagnostics.syncing}
               >
-                Clear DB & Full Re-Sync
+                {t('developer.ClearDBFullReSync')}
               </Button>
             </Box>
           </Box>
@@ -708,33 +735,37 @@ const DeveloperSettings = () => {
               gap: 1,
             }}
           >
-            <Typography level='title-lg'>Feedback Prompt</Typography>
+            <Typography level='title-lg'>
+              {t('developer.FeedbackPrompt')}
+            </Typography>
             <Button
               size='sm'
               variant='soft'
               startDecorator={<Refresh />}
               onClick={refreshFeedbackEligibility}
             >
-              Refresh
+              {t('common.refresh')}
             </Button>
           </Box>
 
           <Divider />
 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography level='title-sm'>Prompt Eligibility</Typography>
+            <Typography level='title-sm'>
+              {t('developer.PromptEligibility')}
+            </Typography>
             <Typography level='body-sm'>
-              Would auto-show:{' '}
+              {t('developer.Wouldautoshow')}{' '}
               <Chip
                 size='sm'
                 variant='soft'
                 color={feedbackEligibility?.eligible ? 'success' : 'neutral'}
               >
-                {feedbackEligibility?.eligible ? 'Yes' : 'No'}
+                {feedbackEligibility?.eligible ? t('text.yes') : t('text.no')}
               </Chip>
               {feedbackEligibility?.forced && (
                 <Chip size='sm' variant='soft' color='warning' sx={{ ml: 1 }}>
-                  Forced
+                  {t('developer.Forced')}
                 </Chip>
               )}
             </Typography>
@@ -752,27 +783,28 @@ const DeveloperSettings = () => {
           <Divider />
 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography level='title-sm'>State</Typography>
+            <Typography level='title-sm'>{t('developer.State')}</Typography>
             <Typography level='body-sm'>
-              Completions counted:{' '}
+              {t('developer.Completionscounted')}{' '}
               <Chip size='sm' variant='soft'>
-                {feedbackEligibility?.state?.completions ?? 'N/A'}
+                {feedbackEligibility?.state?.completions ?? t('text.nA')}
               </Chip>
             </Typography>
             <Typography level='body-sm'>
-              Last sentiment:{' '}
+              {t('developer.Lastsentiment')}{' '}
               <Chip size='sm' variant='soft'>
-                {feedbackEligibility?.state?.lastSentiment ?? 'None'}
+                {feedbackEligibility?.state?.lastSentiment ??
+                  t('notifications.targetNone')}
               </Chip>
             </Typography>
             <Typography level='body-sm'>
-              Dismissals:{' '}
+              {t('developer.Dismissals')}{' '}
               <Chip size='sm' variant='soft'>
                 {feedbackEligibility?.state?.dismissCount ?? 0}
               </Chip>
             </Typography>
             <Typography level='body-sm'>
-              Opted out:{' '}
+              {t('developer.Optedout')}{' '}
               <Chip
                 size='sm'
                 variant='soft'
@@ -780,28 +812,33 @@ const DeveloperSettings = () => {
                   feedbackEligibility?.state?.optedOut ? 'danger' : 'success'
                 }
               >
-                {feedbackEligibility?.state?.optedOut ? 'Yes' : 'No'}
+                {feedbackEligibility?.state?.optedOut
+                  ? t('text.yes')
+                  : t('text.no')}
               </Chip>
             </Typography>
             <Typography level='body-xs' color='neutral'>
-              Last prompted:{' '}
+              {t('developer.Lastprompted')}{' '}
               {formatDateTime(feedbackEligibility?.state?.lastPromptedAt)}
               {feedbackEligibility?.state?.lastPromptedVersion
-                ? ` on ${feedbackEligibility.state.lastPromptedVersion}`
+                ? t('text.onVersion', {
+                    version: feedbackEligibility.state.lastPromptedVersion,
+                  })
                 : ''}
             </Typography>
             <Typography level='body-xs' color='neutral'>
-              Current version: {feedbackEligibility?.version ?? 'N/A'} · Webhook{' '}
+              {t('developer.Currentversion')}{' '}
+              {feedbackEligibility?.version ?? t('text.nA')}{' '}
+              {t('developer.Webhook')}{' '}
               {isFeedbackSubmissionConfigured()
-                ? 'configured'
-                : 'NOT configured (submissions log to console)'}
+                ? t('text.configured')
+                : t('text.nOTConfiguredSubmissionsLogToConsole')}
             </Typography>
             {isRawChatWebhookConfigured() && (
               <Typography level='body-xs' color='danger'>
-                VITE_FEEDBACK_WEBHOOK_URL points straight at a Discord/Slack
-                webhook. Discord rejects that with 50006, and the URL ships
-                inside the public bundle — deploy workers/feedback and point the
-                variable at the Worker.
+                {t(
+                  'developer.VITEFEEDBACKWEBHOOKURLpointsstraightataDiscordSlack',
+                )}
               </Typography>
             )}
           </Box>
@@ -809,10 +846,9 @@ const DeveloperSettings = () => {
           <Divider />
 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography level='title-sm'>Actions</Typography>
+            <Typography level='title-sm'>{t('developer.Actions')}</Typography>
             <Typography level='body-xs' color='neutral'>
-              &quot;Force next prompt&quot; bypasses every gate, then open My
-              Chores to see the automatic trigger.
+              {t('developer.Forcenextpromptbypasseseverygate')}
             </Typography>
             <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
               <Button
@@ -820,7 +856,7 @@ const DeveloperSettings = () => {
                 variant='soft'
                 onClick={() => setFeedbackModalOpen(true)}
               >
-                Open Flow
+                {t('developer.OpenFlow')}
               </Button>
               <Button
                 size='sm'
@@ -828,7 +864,7 @@ const DeveloperSettings = () => {
                 color='neutral'
                 onClick={handleForceFeedbackPrompt}
               >
-                Force Next Prompt
+                {t('developer.ForceNextPrompt')}
               </Button>
               <Button
                 size='sm'
@@ -836,7 +872,7 @@ const DeveloperSettings = () => {
                 color='danger'
                 onClick={handleResetFeedbackState}
               >
-                Reset State
+                {t('developer.ResetState')}
               </Button>
             </Box>
           </Box>
@@ -845,12 +881,12 @@ const DeveloperSettings = () => {
 
       <Card variant='outlined'>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <Typography level='title-lg'>Policy Update Notice</Typography>
+          <Typography level='title-lg'>
+            {t('developer.PolicyUpdateNotice')}
+          </Typography>
           <Divider />
           <Typography level='body-sm' color='neutral'>
-            Shown once per POLICY_VERSION to accounts created before the policy
-            effective date. &quot;Force Next Prompt&quot; clears the
-            acknowledgement, then open My Chores to see the automatic trigger.
+            {t('developer.ShownonceperPOLICYVERSIONtoaccounts')}
           </Typography>
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
             <Button
@@ -858,7 +894,7 @@ const DeveloperSettings = () => {
               variant='soft'
               onClick={() => setPolicyModalOpen(true)}
             >
-              Open Notice
+              {t('developer.OpenNotice')}
             </Button>
             <Button
               size='sm'
@@ -866,7 +902,7 @@ const DeveloperSettings = () => {
               color='neutral'
               onClick={handleForcePolicyUpdate}
             >
-              Force Next Prompt
+              {t('developer.ForceNextPrompt')}
             </Button>
           </Box>
         </Box>
@@ -885,7 +921,7 @@ const DeveloperSettings = () => {
               }}
             >
               <Typography level='title-lg'>
-                Scheduled Local Notifications
+                {t('developer.ScheduledLocalNotifications')}
               </Typography>
               <Button
                 size='sm'
@@ -895,7 +931,7 @@ const DeveloperSettings = () => {
                 loading={isLoadingNotifications}
                 disabled={isLoadingNotifications}
               >
-                Refresh
+                {t('common.refresh')}
               </Button>
             </Box>
 
@@ -903,12 +939,12 @@ const DeveloperSettings = () => {
 
             {scheduledNotifications.length === 0 ? (
               <Typography level='body-sm' color='neutral'>
-                No scheduled notifications
+                {t('developer.Noschedulednotifications')}
               </Typography>
             ) : (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <Typography level='body-sm'>
-                  Total scheduled:{' '}
+                  {t('developer.Totalscheduled')}{' '}
                   <Chip variant='soft' size='sm'>
                     {scheduledNotifications.length}
                   </Chip>
@@ -947,10 +983,10 @@ const DeveloperSettings = () => {
                           }}
                         >
                           <Typography level='title-sm'>
-                            {notification.title || 'No title'}
+                            {notification.title || t('text.noTitle')}
                           </Typography>
                           <Typography level='body-xs' color='neutral'>
-                            {notification.body || 'No body'}
+                            {notification.body || t('text.noBody')}
                           </Typography>
 
                           <Box
@@ -973,7 +1009,7 @@ const DeveloperSettings = () => {
                                 >
                                   {timeUntil && timeUntil > 0
                                     ? formatTimeLeft(timeUntil)
-                                    : 'Past due'}
+                                    : t('text.pastDue')}
                                 </Chip>
                                 <Typography level='body-xs' color='neutral'>
                                   {scheduledDate.toLocaleString()}
@@ -982,7 +1018,8 @@ const DeveloperSettings = () => {
                             )}
                             {notification.extra?.choreId && (
                               <Chip size='sm' variant='outlined'>
-                                Chore ID: {notification.extra.choreId}
+                                {t('developer.ChoreID')}{' '}
+                                {notification.extra.choreId}
                               </Chip>
                             )}
                           </Box>
@@ -999,11 +1036,13 @@ const DeveloperSettings = () => {
 
       <Card variant='outlined'>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <Typography level='title-lg'>Server-Sent Events (SSE)</Typography>
+          <Typography level='title-lg'>
+            {t('developer.ServerSentEventsSSE')}
+          </Typography>
 
           <Box>
             <Typography level='title-sm' mb={1}>
-              Connection Status
+              {t('developer.ConnectionStatus')}
             </Typography>
             <Box
               sx={{
@@ -1021,12 +1060,12 @@ const DeveloperSettings = () => {
               >
                 {getConnectionStatus
                   ? getConnectionStatus().toUpperCase()
-                  : 'Unknown'}
+                  : t('text.unknown')}
               </Chip>
             </Box>
             {sseError && (
               <Typography level='body-sm' color='danger' sx={{ mt: 0.5 }}>
-                Error: {sseError}
+                {t('developer.Error')} {sseError}
               </Typography>
             )}
           </Box>
@@ -1035,26 +1074,26 @@ const DeveloperSettings = () => {
 
           <Box>
             <Typography level='title-sm' mb={1}>
-              Last Event Received
+              {t('developer.LastEventReceived')}
             </Typography>
             {lastEvent ? (
               <>
                 <Typography level='body-sm'>
-                  Type:{' '}
+                  {t('developer.Type')}{' '}
                   <Chip variant='soft' size='sm'>
                     {lastEvent.type}
                   </Chip>
                 </Typography>
                 <Typography level='body-xs' color='neutral' sx={{ mt: 0.5 }}>
-                  Received:{' '}
+                  {t('developer.Received')}{' '}
                   {lastEvent.timestamp
                     ? new Date(lastEvent.timestamp).toLocaleString()
-                    : 'N/A'}
+                    : t('text.nA')}
                 </Typography>
               </>
             ) : (
               <Typography level='body-sm' color='neutral'>
-                No events received yet
+                {t('developer.Noeventsreceivedyet')}
               </Typography>
             )}
           </Box>
@@ -1063,16 +1102,16 @@ const DeveloperSettings = () => {
 
           <Box>
             <Typography level='title-sm' mb={1}>
-              Heartbeat Status
+              {t('developer.HeartbeatStatus')}
             </Typography>
             {sseDebugInfo?.lastHeartbeat ? (
               <>
                 <Typography level='body-sm'>
-                  Last Heartbeat:{' '}
+                  {t('developer.LastHeartbeat')}{' '}
                   {new Date(sseDebugInfo.lastHeartbeat).toLocaleString()}
                 </Typography>
                 <Typography level='body-sm' sx={{ mt: 0.5 }}>
-                  Time Since Last Heartbeat:{' '}
+                  {t('developer.TimeSinceLastHeartbeat')}{' '}
                   <Chip
                     variant='soft'
                     size='sm'
@@ -1086,7 +1125,7 @@ const DeveloperSettings = () => {
               </>
             ) : (
               <Typography level='body-sm' color='neutral'>
-                No heartbeat received yet
+                {t('developer.Noheartbeatreceivedyet')}
               </Typography>
             )}
           </Box>
@@ -1095,26 +1134,26 @@ const DeveloperSettings = () => {
 
           <Box>
             <Typography level='title-sm' mb={1}>
-              Reconnection Schedule
+              {t('developer.ReconnectionSchedule')}
             </Typography>
             {sseDebugInfo ? (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                 {sseDebugInfo.nextReconnectTime ? (
                   <>
                     <Typography level='body-sm'>
-                      Next Reconnect:{' '}
+                      {t('developer.NextReconnect')}{' '}
                       {new Date(
                         sseDebugInfo.nextReconnectTime,
                       ).toLocaleString()}
                     </Typography>
                     <Typography level='body-sm'>
-                      Time Until Reconnect:{' '}
+                      {t('developer.TimeUntilReconnect')}{' '}
                       <Chip variant='soft' size='sm' color='warning'>
                         {formatTimeLeft(sseDebugInfo.timeUntilReconnect)}
                       </Chip>
                     </Typography>
                     <Typography level='body-sm'>
-                      Current Delay:{' '}
+                      {t('developer.CurrentDelay')}{' '}
                       <Chip variant='soft' size='sm'>
                         {formatTimeLeft(sseDebugInfo.currentReconnectDelay)}
                       </Chip>
@@ -1122,7 +1161,7 @@ const DeveloperSettings = () => {
                   </>
                 ) : (
                   <Typography level='body-sm' color='neutral'>
-                    No reconnection scheduled
+                    {t('developer.Noreconnectionscheduled')}
                   </Typography>
                 )}
               </Box>
@@ -1137,30 +1176,30 @@ const DeveloperSettings = () => {
 
           <Box>
             <Typography level='title-sm' mb={1}>
-              Timeout Configuration
+              {t('developer.TimeoutConfiguration')}
             </Typography>
             {sseDebugInfo ? (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                 <Typography level='body-sm'>
-                  Heartbeat Timeout:{' '}
+                  {t('developer.HeartbeatTimeout')}{' '}
                   <Chip variant='soft' size='sm'>
                     {formatTimeLeft(sseDebugInfo.heartbeatTimeout)}
                   </Chip>
                 </Typography>
                 <Typography level='body-sm'>
-                  Monitor Interval:{' '}
+                  {t('developer.MonitorInterval')}{' '}
                   <Chip variant='soft' size='sm'>
                     {formatTimeLeft(sseDebugInfo.heartbeatMonitorInterval)}
                   </Chip>
                 </Typography>
                 <Typography level='body-sm'>
-                  Monitor Timeout:{' '}
+                  {t('developer.MonitorTimeout')}{' '}
                   <Chip variant='soft' size='sm'>
                     {formatTimeLeft(sseDebugInfo.heartbeatMonitorTimeout)}
                   </Chip>
                 </Typography>
                 <Typography level='body-sm'>
-                  Circuit Breaker Reset:{' '}
+                  {t('developer.CircuitBreakerReset')}{' '}
                   <Chip variant='soft' size='sm'>
                     {formatTimeLeft(sseDebugInfo.circuitBreakerResetTime)}
                   </Chip>
@@ -1177,19 +1216,19 @@ const DeveloperSettings = () => {
 
           <Box>
             <Typography level='title-sm' mb={1}>
-              Debug Information
+              {t('developer.DebugInformation')}
             </Typography>
             {sseDebugInfo ? (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                 <Typography level='body-sm'>
-                  Reconnect Attempts:{' '}
+                  {t('developer.ReconnectAttempts')}{' '}
                   <Chip variant='soft' size='sm'>
                     {sseDebugInfo.reconnectAttempts} /{' '}
                     {sseDebugInfo.maxReconnectAttempts}
                   </Chip>
                 </Typography>
                 <Typography level='body-sm'>
-                  Circuit Breaker:{' '}
+                  {t('developer.CircuitBreaker')}{' '}
                   <Chip
                     variant='soft'
                     size='sm'
@@ -1197,17 +1236,19 @@ const DeveloperSettings = () => {
                       sseDebugInfo.isCircuitBreakerOpen ? 'danger' : 'success'
                     }
                   >
-                    {sseDebugInfo.isCircuitBreakerOpen ? 'OPEN' : 'CLOSED'}
+                    {sseDebugInfo.isCircuitBreakerOpen
+                      ? t('text.oPEN')
+                      : t('text.cLOSED')}
                   </Chip>
                 </Typography>
                 <Typography level='body-sm'>
-                  Connection State:{' '}
+                  {t('developer.ConnectionState')}{' '}
                   <Chip variant='soft' size='sm'>
                     {sseDebugInfo.connectionState === 0
-                      ? 'CONNECTING'
+                      ? t('text.cONNECTING')
                       : sseDebugInfo.connectionState === 1
-                        ? 'OPEN'
-                        : 'CLOSED'}
+                        ? t('text.oPEN')
+                        : t('text.cLOSED')}
                   </Chip>
                 </Typography>
               </Box>

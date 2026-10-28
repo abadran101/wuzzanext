@@ -214,5 +214,14 @@
     "allLockedTitle": "سجل هذه المهمة أقدم من {{days}} يومًا",
     "lockedDescription": "قد تُحذف الإدخالات الأقدم من {{days}} يومًا نهائيًا. قم بالترقية إلى Plus للاحتفاظ بتاريخك الكامل.",
     "unlock": "الترقية إلى Plus"
+  },
+  "text": {
+    "scheduledOn": "جُدولت في",
+    "rescheduledOn": "أُعيدت جدولتها في",
+    "skippedOn": "تم تخطيها في",
+    "completedOn": "أُكملت في",
+    "previousDueDate": "تاريخ الاستحقاق السابق",
+    "wasDue": "كانت مستحقة في",
+    "dueDate": "تاريخ الاستحقاق"
   }
 }

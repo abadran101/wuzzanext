@@ -393,7 +393,9 @@ const TimerDetails = () => {
     // For now, just show an alert since we'd need to implement session deletion API
     showError({
       title: t('toast.deleteSessionTitle'),
-      message: `Session #${sessionIndex + 1} deletion would be implemented here`,
+      message: t('common:text.sessionIndexDeletionWouldBeImplementedHere', {
+        index: sessionIndex + 1,
+      }),
     })
   }
 
@@ -771,7 +773,16 @@ const TimerDetails = () => {
                                   zIndex: 1,
                                 },
                               }}
-                              title={`Session ${index + 1}: ${formatDuration(sessionDuration)} ${isOngoing ? '(ongoing)' : ''}`}
+                              title={t(
+                                'common:text.sessionIndexDurationOngoing',
+                                {
+                                  index: index + 1,
+                                  duration: formatDuration(sessionDuration),
+                                  ongoing: isOngoing
+                                    ? t('common:text.ongoing')
+                                    : '',
+                                },
+                              )}
                             />
                           )
                         })
@@ -1468,7 +1479,11 @@ const TimerDetails = () => {
               },
             },
           }}
-          title={isTimerRunning() ? 'Pause Timer' : 'Start Timer'}
+          title={
+            isTimerRunning()
+              ? t('common:text.pauseTimer')
+              : t('common:text.startTimer')
+          }
         >
           {isTimerRunning() ? (
             <PauseCircle sx={{ fontSize: 24 }} />

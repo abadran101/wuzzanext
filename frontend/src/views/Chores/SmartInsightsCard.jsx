@@ -26,6 +26,7 @@ const MINE_NOT_PENDING_APPROVAL = [
 export const INSIGHT_FILTER_DEFS = {
   overdue: {
     name: 'Overdue',
+    nameKey: 'group.overdue',
     filter: {
       conditions: [
         { type: 'dueDate', operator: 'isOverdue', value: null },
@@ -36,6 +37,7 @@ export const INSIGHT_FILTER_DEFS = {
   },
   'due-today': {
     name: 'Due Today',
+    nameKey: 'group.dueToday',
     filter: {
       conditions: [
         { type: 'dueDate', operator: 'isDueToday', value: null },
@@ -46,6 +48,7 @@ export const INSIGHT_FILTER_DEFS = {
   },
   'due-next-two-days': {
     name: 'Due Today & Tomorrow',
+    nameKey: 'text.dueTodayTomorrow',
     filter: {
       conditions: [
         {
@@ -59,6 +62,7 @@ export const INSIGHT_FILTER_DEFS = {
   },
   'pending-approval': {
     name: 'Pending Approval',
+    nameKey: 'choreView.pendingApproval',
     filter: {
       conditions: [{ type: 'status', operator: 'is', value: 3 }],
       operator: 'AND',
@@ -66,6 +70,7 @@ export const INSIGHT_FILTER_DEFS = {
   },
   unplanned: {
     name: 'Unplanned',
+    nameKey: 'text.unplanned',
     filter: {
       conditions: [{ type: 'dueDate', operator: 'hasNoDueDate', value: null }],
       operator: 'AND',
@@ -73,6 +78,7 @@ export const INSIGHT_FILTER_DEFS = {
   },
   'due-this-week': {
     name: 'Due This Week',
+    nameKey: 'group.dueThisWeek',
     filter: {
       conditions: [{ type: 'dueDate', operator: 'isDueThisWeek', value: null }],
       operator: 'AND',
@@ -81,6 +87,7 @@ export const INSIGHT_FILTER_DEFS = {
   // What Home's "Coming up" triage tile links back into: due tomorrow.
   'coming-up': {
     name: 'Coming Up',
+    nameKey: 'text.comingUp',
     filter: {
       conditions: [
         { type: 'dueDate', operator: 'isDueTomorrow', value: null },
@@ -93,6 +100,7 @@ export const INSIGHT_FILTER_DEFS = {
   // late, which is the set that section is actually a preview of.
   'due-this-week-overdue': {
     name: 'Due This Week & Overdue',
+    nameKey: 'text.dueThisWeekOverdue',
     filter: {
       conditions: [
         {
@@ -106,6 +114,7 @@ export const INSIGHT_FILTER_DEFS = {
   },
   'high-priority': {
     name: 'High Priority',
+    nameKey: 'insights.highPriority',
     filter: {
       conditions: [{ type: 'priority', operator: 'is', value: [1, 2] }],
       operator: 'AND',
@@ -113,6 +122,7 @@ export const INSIGHT_FILTER_DEFS = {
   },
   'no-due-date': {
     name: 'No Due Date',
+    nameKey: 'group.noDueDate',
     filter: {
       conditions: [{ type: 'dueDate', operator: 'hasNoDueDate', value: null }],
       operator: 'AND',
@@ -316,7 +326,7 @@ const SmartInsightsCard = ({
 
     // Sort by priority and return top 3
     return detectedInsights.sort((a, b) => a.priority - b.priority).slice(0, 3)
-  }, [chores])
+  }, [chores, t])
 
   const handleInsightClick = insight => {
     // Toggle: if already active, clear it; otherwise apply it

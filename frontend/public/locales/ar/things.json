@@ -66,5 +66,21 @@
     "updatedMessage": "تم تحديث الحالة بنجاح",
     "updateFailTitle": "غير قادر على تحديث الحالة",
     "updateFailMessage": "حدث خطأ أثناء تحديث الحالة"
+  },
+  "text": {
+    "intervalIncreasing": "الفاصل يتزايد",
+    "intervalDecreasing": "الفاصل يتناقص",
+    "intervalStable": "الفاصل ثابت",
+    "updateFrequency": "وتيرة التحديث",
+    "lastUpdated": "آخر تحديث",
+    "lastValue": "آخر قيمة",
+    "updateTrend": "اتجاه التحديث",
+    "couldntLoadThisHistory": "تعذّر تحميل هذا السجل",
+    "noHistoryYet": "لا يوجد سجل بعد",
+    "weCouldNotReachTheServerCheckYourConnectionAndTryAgain": "تعذّر الاتصال بالخادم. تحقق من اتصالك وحاول مجددًا.",
+    "eachTimeThisThingsValueChangesTheChangeIsRecordedHere": "كلما تغيرت قيمة هذا الشيء، يُسجّل التغيير هنا.",
+    "tryAgain": "حاول مجددًا",
+    "backToThings": "العودة إلى الأشياء",
+    "everyFrequency": "كل {{frequency}}"
   }
 }

@@ -376,18 +376,19 @@ const LayoutSettings = () => {
           }}
         >
           <Typography level='title-md' sx={{ fontWeight: 600, mb: 2 }}>
-            Task editor
+            {t('text.taskEditor')}
           </Typography>
           <FormControl>
             <Checkbox
               checked={singlePageTaskEditor}
               onChange={event => setSinglePageTaskEditor(event.target.checked)}
               variant='soft'
-              label='Show task editor on one page'
+              label={t('text.showTaskEditorOnOnePage')}
             />
             <FormHelperText>
-              Show all task settings in one scrolling page instead of separate
-              steps. Saved for this device/browser.
+              {t(
+                'text.showAllTaskSettingsInOneScrollingPageInsteadOfSeparateStepsS',
+              )}
             </FormHelperText>
           </FormControl>
         </Box>

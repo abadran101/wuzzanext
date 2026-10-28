@@ -141,5 +141,14 @@
   "tasks_zero": "{{count}} مهمة",
   "tasks_two": "مهمتان ({{count}})",
   "tasks_few": "{{count}} مهام",
-  "tasks_many": "{{count}} مهمة"
+  "tasks_many": "{{count}} مهمة",
+  "text": {
+    "taskCount": "عدد المهام",
+    "recentlyCreated": "أُنشئت مؤخرًا",
+    "allProjects": "جميع المشاريع",
+    "createdByMe": "أنشأتها أنا",
+    "sharedWithMe": "مشاركة معي",
+    "name": "الاسم",
+    "show": "عرض"
+  }
 }

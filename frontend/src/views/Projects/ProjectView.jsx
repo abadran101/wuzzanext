@@ -598,19 +598,19 @@ const ProjectView = () => {
         />
         <SortAndFilterMenu
           sortOptions={[
-            { name: 'Name', value: 'name' },
-            { name: 'Task count', value: 'tasks' },
-            { name: 'Recently created', value: 'created' },
+            { name: t('text.name'), value: 'name' },
+            { name: t('text.taskCount'), value: 'tasks' },
+            { name: t('text.recentlyCreated'), value: 'created' },
           ]}
           selectedSort={sortBy}
           onSortChange={setSortBy}
           sortDirection={sortDirection}
           onSortDirectionChange={setSortDirection}
-          filterTitle='Show'
+          filterTitle={t('text.show')}
           filterOptions={[
-            { name: 'All projects', value: 'all' },
-            { name: 'Created by me', value: 'mine' },
-            { name: 'Shared with me', value: 'shared' },
+            { name: t('text.allProjects'), value: 'all' },
+            { name: t('text.createdByMe'), value: 'mine' },
+            { name: t('text.sharedWithMe'), value: 'shared' },
           ]}
           selectedFilter={ownershipFilter}
           onFilterChange={value => {
