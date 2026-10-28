@@ -1082,6 +1082,8 @@ func Routes(router *gin.Engine, h *Handler, multiAuthMiddleware *auth.MultiAuthM
 	circleRoutes := router.Group("api/v1/circles")
 	circleRoutes.Use(multiAuthMiddleware.MiddlewareFunc())
 	{
+		circleRoutes.GET("/menu-items", h.GetMenuItems)
+		circleRoutes.PUT("/menu-items", h.PutMenuItems)
 		circleRoutes.GET("/members", h.GetCircleMembers)
 		circleRoutes.GET("/members/requests", h.GetPendingCircleMembers)
 		circleRoutes.PUT("/members/role", h.ChangeMemberRole)

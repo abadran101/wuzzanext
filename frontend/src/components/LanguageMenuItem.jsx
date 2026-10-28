@@ -22,12 +22,16 @@ export default function LanguageMenuItem() {
   const switchLanguage = async () => {
     setProfileLanguage(nextLanguage)
     try {
-      await apiClient.put('/users', {
-        displayName: userProfile.displayName,
-        timezone: userProfile.timezone,
-        colour: userProfile.colour,
-        language: nextLanguage,
-      })
+      const response = await apiClient.put(
+        '/users',
+        JSON.stringify({
+          displayName: userProfile.displayName,
+          timezone: userProfile.timezone,
+          colour: userProfile.colour,
+          language: nextLanguage,
+        }),
+      )
+      if (!response.ok) throw new Error('Unable to save language')
       await refetch()
     } catch {
       setProfileLanguage(userProfile.language || '')

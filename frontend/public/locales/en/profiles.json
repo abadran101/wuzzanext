@@ -30,6 +30,7 @@
   "sharedTablet": "Shared tablet",
   "sharedTabletHint": "Return to faces after 5 minutes without touch or typing.",
   "family": "Family",
+  "memberMenu": "Menu for family members",
   "name": "Name",
   "admin": "Admin",
   "addPerson": "Add person",

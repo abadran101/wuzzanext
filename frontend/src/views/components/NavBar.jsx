@@ -40,6 +40,7 @@ import { useProfileSession } from '../../components/ProfileSessionManager'
 import UserProfileAvatar from '../../components/UserProfileAvatar'
 import { useNavBarTitleContext } from '../../contexts/NavBarTitleContext'
 import { useScrollDirection } from '../../hooks/useScrollDirection'
+import { useMenuVisibility } from '../../queries/MenuVisibilityQueries'
 import { useResource } from '../../queries/ResourceQueries'
 import { useGlobalSearch } from '../../search/GlobalSearchContext'
 import { apiClient } from '../../utils/ApiClient'
@@ -77,6 +78,7 @@ const SHELL_FREE_PAGES = [
 ]
 
 const NavBar = () => {
+  const { isVisible } = useMenuVisibility()
   const { t } = useTranslation('common')
   const { logOut } = useProfileSession()
   const { data: resource } = useResource()
@@ -258,12 +260,17 @@ const NavBar = () => {
       sx={{ gap: 0.25, p: compact ? 0.5 : 1 }}
       onClick={closeOnSelect ? () => setDrawerOpen(false) : undefined}
     >
-      {links.map((link, index) => (
-        <Box key={link.to || link.label} sx={{ width: '100%' }}>
-          {index === 3 && <Divider sx={{ my: 1 }} />}
-          <NavBarLink compact={compact} link={link} />
-        </Box>
-      ))}
+      {links
+        .map((link, index) => ({ link, lower: index >= 3 }))
+        .filter(({ link }) => isVisible(link.to?.slice(1)))
+        .map(({ link, lower }, index, shown) => (
+          <Box key={link.to || link.label} sx={{ width: '100%' }}>
+            {lower && !shown[index - 1]?.lower && index > 0 && (
+              <Divider sx={{ my: 1 }} />
+            )}
+            <NavBarLink compact={compact} link={link} />
+          </Box>
+        ))}
     </List>
   )
 
@@ -320,42 +327,44 @@ const NavBar = () => {
         </Box>
       )}
       <List size='sm' sx={{ gap: 0.25, p: 0 }}>
-        <Tooltip
-          title={compact ? t('navigation.reportBug') : ''}
-          placement='right'
-        >
-          <ListItemButton
-            aria-label={t('navigation.reportBug')}
-            onClick={() => {
-              setDrawerOpen(false)
-              setBugReportOpen(true)
-            }}
-            sx={{
-              borderRadius: 'md',
-              gap: compact ? 0 : undefined,
-              justifyContent: compact ? 'center' : 'flex-start',
-              minHeight: 48,
-              mx: compact ? 'auto' : 0,
-              px: compact ? 0 : 1.5,
-              width: compact ? 48 : '100%',
-            }}
+        {isVisible('reportIssue') && (
+          <Tooltip
+            title={compact ? t('navigation.reportBug') : ''}
+            placement='right'
           >
-            <ListItemDecorator
-              sx={
-                compact
-                  ? { marginInlineEnd: '0 !important', minInlineSize: 0 }
-                  : undefined
-              }
+            <ListItemButton
+              aria-label={t('navigation.reportBug')}
+              onClick={() => {
+                setDrawerOpen(false)
+                setBugReportOpen(true)
+              }}
+              sx={{
+                borderRadius: 'md',
+                gap: compact ? 0 : undefined,
+                justifyContent: compact ? 'center' : 'flex-start',
+                minHeight: 48,
+                mx: compact ? 'auto' : 0,
+                px: compact ? 0 : 1.5,
+                width: compact ? 48 : '100%',
+              }}
             >
-              <ReportProblem />
-            </ListItemDecorator>
-            {!compact && (
-              <Typography level='body-sm' sx={{ fontWeight: 400 }}>
-                {t('navigation.reportBug')}
-              </Typography>
-            )}
-          </ListItemButton>
-        </Tooltip>
+              <ListItemDecorator
+                sx={
+                  compact
+                    ? { marginInlineEnd: '0 !important', minInlineSize: 0 }
+                    : undefined
+                }
+              >
+                <ReportProblem />
+              </ListItemDecorator>
+              {!compact && (
+                <Typography level='body-sm' sx={{ fontWeight: 400 }}>
+                  {t('navigation.reportBug')}
+                </Typography>
+              )}
+            </ListItemButton>
+          </Tooltip>
+        )}
         <Tooltip title={compact ? t('logout') : ''} placement='right'>
           <ListItemButton
             aria-label={t('logout')}

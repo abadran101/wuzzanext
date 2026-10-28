@@ -15,11 +15,14 @@ import { useTranslation } from 'react-i18next'
 
 import ProfileColourPicker from '../../components/ProfileColourPicker'
 import { useProfileSession } from '../../components/ProfileSessionManager'
+import { useMenuVisibility } from '../../queries/MenuVisibilityQueries'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries'
 import { apiClient } from '../../utils/ApiClient'
+import { MENU_ITEM_NAMES } from '../../utils/MenuVisibility'
 import { PROFILE_COLOURS } from '../../utils/ProfileSession'
 
 export default function HouseholdProfileSettings() {
+  const menu = useMenuVisibility()
   const { t } = useTranslation('profiles')
   const { data: profile, refetch } = useUserProfile()
   const { data: members } = useCircleMembers()
@@ -211,6 +214,29 @@ export default function HouseholdProfileSettings() {
           sx={{ p: 2, borderRadius: 'lg', display: 'grid', gap: 2 }}
         >
           <Typography level='h3'>{t('family')}</Typography>
+          <Typography level='h4'>{t('memberMenu')}</Typography>
+          {MENU_ITEM_NAMES.map(item => (
+            <Switch
+              key={item}
+              checked={menu.memberItems.includes(item)}
+              disabled={!menu.isReady || menu.isSaving}
+              endDecorator={t(
+                `common:navigation.${item === 'reportIssue' ? 'reportBug' : item}`,
+              )}
+              onChange={async event => {
+                const selected = event.target.checked
+                  ? [...menu.memberItems, item]
+                  : menu.memberItems.filter(name => name !== item)
+                setMessage('')
+                try {
+                  await menu.save(selected)
+                  setMessage('saved')
+                } catch {
+                  setMessage('failed')
+                }
+              }}
+            />
+          ))}
           <Box
             component='form'
             onSubmit={event => {
