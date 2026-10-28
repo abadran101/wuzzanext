@@ -16,6 +16,7 @@ import {
   SwitchAccessShortcut,
   ThumbDown,
   ThumbUp,
+  Translate,
   Unarchive,
 } from '@mui/icons-material'
 import {
@@ -55,6 +56,7 @@ import {
   useResetChoreTimer,
   useStartChore,
 } from '../../queries/TimeQueries'
+import { useChoreTranslation } from '../../queries/TranslationQueries'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries.jsx'
 import { useNotification } from '../../service/NotificationProvider'
 import {
@@ -147,7 +149,15 @@ const ChoreView = () => {
     useCircleMembers()
   const { data: userProfile } = useUserProfile()
   const { impersonatedUser } = useImpersonateUser()
-  const descriptionHtml = useDescriptionHtml(chore?.description || '', {
+  // The name and details are shown in the app language when the server can
+  // translate them; the reader can switch back to what was written.
+  const translation = useChoreTranslation(chore)
+  const [showOriginal, setShowOriginal] = useState(false)
+  const shownName = showOriginal ? chore.name : translation.name
+  const shownDescription = showOriginal
+    ? chore.description
+    : translation.description
+  const descriptionHtml = useDescriptionHtml(shownDescription || '', {
     choreId: chore?.id,
   })
   const notesHtml = useDescriptionHtml(chore?.notes || '', {
@@ -850,9 +860,35 @@ const ChoreView = () => {
             mb: 0.5,
           }}
         >
-          <Typography level='h3'>{chore.name}</Typography>
+          <Typography level='h3'>{shownName}</Typography>
           <PendingBadge commands={pendingCmds} />
         </Box>
+        {translation.translated && (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 1,
+              mb: 0.5,
+            }}
+          >
+            {!showOriginal && (
+              <Chip size='sm' variant='soft' startDecorator={<Translate />}>
+                {t('choreView.translated')}
+              </Chip>
+            )}
+            <Button
+              size='sm'
+              variant='plain'
+              onClick={() => setShowOriginal(value => !value)}
+            >
+              {showOriginal
+                ? t('choreView.showTranslation')
+                : t('choreView.seeOriginal')}
+            </Button>
+          </Box>
+        )}
         {chore.isActive === false && (
           <Chip
             startDecorator={<Archive />}
@@ -1095,7 +1131,7 @@ const ChoreView = () => {
                 setNoteViewerConfig({
                   isOpen: true,
                   title: t('choreView.descriptionTitle'),
-                  content: chore.description,
+                  content: shownDescription,
                   onClose: () => setNoteViewerConfig({ isOpen: false }),
                 })
               }}
@@ -1118,7 +1154,7 @@ const ChoreView = () => {
                 }}
               >
                 {(() => {
-                  const raw = chore.description || ''
+                  const raw = shownDescription || ''
                   const shouldRenderHtml = hasHtmlTags(raw)
 
                   return shouldRenderHtml ? (

@@ -117,7 +117,10 @@
     "attachment_zero": "{{count}} مرفق",
     "attachment_two": "مرفقان ({{count}})",
     "attachment_few": "{{count}} مرفقات",
-    "attachment_many": "{{count}} مرفقًا"
+    "attachment_many": "{{count}} مرفقًا",
+    "translated": "مترجم",
+    "seeOriginal": "عرض الأصل",
+    "showTranslation": "عرض الترجمة"
   },
   "toolbar": {
     "defaultProject": "المشروع الافتراضي",

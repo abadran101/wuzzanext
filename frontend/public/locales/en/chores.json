@@ -115,7 +115,10 @@
     "unableChangeAssignee": "Unable to change the assignee",
     "availableToCompleteStarting": "Available to complete starting {{date}}",
     "delegateToSomeoneElse": "Delegate to someone else",
-    "selectAPerformer": "Select a performer"
+    "selectAPerformer": "Select a performer",
+    "translated": "Translated",
+    "seeOriginal": "See original",
+    "showTranslation": "Show translation"
   },
   "toolbar": {
     "defaultProject": "Default Project",

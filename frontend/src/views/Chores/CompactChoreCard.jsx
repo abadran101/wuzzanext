@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next'
 import { useImpersonateUser } from '../../contexts/ImpersonateUserContext.jsx'
 import { useLocalization } from '../../contexts/LocalizationContext'
 import { usePendingCommands } from '../../hooks/usePendingCommands'
+import { useChoreTranslation } from '../../queries/TranslationQueries'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries.jsx'
 import {
   getDueDateChipColor,
@@ -73,6 +74,7 @@ const CompactChoreCard = ({
   viewOnly,
 }) => {
   const { t } = useTranslation('chores')
+  const shownText = useChoreTranslation(chore)
 
   const { data: userProfile } = useUserProfile()
   const { timeFormat } = useLocalization()
@@ -143,7 +145,7 @@ const CompactChoreCard = ({
     after: titleAfterUrl,
     before: titleBeforeUrl,
     url: titleUrl,
-  } = splitTextAtFirstHttpUrl(chore.name)
+  } = splitTextAtFirstHttpUrl(shownText.name)
   const descriptionUrl = getFirstHttpUrl(chore.description)
   const showDescriptionUrl = descriptionUrl && descriptionUrl !== titleUrl
   const showLeadingSlot = showActions || isMultiSelectMode
@@ -427,6 +429,7 @@ const CompactChoreCard = ({
           {/* Chore Name */}
           <Typography
             level='title-sm'
+            title={shownText.translated ? chore.name : undefined}
             sx={{
               fontWeight: 600,
               fontSize: 14,

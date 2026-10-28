@@ -91,6 +91,13 @@ realtime:
 # instances. Disabled by default -- Core falls back to its own direct FCM
 # config (fcm.* above via env vars) when disabled. Never put instance_token
 # in this file; set it via the BRIDGE_INSTANCE_TOKEN environment variable.
+# Chore names and details in the reader's language (Google Cloud Translation).
+# Off by default. The key never goes in this file in the repository: set it on
+# the server as DT_TRANSLATION_API_KEY. See docs/translation-setup.md.
+translation:
+  enabled: false
+  provider: "google"
+  daily_char_limit: 15000
 bridge:
   enabled: false
   base_url: "https://bridge.donetick.com"

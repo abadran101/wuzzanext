@@ -48,6 +48,7 @@ type Config struct {
 	Storage                StorageConfig       `mapstructure:"storage" yaml:"storage"`
 	SingleCircleInstance   bool                `mapstructure:"single_circle_instance" yaml:"single_circle_instance"`
 	DisablePasswordAuth    bool                `mapstructure:"disable_password_auth" yaml:"disable_password_auth"`
+	Translation            TranslationConfig   `mapstructure:"translation" yaml:"translation"`
 	Info                   Info
 }
 
@@ -153,6 +154,19 @@ type SchedulerConfig struct {
 type FCMConfig struct {
 	CredentialsPath string `json:"credentials_path" mapstructure:"credentials_path"`
 	ProjectID       string `json:"project_id" mapstructure:"project_id"`
+}
+
+// TranslationConfig turns on showing chore names and details in the reader's
+// language through Google Cloud Translation (see docs/translation-setup.md).
+// APIKey is a secret: set it only on the home server, as the
+// DT_TRANSLATION_API_KEY environment variable or in the git-ignored
+// selfhosted.yaml. It is never logged or returned by any API. Provider "fake"
+// is for local testing: it marks the text and never connects out.
+type TranslationConfig struct {
+	Enabled        bool   `json:"enabled" mapstructure:"enabled" yaml:"enabled"`
+	Provider       string `json:"provider" mapstructure:"provider" yaml:"provider" default:"google"`
+	APIKey         string `json:"-" mapstructure:"api_key" yaml:"api_key"`
+	DailyCharLimit int    `json:"daily_char_limit" mapstructure:"daily_char_limit" yaml:"daily_char_limit" default:"15000"`
 }
 
 // BridgeConfig configures Donetick Bridge, the hosted push-notification

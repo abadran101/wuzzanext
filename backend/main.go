@@ -51,6 +51,7 @@ import (
 	dsync "donetick.com/core/internal/sync"
 	"donetick.com/core/internal/thing"
 	tRepo "donetick.com/core/internal/thing/repo"
+	"donetick.com/core/internal/translation"
 	"donetick.com/core/internal/user"
 	uRepo "donetick.com/core/internal/user/repo"
 	"donetick.com/core/internal/utils"
@@ -179,6 +180,10 @@ func main() {
 		fx.Provide(thing.NewAPI),
 		fx.Provide(thing.NewHandler),
 
+		// translation of chore names and details (task 023)
+		fx.Provide(translation.NewService),
+		fx.Provide(translation.NewHandler),
+
 		// External Only:
 		fx.Provide(chore.NewAPI),
 
@@ -221,6 +226,7 @@ func main() {
 			device.Routes,
 			bridge.Routes,
 			thing.Routes,
+			translation.Routes,
 			thing.APIs,
 			label.Routes,
 			reward.Routes,

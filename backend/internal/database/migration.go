@@ -23,6 +23,7 @@ import (
 	stModel "donetick.com/core/internal/subtask/model"
 	syncModel "donetick.com/core/internal/sync/model"
 	tModel "donetick.com/core/internal/thing/model"
+	trModel "donetick.com/core/internal/translation/model"
 	uModel "donetick.com/core/internal/user/model" // Pure go SQLite driver, checkout https://github.com/glebarez/sqlite for details
 	"donetick.com/core/migrations"
 )
@@ -63,6 +64,8 @@ func Migration(db *gorm.DB) error {
 		rwModel.RewardRedemption{},
 		bridgeModel.Settings{},
 		calModel.CalendarToken{},
+		trModel.CacheEntry{},
+		trModel.DailyUsage{},
 	); err != nil {
 		return err
 	}
