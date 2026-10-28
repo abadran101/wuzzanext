@@ -202,6 +202,7 @@ const SettingsOverview = () => {
                   )}
                 </ListItemContent>
                 <ChevronRight
+                  className='rtl-flip'
                   sx={{ color: 'text.tertiary', fontSize: '20px' }}
                 />
               </ListItemButton>

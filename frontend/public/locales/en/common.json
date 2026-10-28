@@ -755,5 +755,11 @@
     "attachment": "Attachment",
     "download": "Download",
     "select": "Select"
+  },
+  "calendar": {
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "yesterday": "Yesterday",
+    "lastWeekday": "[Last] dddd"
   }
 }

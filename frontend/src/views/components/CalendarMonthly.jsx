@@ -1,10 +1,14 @@
 import Calendar from 'react-calendar'
+import { useTranslation } from 'react-i18next'
 
 import { useLocalization } from '../../contexts/LocalizationContext'
 import { getPriorityColor } from '../../utils/Colors'
+import { dateLocale, shortMonth, weekdayLetter } from '../../utils/DateLocale'
 import styles from './Calendar.module.css'
 const CalendarMonthly = ({ chores, onDateChange }) => {
   const { firstDayOfWeek } = useLocalization()
+  const { i18n } = useTranslation()
+  const locale = dateLocale(i18n.resolvedLanguage)
   const calendarType =
     firstDayOfWeek === 1
       ? 'iso8601'
@@ -61,31 +65,14 @@ const CalendarMonthly = ({ chores, onDateChange }) => {
       <Calendar
         tileContent={tileContent}
         calendarType={calendarType}
+        locale={locale}
         onChange={d => {
           onDateChange(new Date(d))
         }}
-        // format the days from MON, TUE, WED, THU, FRI, SAT, SUN to first three letters:
-        formatShortWeekday={(locale, date) =>
-          ['S', 'M', 'T', 'W', 'T', 'F', 'S'][date.getDay()]
-        }
-        // format month names to show only first 3 characters
-        formatMonth={(locale, date) => {
-          const monthNames = [
-            'Jan',
-            'Feb',
-            'Mar',
-            'Apr',
-            'May',
-            'Jun',
-            'Jul',
-            'Aug',
-            'Sep',
-            'Oct',
-            'Nov',
-            'Dec',
-          ]
-          return monthNames[date.getMonth()]
-        }}
+        // one letter per weekday (S M T ... in English)
+        formatShortWeekday={(_, date) => weekdayLetter(date, locale)}
+        // short month names (Jan, Feb ... in English)
+        formatMonth={(_, date) => shortMonth(date, locale)}
       />
     </div>
   )

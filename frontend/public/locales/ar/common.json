@@ -811,5 +811,11 @@
     "attachment": "مرفق",
     "download": "تنزيل",
     "select": "اختر"
+  },
+  "calendar": {
+    "today": "اليوم",
+    "tomorrow": "غدًا",
+    "yesterday": "أمس",
+    "lastWeekday": "dddd [الماضي]"
   }
 }

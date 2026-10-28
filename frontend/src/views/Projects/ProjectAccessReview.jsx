@@ -135,6 +135,7 @@ const ProjectAccessReview = ({ currentUserId, members = [], preview }) => {
           <>
             <AccessBadge access={preview.before} />
             <ArrowForwardRounded
+              className='rtl-flip'
               sx={{ fontSize: 16, color: 'text.tertiary', flexShrink: 0 }}
             />
             <AccessBadge access={preview.after} emphasize />

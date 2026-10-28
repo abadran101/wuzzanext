@@ -1,5 +1,6 @@
 import { SETTINGS_SECTIONS } from '../constants/settingsSections'
 import i18n from '../i18n/config'
+import { dateLocale } from '../utils/DateLocale'
 import { stripHtml } from '../utils/Helpers'
 
 const HISTORY_STATUS = {
@@ -77,7 +78,7 @@ registerSearchProvider({
           subtitle: [
             member?.displayName,
             entry.performedAt
-              ? new Date(entry.performedAt).toLocaleDateString()
+              ? new Date(entry.performedAt).toLocaleDateString(dateLocale())
               : null,
           ]
             .filter(Boolean)

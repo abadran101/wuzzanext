@@ -368,7 +368,9 @@ const OnboardingView = () => {
             size='lg'
             fullWidth
             onClick={handleNext}
-            endDecorator={!isLast ? <ArrowForwardRounded /> : null}
+            endDecorator={
+              !isLast ? <ArrowForwardRounded className='rtl-flip' /> : null
+            }
             sx={authButtonSx}
           >
             {isLast ? t('getStarted') : t('onboarding.carousel.next')}

@@ -2925,7 +2925,7 @@ const ChoreEdit = () => {
                 data-footer-back
                 variant='outlined'
                 color='neutral'
-                startDecorator={<ArrowBack />}
+                startDecorator={<ArrowBack className='rtl-flip' />}
                 onClick={() => changeWizardStep(wizardStep - 1)}
               >
                 {t('taskEditor.back')}
@@ -2947,7 +2947,7 @@ const ChoreEdit = () => {
             </Button>
             {!singlePageEditor && wizardStep < 3 ? (
               <Button
-                endDecorator={<ArrowForward />}
+                endDecorator={<ArrowForward className='rtl-flip' />}
                 onClick={() => changeWizardStep(wizardStep + 1)}
               >
                 {t('taskEditor.next')}

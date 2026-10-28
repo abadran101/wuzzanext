@@ -1,11 +1,13 @@
 import { Box, Typography } from '@mui/joy'
 import { useEffect, useState } from 'react'
 import Calendar from 'react-calendar'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import { useLocalization } from '../../contexts/LocalizationContext'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries'
 import { getPriorityColor, TASK_COLOR } from '../../utils/Colors'
+import { dateLocale, weekdayLetter } from '../../utils/DateLocale'
 import styles from './CalendarDual.module.css'
 
 const getAssigneeColor = (assignee, userProfile) => {
@@ -16,6 +18,8 @@ const getAssigneeColor = (assignee, userProfile) => {
 const CalendarDual = ({ chores, onDateChange }) => {
   const { data: userProfile } = useUserProfile()
   const { firstDayOfWeek, fmt } = useLocalization()
+  const { i18n } = useTranslation()
+  const locale = dateLocale(i18n.resolvedLanguage)
   const calendarType =
     firstDayOfWeek === 1
       ? 'iso8601'
@@ -122,10 +126,9 @@ const CalendarDual = ({ chores, onDateChange }) => {
         activeStartDate={date}
         // Don't show navigation on secondary calendar
         showNavigation={!isSecondary}
-        // format the days from MON, TUE, WED, THU, FRI, SAT, SUN to first three letters:
-        formatShortWeekday={(locale, date) =>
-          ['S', 'M', 'T', 'W', 'T', 'F', 'S'][date.getDay()]
-        }
+        locale={locale}
+        // one letter per weekday (S M T ... in English)
+        formatShortWeekday={(_, date) => weekdayLetter(date, locale)}
         onActiveStartDateChange={({ activeStartDate }) => {
           if (!isSecondary) {
             setCurrentDate(activeStartDate)
