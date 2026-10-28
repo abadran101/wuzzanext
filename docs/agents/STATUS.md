@@ -11,10 +11,10 @@ Update this file at every stop. Output from the real machines beats anything wri
 ## GitHub
 
 - Repository `abadran101/wuzzanext`, private (stays private, owner 2026-10-26). Default branch
-  `main` at 963c84d (PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
+  `main` at 19e3923 (PR #10, task 024, merged 2026-10-27; PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
   merged 2026-10-27; PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1,
   task 001, before it).
-- Open branch: `task/024-menu-visibility` (PR open, waiting for the owner's check and merge).
+- Open branch: `task/022-arabic-rtl` (in progress).
 - Remote `origin` is `https://github.com/abadran101/wuzzanext.git`, confirmed with
   `git ls-remote origin` on 2026-10-26.
 - Agents push task branches with the fine-grained token the orchestrator lists (it covers only the
@@ -49,10 +49,8 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 024 menu items hidden from regular users: done, PR open (task file Result). It also fixes the
-  PR #9 language switch, which never saved the language to the server.
-- Next: 022 (missing Arabic texts and right-to-left check, owner reviews the wording), then 023 (translation), then 008
-  onward; 012-015 stay parked.
+- 022 Arabic everywhere, right to left (task file): plan run with Codex first.
+- Next: 023 (translation), then 008 onward; 012-015 stay parked.
 
 ## Open items
 
@@ -72,6 +70,9 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## Decisions (newest first)
 
+- 2026-10-27: PR #10 (task 024) merged, main 19e3923c76d9b1b9129e649d00ddd9242e11d107 (owner,
+  through the orchestrator: "merged"; checked on GitHub). Before the merge, the owner's hand test
+  of PR #10 passed: "they pass" (owner, through the orchestrator). Start 022 from that main.
 - 2026-10-27: PR #9 (007 language switch and wordmark) merged; do 024 before 022 and 023
   (owner, through the orchestrator: "yes, and #9 is merged").
 - 2026-10-27: menu items: "hide Archived, Things, Labels and Report an Issue from regular users,
