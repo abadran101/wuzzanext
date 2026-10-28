@@ -22,16 +22,20 @@
     "tasksAndAvg": "{{tasks}} مهام • متوسط {{avg}} لكل مهمة",
     "available": "{{count}} نقطة متاحة",
     "points_one": "{{count}} نقطة",
-    "points_other": "{{count}} نقاط"
+    "points_other": "{{count}} نقاط",
+    "points_zero": "{{count}} نقطة",
+    "points_two": "نقطتان ({{count}})",
+    "points_few": "{{count}} نقاط",
+    "points_many": "{{count}} نقطة"
   },
   "tabs": {
-    "short7d": "7D",
+    "short7d": "7 أيام",
     "short6m": "6 ميغا",
     "shortAll": "الكل",
     "days7": "آخر 7 أيام",
     "months6": "6 أشهر",
     "allTime": "كل الوقت",
-    "short30d": "30D",
+    "short30d": "30 يومًا",
     "days30": "آخر 30 يومًا"
   },
   "filter": {
@@ -58,7 +62,11 @@
       "allTime": "كل الوقت",
       "last6Months": "آخر 6 أشهر",
       "lastDays_one": "آخر {{count}} يوم",
-      "lastDays_other": "آخر {{count}} أيام"
+      "lastDays_other": "آخر {{count}} أيام",
+      "lastDays_zero": "آخر {{count}} يوم",
+      "lastDays_two": "آخر يومين ({{count}})",
+      "lastDays_few": "آخر {{count}} أيام",
+      "lastDays_many": "آخر {{count}} يومًا"
     }
   },
   "summary": {
@@ -68,9 +76,17 @@
     "allTime": "كل الوقت",
     "last6Months": "آخر 6 أشهر",
     "lastDays_one": "آخر {{count}} يوم",
-    "lastDays_other": "آخر {{count}} أيام"
+    "lastDays_other": "آخر {{count}} أيام",
+    "selectUser": "اختر فردًا لعرض نقاطه",
+    "lastDays_zero": "آخر {{count}} يوم",
+    "lastDays_two": "آخر يومين ({{count}})",
+    "lastDays_few": "آخر {{count}} أيام",
+    "lastDays_many": "آخر {{count}} يومًا"
   },
   "trend": {
     "title": "اتجاه النقاط"
+  },
+  "sections": {
+    "overview": "نظرة عامة"
   }
 }

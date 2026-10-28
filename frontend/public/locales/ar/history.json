@@ -33,7 +33,27 @@
     "hoursAfterDue_other": "{{count}}ساعة بعد تاريخ الاستحقاق",
     "assignedTo": "تم تعيينه إلى {{name}}",
     "points_one": "{{count}} نقطة",
-    "points_other": "{{count}} نقطة"
+    "points_other": "{{count}} نقطة",
+    "daysBeforeDue_zero": "قبل الاستحقاق بـ {{count}} يوم",
+    "daysBeforeDue_two": "قبل الاستحقاق بيومين ({{count}})",
+    "daysBeforeDue_few": "قبل الاستحقاق بـ {{count}} أيام",
+    "daysBeforeDue_many": "قبل الاستحقاق بـ {{count}} يومًا",
+    "daysAfterDue_zero": "بعد الاستحقاق بـ {{count}} يوم",
+    "daysAfterDue_two": "بعد الاستحقاق بيومين ({{count}})",
+    "daysAfterDue_few": "بعد الاستحقاق بـ {{count}} أيام",
+    "daysAfterDue_many": "بعد الاستحقاق بـ {{count}} يومًا",
+    "hoursBeforeDue_zero": "قبل الاستحقاق بـ {{count}} ساعة",
+    "hoursBeforeDue_two": "قبل الاستحقاق بساعتين ({{count}})",
+    "hoursBeforeDue_few": "قبل الاستحقاق بـ {{count}} ساعات",
+    "hoursBeforeDue_many": "قبل الاستحقاق بـ {{count}} ساعة",
+    "hoursAfterDue_zero": "بعد الاستحقاق بـ {{count}} ساعة",
+    "hoursAfterDue_two": "بعد الاستحقاق بساعتين ({{count}})",
+    "hoursAfterDue_few": "بعد الاستحقاق بـ {{count}} ساعات",
+    "hoursAfterDue_many": "بعد الاستحقاق بـ {{count}} ساعة",
+    "points_zero": "{{count}} نقطة",
+    "points_two": "نقطتان ({{count}})",
+    "points_few": "{{count}} نقاط",
+    "points_many": "{{count}} نقطة"
   },
   "detail": {
     "title": "تفاصيل النشاط",
@@ -44,11 +64,15 @@
     "lastUpdated": "آخر تحديث",
     "duration": "المدة",
     "pointsEarned": "النقاط المكتسبة",
-    "points_one": "{{count}} pt",
-    "points_other": "{{count}} pts",
+    "points_one": "{{count}} نقطة",
+    "points_other": "{{count}} نقطة",
     "note": "ملاحظة",
     "reason": "السبب",
-    "notes": "ملاحظات"
+    "notes": "ملاحظات",
+    "points_zero": "{{count}} نقطة",
+    "points_two": "نقطتان ({{count}})",
+    "points_few": "{{count}} نقاط",
+    "points_many": "{{count}} نقطة"
   },
   "charts": {
     "noData": "لا توجد بيانات متاحة",
@@ -97,9 +121,13 @@
     "completedAt": "اكتمل في"
   },
   "period": {
-    "days_one": "{{count}} Day",
+    "days_one": "{{count}} يوم",
     "days_other": "{{count}} أيام",
-    "allTime": "كل الوقت"
+    "allTime": "كل الوقت",
+    "days_zero": "{{count}} يوم",
+    "days_two": "يومان ({{count}})",
+    "days_few": "{{count}} أيام",
+    "days_many": "{{count}} يومًا"
   },
   "search": {
     "placeholder": "سجل البحث...",

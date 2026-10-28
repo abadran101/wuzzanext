@@ -1,0 +1,60 @@
+{
+  "blurb": "استبدل نقاطك بمكافآت، أو أدر قائمة المكافآت إذا كنت مسؤولًا. المتاح: {{points}} نقطة.",
+  "redeem": "استبدال",
+  "notEnoughPoints": "النقاط غير كافية",
+  "approve": "موافقة",
+  "reject": "رفض",
+  "actions": {
+    "menu": "إجراءات {{name}}"
+  },
+  "pointsCost_one": "{{count}} نقطة",
+  "pointsCost_other": "{{count}} نقطة",
+  "tabs": {
+    "store": "المتجر",
+    "requests": "الطلبات"
+  },
+  "status": {
+    "pending": "قيد الانتظار",
+    "approved": "مقبول",
+    "rejected": "مرفوض"
+  },
+  "delete": {
+    "title": "حذف المكافأة",
+    "message": "هل تريد حذف هذه المكافأة؟ لن تعود متاحة للاستبدال."
+  },
+  "redeemConfirm": {
+    "title": "استبدال المكافأة",
+    "message": "هل تريد طلب «{{name}}» مقابل {{cost}} نقطة؟ يتطلب ذلك موافقة مسؤول."
+  },
+  "requests": {
+    "emptyTitle": "لا توجد طلبات استبدال",
+    "emptyDescription": "ستظهر طلبات الاستبدال هنا عندما يستبدل أحدهم نقاطه بمكافأة."
+  },
+  "modal": {
+    "errorEmptyName": "لا يمكن ترك الاسم فارغًا",
+    "errorInvalidCost": "يجب أن تكون تكلفة النقاط رقمًا أكبر من 0",
+    "saveFailedTitle": "تعذّر حفظ المكافأة",
+    "saveFailedMessage": "تعذّر حفظ المكافأة. حاول مجددًا.",
+    "name": "الاسم",
+    "description": "الوصف",
+    "pointsCost": "تكلفة النقاط",
+    "active": "نشطة",
+    "editTitle": "تعديل المكافأة",
+    "addTitle": "إضافة مكافأة",
+    "saveChanges": "حفظ التغييرات",
+    "addReward": "إضافة مكافأة"
+  },
+  "view": {
+    "subtitle": "استخدم النقاط التي تكسبها لاختيار شيء مميز.",
+    "availableBalance": "الرصيد المتاح",
+    "pointsLabel": "نقاط",
+    "rewardFallbackDescription": "شيء جميل تتطلع إليه.",
+    "emptyTitle": "لا توجد مكافآت بعد",
+    "emptyDescription": "أضف مكافأة، مثل أمسية أفلام أو حلوى، ليستبدل أفراد الدائرة نقاطهم بها.",
+    "createReward": "إنشاء مكافأة"
+  },
+  "pointsCost_zero": "{{count}} نقطة",
+  "pointsCost_two": "نقطتان ({{count}})",
+  "pointsCost_few": "{{count}} نقاط",
+  "pointsCost_many": "{{count}} نقطة"
+}

@@ -65,7 +65,8 @@
     "collapseMenu": "طي القائمة",
     "expandMenu": "توسيع القائمة",
     "primaryNavigation": "التنقل الرئيسي",
-    "profile": "الملف الشخصي"
+    "profile": "الملف الشخصي",
+    "rewards": "المكافآت"
   },
   "search": {
     "title": "بحث",
@@ -110,10 +111,14 @@
     "footer": {
       "navigate": "تنقل",
       "open": "فتح",
-      "results_one": "نتيجة واحدة",
+      "results_one": "نتيجة واحدة ({{count}})",
       "results_other": "{{count}} نتيجة",
       "typeToSearch": "اكتب للبحث",
-      "slashHint": "/ للقفز إلى طريقة العرض"
+      "slashHint": "/ للقفز إلى طريقة العرض",
+      "results_zero": "{{count}} نتيجة",
+      "results_two": "نتيجتان ({{count}})",
+      "results_few": "{{count}} نتائج",
+      "results_many": "{{count}} نتيجة"
     },
     "modes": {
       "actions": {
@@ -146,7 +151,7 @@
       "tooComplicated": "معقدة جداً",
       "slow": "بطيء",
       "notifications": "الإشعارات",
-      "ai": "AI",
+      "ai": "الذكاء الاصطناعي",
       "other": "اخرى"
     },
     "details": {
@@ -335,7 +340,15 @@
     "pendingActionsTitle": "الإجراءات المعلقة",
     "actionsWaitingToSync_one": "إجراء {{count}} في انتظار المزامنة.",
     "actionsWaitingToSync_other": "{{count}} إجراءات بانتظار المزامنة.",
-    "cancelActionAria": "إلغاء {{label}}"
+    "cancelActionAria": "إلغاء {{label}}",
+    "pendingSyncLabel_zero": "{{count}} إجراء معلق للمزامنة",
+    "pendingSyncLabel_two": "إجراءان معلقان للمزامنة ({{count}})",
+    "pendingSyncLabel_few": "{{count}} إجراءات معلقة للمزامنة",
+    "pendingSyncLabel_many": "{{count}} إجراءً معلقًا للمزامنة",
+    "actionsWaitingToSync_zero": "{{count}} إجراء بانتظار المزامنة.",
+    "actionsWaitingToSync_two": "إجراءان بانتظار المزامنة ({{count}}).",
+    "actionsWaitingToSync_few": "{{count}} إجراءات بانتظار المزامنة.",
+    "actionsWaitingToSync_many": "{{count}} إجراءً بانتظار المزامنة."
   },
   "attachments": "المرفقات",
   "fileNumbered": "الملف {{index}}",
@@ -589,7 +602,11 @@
     "presetLast7Days": "آخر 7 أيام",
     "presetThisMonth": "هذا الشهر",
     "presetLast30Days": "آخر 30 يوم",
-    "presetLast3Months": "آخر 3 أشهر"
+    "presetLast3Months": "آخر 3 أشهر",
+    "showResults_zero": "عرض {{count}} نتيجة",
+    "showResults_two": "عرض نتيجتين ({{count}})",
+    "showResults_few": "عرض {{count}} نتائج",
+    "showResults_many": "عرض {{count}} نتيجة"
   },
   "workspaceReady": {
     "allSetNamed": "لقد تم تعيينك، {{name}}",
@@ -608,16 +625,28 @@
     "verdict": {
       "late": {
         "title_one": "{{count}} مهمة تحتاج إلى الانتباه.",
-        "title_other": "{{count}} مهام متأخرة"
+        "title_other": "{{count}} مهام متأخرة",
+        "title_zero": "{{count}} مهمة تحتاج إلى الانتباه.",
+        "title_two": "مهمتان تحتاجان إلى الانتباه ({{count}}).",
+        "title_few": "{{count}} مهام تحتاج إلى الانتباه.",
+        "title_many": "{{count}} مهمة تحتاج إلى الانتباه."
       },
       "review": {
         "title": "شيء ما لاستعراض الاحتياجات.",
         "body_one": "المهام المنجزة {{count}} في انتظار أن يتم تسجيل الدخول.",
-        "body_other": "المهام المنجزة {{count}} في انتظار أن يتم تسجيل الدخول."
+        "body_other": "المهام المنجزة {{count}} في انتظار أن يتم تسجيل الدخول.",
+        "body_zero": "{{count}} مهمة مكتملة بانتظار الموافقة.",
+        "body_two": "مهمتان مكتملتان بانتظار الموافقة ({{count}}).",
+        "body_few": "{{count}} مهام مكتملة بانتظار الموافقة.",
+        "body_many": "{{count}} مهمة مكتملة بانتظار الموافقة."
       },
       "today": {
         "title_one": "{{count}} مهمة مستحقة اليوم.",
-        "title_other": "{{count}} مهام مستحقة اليوم"
+        "title_other": "{{count}} مهام مستحقة اليوم",
+        "title_zero": "{{count}} مهمة مستحقة اليوم.",
+        "title_two": "مهمتان مستحقتان اليوم ({{count}}).",
+        "title_few": "{{count}} مهام مستحقة اليوم.",
+        "title_many": "{{count}} مهمة مستحقة اليوم."
       },
       "clear": {
         "title": "جميعكم يقبضون عليكم.",
@@ -676,7 +705,19 @@
       "caughtUp": "الكل واضح",
       "emptyTitle": "لا أحد آخر هنا بعد",
       "emptyBody": "قم بدعوة الأشخاص الذين تشارك في الأعباء معهم، وستظهر هذه الشاشة من يحملون ما يحملونه.",
-      "emptyAction": "دعوة إلى دائرتك"
+      "emptyAction": "دعوة إلى دائرتك",
+      "open_zero": "{{count}} مهمة مفتوحة",
+      "open_two": "مهمتان مفتوحتان ({{count}})",
+      "open_few": "{{count}} مهام مفتوحة",
+      "open_many": "{{count}} مهمة مفتوحة",
+      "late_zero": "{{count}} مهمة متأخرة",
+      "late_two": "مهمتان متأخرتان ({{count}})",
+      "late_few": "{{count}} مهام متأخرة",
+      "late_many": "{{count}} مهمة متأخرة",
+      "done_zero": "{{count}} مهمة مكتملة",
+      "done_two": "مهمتان مكتملتان ({{count}})",
+      "done_few": "{{count}} مهام مكتملة",
+      "done_many": "{{count}} مهمة مكتملة"
     },
     "projects": {
       "title": "المشاريع",
@@ -687,14 +728,30 @@
       "tasksOverdue_other": "{{count}} مهام، منها {{overdue}} متأخرة",
       "tasksUnplanned_one": "{{count}} مهمة، منها {{unplanned}} غير مخططة",
       "tasksUnplanned_other": "{{count}} مهام، منها {{unplanned}} غير مخططة",
-      "clear": "الكل واضح"
+      "clear": "الكل واضح",
+      "tasks_zero": "{{count}} مهمة",
+      "tasks_two": "مهمتان ({{count}})",
+      "tasks_few": "{{count}} مهام",
+      "tasks_many": "{{count}} مهمة",
+      "tasksOverdue_zero": "{{count}} مهمة، منها {{overdue}} متأخرة",
+      "tasksOverdue_two": "مهمتان ({{count}})، منها {{overdue}} متأخرة",
+      "tasksOverdue_few": "{{count}} مهام، منها {{overdue}} متأخرة",
+      "tasksOverdue_many": "{{count}} مهمة، منها {{overdue}} متأخرة",
+      "tasksUnplanned_zero": "{{count}} مهمة، منها {{unplanned}} غير مخططة",
+      "tasksUnplanned_two": "مهمتان ({{count}})، منها {{unplanned}} غير مخططة",
+      "tasksUnplanned_few": "{{count}} مهام، منها {{unplanned}} غير مخططة",
+      "tasksUnplanned_many": "{{count}} مهمة، منها {{unplanned}} غير مخططة"
     },
     "filters": {
       "title": "فلاتر",
       "action": "جميع الفلاتر",
       "tasks_one": "{{count}} مهمة",
       "tasks_other": "{{count}} مهام",
-      "clear": "لا يوجد تطابق"
+      "clear": "لا يوجد تطابق",
+      "tasks_zero": "{{count}} نتيجة مطابقة",
+      "tasks_two": "نتيجتان مطابقتان ({{count}})",
+      "tasks_few": "{{count}} نتائج مطابقة",
+      "tasks_many": "{{count}} نتيجة مطابقة"
     },
     "capture": {
       "placeholder": "إضافة مهمة…",
@@ -702,5 +759,16 @@
       "voice": "التقط بصوت",
       "scan": "مسح للمهمة"
     }
+  },
+  "about": {
+    "title": "حول Wuzzanext",
+    "description": "المساهمون والترخيص والشيفرة المصدرية.",
+    "basedOn": "Wuzzanext، مبني على",
+    "license": "مرخّص بموجب رخصة جنو أفيرو العمومية (AGPL-3.0).",
+    "downloadSource": "تنزيل الشيفرة المصدرية",
+    "openApp": "فتح Wuzzanext",
+    "reportUnavailableTitle": "لم يُرسَل البلاغ",
+    "reportUnavailableBody": "الإبلاغ غير متاح. يمكنك نسخ بيانات التشخيص لمسؤول خادمك.",
+    "feedbackFailed": "تعذّر إرسال الملاحظات. حاول لاحقًا."
   }
 }
