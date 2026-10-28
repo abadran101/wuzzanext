@@ -42,6 +42,9 @@ func newContentTestRouter(t *testing.T) (*gin.Engine, *gorm.DB, *chRepo.ChoreRep
 	require.NoError(t, err)
 	sqlDB, err := db.DB()
 	require.NoError(t, err)
+	// One connection: the handler plans notifications in the background, and
+	// SQLite refuses two writers at once.
+	sqlDB.SetMaxOpenConns(1)
 	t.Cleanup(func() { _ = sqlDB.Close() })
 	require.NoError(t, database.Migration(db))
 	require.NoError(t, db.Create(&cModel.UserCircle{UserID: 1, CircleID: 1, Role: cModel.UserRoleAdmin, IsActive: true}).Error)
@@ -113,6 +116,9 @@ func TestChoreDoneMeansCreateEditAndRead(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, "<p>Floor clear, bed made</p>", *detail.DoneMeans)
 	require.Equal(t, "<p>Toys in the box</p>", *detail.Description)
+	// Someone in another circle doesn't get the chore, so not its text either.
+	_, err = repo.GetChoreDetailByID(context.Background(), created.Res, 2, 6)
+	require.Error(t, err)
 
 	edit := map[string]any{
 		"id":             created.Res,
