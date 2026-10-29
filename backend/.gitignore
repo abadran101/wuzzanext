@@ -3,3 +3,4 @@ donetick.db
 *.exe
 config/prod.yaml
 config/selfhosted.yaml
+uploads/
