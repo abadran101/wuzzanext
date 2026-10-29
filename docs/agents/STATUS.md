@@ -14,7 +14,8 @@ Update this file at every stop. Output from the real machines beats anything wri
   `main` at f9a5329 (PR #12, task 023, merged 2026-10-28; PR #11, task 022, merged 2026-10-28; PR #10, task 024, merged 2026-10-27; PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
   merged 2026-10-27; PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1,
   task 001, before it).
-- Open branch: `task/008-chore-content` (done, PR open).
+- Open branches: `task/009-photo-approval` (done, PR #14 open), `task/025-listen-address`
+  (done, PR open). PR #13 (task 008) merged: main 84a3d570.
 - Remote `origin` is `https://github.com/abadran101/wuzzanext.git`, confirmed with
   `git ls-remote origin` on 2026-10-26.
 - Agents push task branches with the fine-grained token the orchestrator lists (it covers only the
@@ -49,8 +50,9 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 008 chore content (task file): done, PR open; browser checks in English and Arabic pass
-  (14/14, after a picture fix); waits on the owner's merge.
+- 009 photo approval: done, PR #14 open; waits on the owner's merge.
+- 025 listen address (task file): done, PR open; the local test app listens on 127.0.0.1
+  only. The home server's `server.host` is set in 019.
 - First deployment: keep `storage.base_path` (`./uploads`) on the data volume next to the
   database, or pictures are lost when the container is replaced (task 008 Result).
 - Google key setup for 023 comes with the first deployment (`docs/translation-setup.md`).
@@ -73,6 +75,11 @@ Update this file at every stop. Output from the real machines beats anything wri
    no-cloud rule keeps it that way.
 
 ## Decisions (newest first)
+
+- 2026-10-28: an optional server listen-address setting, empty by default (listens on every
+  interface as today); the local test config uses 127.0.0.1, the home server sets it in 019
+  (owner, through the orchestrator: "i agree with your recommendation"). Task 025, its own
+  branch and PR from main 84a3d570.
 
 - 2026-10-28: task 008 defaults (supervisor): "Done means" has no new size limit or sanitiser
   (the same as the details), keeps the storage quota, is not translated (the owner decides
