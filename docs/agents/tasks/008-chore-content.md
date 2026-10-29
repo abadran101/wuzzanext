@@ -82,7 +82,9 @@ on the chore page, and the "Done means" text again when they mark it done.
 
 - **Commits:** 7b7862ef008d793d08b0135bc0942c8297e84802 (task file, plan; PR #12's merge),
   55297586456103d828c0994fdc25a6aa3691560d (code),
-  a225c9f276e12ed2aff384eacab15f58da729a29 (a test), then this record.
+  a225c9f276e12ed2aff384eacab15f58da729a29 (a test), d8edc90ec62da8ce22b4d3971cc356201ae20c9e
+  (record), 539385258bca84903931ae380c6b1f420a330217 (saved pictures load; found by the browser
+  checks), then this record.
 - **Codex:** one read-only plan run (exit 0); the supervisor wrote the code (owner's decision).
 - **Backend:** `Chore.DoneMeans` (`chores.done_means`, text, added by the existing auto-migration),
   returned by the chore and chore-detail reads with pictures signed like the details, accepted on
@@ -117,7 +119,21 @@ on the chore page, and the "Done means" text again when they mark it done.
   back intact; Alex's picture uploads, is signed on read, survives an edit and an edit without
   the field; a chore without it has no field; Sam (PIN profile) uploads a draft picture and a
   picture to Sam's own chore and saves it in "Done means"; Sam is refused on Alex's chore (403,
-  edit rule). No browser on the dev machine, so the screens were not looked at.
-- **Left for the owner:** look at the editor, the chore page and the confirmation in the test
-  app, in English and Arabic (~15 min), then merge. First deployment: keep `./uploads` on the
-  data volume (or set `DT_STORAGE_BASE_PATH`).
+  edit rule).
+- **Browser checks (owner, through the orchestrator, 2026-10-28: "I want Wuzzanext to review the
+  rest"):** Playwright 1.59.1 (`npm ci` in `frontend/e2e`, browser download skipped) driving the
+  installed Edge 155 headless, against the local test app; scripts kept in scratch, not in the
+  repo. English and Arabic (RTL): editor with pictures in details and "Done means" (admin),
+  chore page block, edit and save keeps text and pictures, "Is it done?" (Not yet, then Yes),
+  a chore without it completes directly, Sam (PIN profile) adds a picture: 14 of 14 pass.
+  First run: saved pictures did not load (the local signer returns relative URLs and the editor
+  kept them as is), so steps 2, 3, 5 and 6 failed in both languages; fixed in `ImageCache.js`
+  (resolve against the API, as for fresh uploads), then all pass. Console errors left, all
+  upstream and not from 008: the offline image cache's fetch is blocked by CORS (the image was
+  cached first without an Origin header; display unaffected), a `quilljs-markdown` null error
+  when the editor patches picture addresses (also with a details-only picture), aborted requests
+  on navigation, an Emotion `:nth-child` warning. Server log: no panics; "Authentication
+  failed" lines from signed-out pages only.
+- **Left for the owner:** merge. First deployment: keep `./uploads` on the data volume (or set
+  `DT_STORAGE_BASE_PATH`). Local test uploads land in `backend/uploads/` (untracked, not
+  ignored: don't commit it).

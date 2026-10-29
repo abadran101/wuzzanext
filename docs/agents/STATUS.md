@@ -49,7 +49,8 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 008 chore content (task file): done, PR open; waits on the owner's review in the test app and merge.
+- 008 chore content (task file): done, PR open; browser checks in English and Arabic pass
+  (14/14, after a picture fix); waits on the owner's merge.
 - First deployment: keep `storage.base_path` (`./uploads`) on the data volume next to the
   database, or pictures are lost when the container is replaced (task 008 Result).
 - Google key setup for 023 comes with the first deployment (`docs/translation-setup.md`).
