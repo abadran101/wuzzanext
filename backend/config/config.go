@@ -6,8 +6,10 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"net"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -133,6 +135,7 @@ type JwtConfig struct {
 }
 
 type ServerConfig struct {
+	Host             string        `mapstructure:"host" yaml:"host"` // Address to listen on; empty listens on every interface
 	Port             int           `mapstructure:"port" yaml:"port" default:"2021"`
 	RatePeriod       time.Duration `mapstructure:"rate_period" yaml:"rate_period" default:"60s"`
 	RateLimit        int           `mapstructure:"rate_limit" yaml:"rate_limit" default:"300"`
@@ -143,6 +146,12 @@ type ServerConfig struct {
 	ServeFrontend    bool          `mapstructure:"serve_frontend" yaml:"serve_frontend"`
 	ServeSwagger     bool          `mapstructure:"serve_swagger" yaml:"serve_swagger"`
 	PublicHost       string        `mapstructure:"public_host" yaml:"public_host" default:"http://localhost:2021"`
+}
+
+// ListenAddr is the address the server listens on: every interface when Host
+// is empty (as upstream), or only Host, e.g. 127.0.0.1 for a local test app.
+func (s ServerConfig) ListenAddr() string {
+	return net.JoinHostPort(strings.TrimSpace(s.Host), strconv.Itoa(s.Port))
 }
 
 type SchedulerConfig struct {

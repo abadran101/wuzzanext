@@ -89,7 +89,9 @@ To run it on your own machine:
 1. Copy `backend/config/selfhosted.yaml.example` to `backend/config/selfhosted.yaml` (git
    ignores it) and set your own `jwt.secret`. The database is SQLite by default.
 2. Start the server from `backend/` with `DT_ENV=selfhosted go run .` (PowerShell:
-   `$env:DT_ENV='selfhosted'; go run .`). It listens on port 2021.
+   `$env:DT_ENV='selfhosted'; go run .`). It listens on port 2021, on every network
+   interface while `server.host` is empty; set `server.host: "127.0.0.1"` to keep a test app
+   on this machine only.
 3. Start the web interface from `frontend/` with `npm run dev` and open the address Vite
    prints. It talks to the server at `http://localhost:2021` (`frontend/.env.development`).
 
