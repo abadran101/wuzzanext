@@ -14,7 +14,7 @@ Update this file at every stop. Output from the real machines beats anything wri
   `main` at 84a3d570 (PR #13, task 008, merged 2026-10-28; PR #12, task 023, merged 2026-10-28; PR #11, task 022, merged 2026-10-28; PR #10, task 024, merged 2026-10-27; PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
   merged 2026-10-27; PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1,
   task 001, before it).
-- Open branch: `task/009-photo-approval` (in progress).
+- Open branch: `task/009-photo-approval` (done, PR open).
 - Remote `origin` is `https://github.com/abadran101/wuzzanext.git`, confirmed with
   `git ls-remote origin` on 2026-10-26.
 - Agents push task branches with the fine-grained token the orchestrator lists (it covers only the
@@ -49,7 +49,8 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 009 photo proof and thumbs-up approval (task file): in progress; the supervisor writes it.
+- 009 photo proof and thumbs-up approval (task file): done, PR open; browser checks in English
+  and Arabic pass (12/12, quick-add 2/2); waits on the owner's merge and Arabic wording check.
 - 025 optional server listen address: approved, its own PR after the 009 PR.
 - First deployment: keep `storage.base_path` (`./uploads`) on the data volume next to the
   database, or pictures are lost when the container is replaced (task 008 Result).
@@ -71,6 +72,9 @@ Update this file at every stop. Output from the real machines beats anything wri
 6. Suggestion for 011 (the supervisor's, not a decision): remove Report an Issue entirely. It can
    only send to an outside Discord or Slack webhook built into the app, none is set, and the
    no-cloud rule keeps it that way.
+7. For 017 (found in 009, upstream): picture responses are cached for a week without
+   `Vary: Origin`; across origins (the Android app) the offline picture cache's fetch reuses
+   the `<img>` copy and is blocked by CORS. Fix with `Vary: Origin` on `/api/v1/assets`.
 
 ## Decisions (newest first)
 
