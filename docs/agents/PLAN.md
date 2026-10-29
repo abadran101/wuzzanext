@@ -50,7 +50,7 @@ everything on the dev machine is readable by Codex.
 | 022 | Arabic: full right-to-left layout (the one-tap toggle is in the user menu since 007), missing Arabic texts filled in; the owner reviews the Arabic wording before merge | Done (PR #11, merged) | 007 |
 | 024 | Menu items hidden from regular users: Archived, Things, Labels, Report an Issue hidden by default; admins switch each on or off for all regular users (household setting); pages not blocked | Done (PR #10, merged) | 007 |
 | 023 | Translate chore names, chore details and recipe names English <-> Arabic on the home server (Google Cloud Translation, cached; key only in the server's configuration) | Done (PR #12, merged) | 022 |
-| 025 | Optional server listen address (`server.host`): empty listens on every interface as today; the local test app uses 127.0.0.1, the home server sets it in 019 (approved 2026-10-28) | Done (PR open) | 003 |
+| 025 | Optional server listen address (`server.host`): empty listens on every interface as today; the local test app uses 127.0.0.1, the home server sets it in 019 (approved 2026-10-28) | Done (PR #15, merged) | 003 |
 
 ## Settled: don't propose these again
 
