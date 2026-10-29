@@ -107,6 +107,7 @@ import { getIconComponent } from '../../utils/ProjectIcons'
 import { getSafeBottomPadding } from '../../utils/SafeAreaUtils.js'
 import { useSinglePageTaskEditor } from '../../utils/TaskEditorPreferences'
 import { generateUUID } from '../../utils/UUID'
+import { DEFAULT_CHORE_POINTS } from '../../utils/WeeklyPoints'
 import { useProjectFilter } from '../Chores/hooks/useProjectFilter.js'
 import LoadingComponent from '../components/Loading.jsx'
 import RichTextEditor from '../components/RichTextEditor.jsx'
@@ -190,7 +191,8 @@ const ChoreEdit = () => {
   const [priority, setPriority] = useState(0)
   const [completionActions, setCompletionActions] = useState([])
   const [completionActionsValid, setCompletionActionsValid] = useState(true)
-  const [points, setPoints] = useState(-1)
+  // A new chore is worth 1 star until its creator changes it (task 010).
+  const [points, setPoints] = useState(choreId ? -1 : DEFAULT_CHORE_POINTS)
   const [requireApproval, setRequireApproval] = useState(false)
   // Once the person flips the thumbs-up switch, it stops following the assignees.
   const approvalTouched = useRef(false)

@@ -1084,6 +1084,8 @@ func Routes(router *gin.Engine, h *Handler, multiAuthMiddleware *auth.MultiAuthM
 	{
 		circleRoutes.GET("/menu-items", h.GetMenuItems)
 		circleRoutes.PUT("/menu-items", h.PutMenuItems)
+		circleRoutes.GET("/week-start", h.GetWeekStart)
+		circleRoutes.PUT("/week-start", h.PutWeekStart)
 		circleRoutes.GET("/members", h.GetCircleMembers)
 		circleRoutes.GET("/members/requests", h.GetPendingCircleMembers)
 		circleRoutes.PUT("/members/role", h.ChangeMemberRole)

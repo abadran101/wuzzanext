@@ -35,5 +35,6 @@
   "admin": "Admin",
   "addPerson": "Add person",
   "person": "Person",
-  "resetPIN": "Reset PIN"
+  "resetPIN": "Reset PIN",
+  "weekStart": "Points week starts on"
 }

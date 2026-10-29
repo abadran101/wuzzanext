@@ -20,6 +20,8 @@ type Circle struct {
 
 	// Optional menu items regular members see, comma-separated (task 024).
 	MemberMenuItems string `json:"-" gorm:"column:member_menu_items;default:'';not null"`
+	// First day of the household's points week, 0 Sunday to 6 Saturday; Monday by default (task 010).
+	WeekStart int `json:"-" gorm:"column:week_start;default:1;not null"`
 }
 
 type CircleDetail struct {

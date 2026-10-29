@@ -779,7 +779,9 @@ func (r *ChoreRepository) ApproveChore(c context.Context, chore *chModel.Chore, 
 		}
 
 		// Update status to completed
+		approvedAt := time.Now().UTC()
 		history.Status = chModel.ChoreHistoryStatusCompleted
+		history.ApprovedAt = &approvedAt
 		history.SyncVersion = nextVersion
 
 		// Update UserCircle Points if applicable

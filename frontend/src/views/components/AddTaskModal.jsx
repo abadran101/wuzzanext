@@ -51,6 +51,7 @@ import {
 } from '../../utils/ProjectAccess'
 import { getIconComponent } from '../../utils/ProjectIcons'
 import { generateUUID } from '../../utils/UUID'
+import { DEFAULT_CHORE_POINTS } from '../../utils/WeeklyPoints'
 import { useLabels } from '../Labels/LabelQueries'
 import { useProjects } from '../Projects/ProjectQueries'
 import AdvancedOptionsSection, {
@@ -308,7 +309,7 @@ const TaskInput = ({
     templates: getDefaultNotification(),
   }))
   const [subTasks, setSubTasks] = useState(null)
-  const [points, setPoints] = useState(-1)
+  const [points, setPoints] = useState(DEFAULT_CHORE_POINTS)
   const [isAnyoneTask, setIsAnyoneTask] = useState(false)
   const [hasDescription, setHasDescription] = useState(false)
   const [hasSubTasks, setHasSubTasks] = useState(false)
@@ -1283,7 +1284,7 @@ const TaskInput = ({
     setTaskTitle('')
     setFrequency(null)
     setPriority(0)
-    setPoints(-1)
+    setPoints(DEFAULT_CHORE_POINTS)
     setIsAnyoneTask(false)
     setHasDescription(false)
     setDescription(null)

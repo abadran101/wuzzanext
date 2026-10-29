@@ -30,13 +30,14 @@
   },
   "tabs": {
     "short7d": "7 أيام",
-    "short6m": "6 ميغا",
+    "short6m": "6 أشهر",
     "shortAll": "الكل",
     "days7": "آخر 7 أيام",
     "months6": "6 أشهر",
     "allTime": "كل الوقت",
     "short30d": "30 يومًا",
-    "days30": "آخر 30 يومًا"
+    "days30": "آخر 30 يومًا",
+    "shortWeek": "الأسبوع"
   },
   "filter": {
     "analysisTitle": "تصفية النقاط وتحليلها",
@@ -81,7 +82,8 @@
     "lastDays_zero": "آخر {{count}} يوم",
     "lastDays_two": "آخر يومين ({{count}})",
     "lastDays_few": "آخر {{count}} أيام",
-    "lastDays_many": "آخر {{count}} يومًا"
+    "lastDays_many": "آخر {{count}} يومًا",
+    "thisWeek": "هذا الأسبوع"
   },
   "trend": {
     "title": "اتجاه النقاط"

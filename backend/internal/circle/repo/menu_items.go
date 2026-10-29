@@ -22,3 +22,7 @@ func (r *CircleRepository) CanAccessMenuItems(ctx context.Context, circleID, use
 func (r *CircleRepository) SetMemberMenuItems(ctx context.Context, circleID int, items string) error {
 	return r.db.WithContext(ctx).Model(&cModel.Circle{}).Where("id = ?", circleID).Update("member_menu_items", items).Error
 }
+
+func (r *CircleRepository) SetWeekStart(ctx context.Context, circleID, weekStart int) error {
+	return r.db.WithContext(ctx).Model(&cModel.Circle{}).Where("id = ?", circleID).Update("week_start", weekStart).Error
+}

@@ -39,15 +39,26 @@ import {
 
 import { useChoresHistory } from '../../queries/ChoreQueries.jsx'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries.jsx'
+import { useWeekStart } from '../../queries/WeekStartQueries'
 import { RedeemPoints } from '../../utils/Fetcher.jsx'
 import { resolvePhotoURL } from '../../utils/Helpers.jsx'
+import {
+  countsForPoints,
+  earnedAt,
+  isInWeek,
+  weekDays,
+} from '../../utils/WeeklyPoints'
 import LoadingComponent from '../components/Loading.jsx'
 import RedeemPointsModal from '../Modals/RedeemPointsModal'
 import { useRedemptions } from '../Rewards/RewardQueries.jsx'
 import RewardsView from '../Rewards/RewardsView.jsx'
 
+// 'week' is the household's calendar week (task 010); the history it needs
+// is at most eight days old.
+const WEEK = 'week'
+const WEEK_HISTORY_DAYS = 8
 const PERIODS = [
-  { shortKey: 'tabs.short7d', value: 7 },
+  { shortKey: 'tabs.shortWeek', value: WEEK },
   { shortKey: 'tabs.short30d', value: 30 },
   { shortKey: 'tabs.short6m', value: 6 * 30 },
   { shortKey: 'tabs.shortAll', value: 24 * 30 },
@@ -60,7 +71,33 @@ const surfaceSx = {
   borderRadius: 'xl',
 }
 
-const buildHistorySummary = (history, userId, period) => {
+const countsInPeriod = (entry, period, weekStart) =>
+  period === WEEK
+    ? isInWeek(entry, new Date(), weekStart)
+    : countsForPoints(entry)
+
+const buildHistorySummary = (history, userId, period, weekStart) => {
+  if (period === WEEK) {
+    const buckets = weekDays(new Date(), weekStart).map(day => ({
+      key: moment(day).format('YYYY-MM-DD'),
+      label: moment(day).format('ddd'),
+      points: 0,
+      tasks: 0,
+    }))
+    const bucketByKey = new Map(buckets.map(bucket => [bucket.key, bucket]))
+    history.forEach(entry => {
+      if (userId && entry.completedBy !== userId) return
+      if (!isInWeek(entry, new Date(), weekStart)) return
+      const bucket = bucketByKey.get(
+        moment(earnedAt(entry)).format('YYYY-MM-DD'),
+      )
+      if (!bucket) return
+      bucket.points += entry.points || 0
+      bucket.tasks += 1
+    })
+    return buckets
+  }
+
   let count
   let unit
   let keyFormat
@@ -101,7 +138,8 @@ const buildHistorySummary = (history, userId, period) => {
 
   history.forEach(entry => {
     if (userId && entry.completedBy !== userId) return
-    const bucket = bucketByKey.get(moment(entry.performedAt).format(keyFormat))
+    if (!countsForPoints(entry)) return
+    const bucket = bucketByKey.get(moment(earnedAt(entry)).format(keyFormat))
     if (!bucket) return
     bucket.points += entry.points || 0
     bucket.tasks += 1
@@ -129,6 +167,7 @@ const getRankIcon = rank => {
 }
 
 const getPeriodLabel = (period, t) => {
+  if (period === WEEK) return t('summary.thisWeek')
   if (period === 24 * 30) return t('summary.allTime')
   if (period === 6 * 30) return t('summary.last6Months')
   return t('summary.lastDays', { count: period })
@@ -136,7 +175,7 @@ const getPeriodLabel = (period, t) => {
 
 const UserPoints = () => {
   const { t } = useTranslation('points')
-  const [period, setPeriod] = useState(7)
+  const [period, setPeriod] = useState(WEEK)
   const [selectedUser, setSelectedUser] = useState(null)
   const [leaderboardMode, setLeaderboardMode] = useState('points')
   const [isRedeemModalOpen, setIsRedeemModalOpen] = useState(false)
@@ -152,7 +191,8 @@ const UserPoints = () => {
     data: choresHistoryData,
     handleLimitChange: changeHistoryLimit,
     isLoading: isChoresHistoryLoading,
-  } = useChoresHistory(7, true)
+  } = useChoresHistory(WEEK_HISTORY_DAYS, true)
+  const { weekStart } = useWeekStart()
   const { data: userProfile } = useUserProfile()
   const { data: pendingRedemptions = [] } = useRedemptions('pending')
 
@@ -176,12 +216,12 @@ const UserPoints = () => {
 
   const handlePeriodChange = nextPeriod => {
     setPeriod(nextPeriod)
-    changeHistoryLimit(nextPeriod)
+    changeHistoryLimit(nextPeriod === WEEK ? WEEK_HISTORY_DAYS : nextPeriod)
   }
 
   const selectedHistory = useMemo(
-    () => buildHistorySummary(history, activeSelectedUser, period),
-    [activeSelectedUser, history, period],
+    () => buildHistorySummary(history, activeSelectedUser, period, weekStart),
+    [activeSelectedUser, history, period, weekStart],
   )
 
   const leaderboardData = useMemo(() => {
@@ -199,7 +239,7 @@ const UserPoints = () => {
 
     history.forEach(entry => {
       const user = stats.get(entry.completedBy)
-      if (!user) return
+      if (!user || !countsInPeriod(entry, period, weekStart)) return
       user.periodPoints += entry.points || 0
       user.periodTasks += 1
     })
@@ -216,7 +256,7 @@ const UserPoints = () => {
             ? (user.periodPoints / user.periodTasks).toFixed(1)
             : 0,
       }))
-  }, [circleUsers, history, leaderboardMode])
+  }, [circleUsers, history, leaderboardMode, period, weekStart])
 
   const pageTabs = (
     <Tabs
