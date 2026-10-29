@@ -73,6 +73,7 @@ type Chore struct {
 	CompletionWindow       *int                       `json:"completionWindow,omitempty" gorm:"column:completion_window"`                             // Number seconds before the chore is due that it can be completed
 	Points                 *int                       `json:"points,omitempty" gorm:"column:points"`                                                  // Points for completing the chore
 	Description            *string                    `json:"description,omitempty" gorm:"type:text;column:description"`                              // Description of the chore
+	DoneMeans              *string                    `json:"doneMeans,omitempty" gorm:"type:text;column:done_means"`                                 // What counts as done (HTML, like the description)
 	SubTasks               *[]stModel.SubTask         `json:"subTasks,omitempty" gorm:"foreignkey:ChoreID;references:ID"`                             // Subtasks for the chore
 	RequireApproval        bool                       `json:"requireApproval" gorm:"column:require_approval"`                                         // Whether chore completion requires admin approval
 	IsPrivate              bool                       `json:"isPrivate" gorm:"column:is_private;default:false"`                                       // Whether the chore is private
@@ -175,6 +176,7 @@ type ChoreDetail struct {
 	ID                  int                        `json:"id" gorm:"column:id"`
 	Name                string                     `json:"name" gorm:"column:name"`
 	Description         *string                    `json:"description" gorm:"column:description"`
+	DoneMeans           *string                    `json:"doneMeans" gorm:"column:done_means"`
 	FrequencyType       string                     `json:"frequencyType" gorm:"column:frequency_type"`
 	NextDueDate         *time.Time                 `json:"nextDueDate" gorm:"column:next_due_date"`
 	AssignedTo          *int                       `json:"assignedTo" gorm:"column:assigned_to"`

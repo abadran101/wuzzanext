@@ -43,7 +43,16 @@ func (r *StorageRepository) AddMediaRecord(ctx context.Context, media *st.Storag
 			return res.Error
 		}
 		if res.RowsAffected == 0 {
-			return errorx.ErrNotEnoughSpace
+			// Family profiles (PIN sign-in) have no usage row yet; start one
+			// so their first picture counts instead of being refused.
+			if err := tx.Create(&st.StorageUsage{
+				UserID:    user.ID,
+				CircleID:  user.CircleID,
+				UsedBytes: media.SizeBytes,
+				UpdatedAt: time.Now().UTC(),
+			}).Error; err != nil {
+				return err
+			}
 		}
 
 		if err := tx.Model(&st.StorageFile{}).Create(&media).Error; err != nil {

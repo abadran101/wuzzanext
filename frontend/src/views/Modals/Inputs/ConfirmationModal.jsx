@@ -89,9 +89,11 @@ function ConfirmationModal({ config }) {
         />
       }
     >
-      <Typography level='body-md' sx={{ whiteSpace: 'pre-wrap' }}>
-        {config?.message}
-      </Typography>
+      {config?.content ?? (
+        <Typography level='body-md' sx={{ whiteSpace: 'pre-wrap' }}>
+          {config?.message}
+        </Typography>
+      )}
     </ResponsiveModal>
   )
 }

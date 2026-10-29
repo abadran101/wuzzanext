@@ -21,6 +21,7 @@ import {
   LockOutlined,
   NotificationsOutlined,
   Save,
+  TaskAltOutlined,
   TimerOutlined,
   TitleOutlined,
   UploadFile,
@@ -81,6 +82,7 @@ import {
 } from '../../queries/ChoreQueries.jsx'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries.jsx'
 import { useNotification } from '../../service/NotificationProvider'
+import { hasChoreContent } from '../../utils/ChoreContent'
 import { getTextColorFromBackgroundColor } from '../../utils/Colors.jsx'
 import { sanitizeRemindersForPlan } from '../../utils/entitlements'
 import {
@@ -168,6 +170,7 @@ const ChoreEdit = () => {
   const wizardBodyRef = useRef(null)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
+  const [doneMeans, setDoneMeans] = useState('')
   const [confirmModelConfig, setConfirmModelConfig] = useState({})
   const [anyone, setAnyone] = useState(false)
   const [assignableTo, setAssignableTo] = useState([])
@@ -275,6 +278,7 @@ const ChoreEdit = () => {
   const snapshot = JSON.stringify({
     name,
     description,
+    doneMeans,
     priority,
     projectId,
     labelsV2,
@@ -647,6 +651,7 @@ const ChoreEdit = () => {
       id: Number(newChoreId),
       name: name,
       description: description,
+      doneMeans: doneMeans,
       assignees: assignees,
       dueDate: dueDate ? new Date(dueDate).toISOString() : null,
       nextDueDate: dueDate ? new Date(dueDate).toISOString() : null,
@@ -856,6 +861,7 @@ const ChoreEdit = () => {
       setChore(data.res)
       setName(data.res.name ? data.res.name : '')
       setDescription(data.res.description ? data.res.description : '')
+      setDoneMeans(data.res.doneMeans || '')
       setAssignableTo(data.res.assignees ? data.res.assignees : [])
       setAnyone((data.res.assignees?.length || 0) === 0)
       setAssignedTo(data.res.assignedTo)
@@ -1912,6 +1918,9 @@ const ChoreEdit = () => {
                   description.replace(/<[^>]*>/g, '').trim()
                     ? t('text.instructionsAdded')
                     : '',
+                  hasChoreContent(doneMeans)
+                    ? t('taskEditor.doneMeansAdded')
+                    : '',
                   attachments.length
                     ? t('taskEditor.summary.files', {
                         count: attachments.length,
@@ -1933,6 +1942,23 @@ const ChoreEdit = () => {
                   />
                   <FormHelperText error>{errors.description}</FormHelperText>
                 </FormControl>
+              </Box>
+              <Box mb={2}>
+                <Typography
+                  level='title-sm'
+                  startDecorator={<TaskAltOutlined />}
+                  sx={{ mb: 0.5 }}
+                >
+                  {t('taskEditor.doneMeans')}
+                </Typography>
+                <RichTextEditor
+                  value={doneMeans}
+                  onChange={setDoneMeans}
+                  entityId={choreId}
+                  entityType={'chore_description'}
+                  draftId={draftId}
+                  placeholder={t('taskEditor.doneMeansPlaceholder')}
+                />
               </Box>
               <Box
                 sx={{
