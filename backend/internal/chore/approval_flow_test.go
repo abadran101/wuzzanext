@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"strconv"
 	"testing"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/require"
@@ -122,6 +123,9 @@ func TestCreatorApprovesAndRejectsWithoutBeingAdmin(t *testing.T) {
 	completed := latestHistory(t, db, id)
 	require.Equal(t, chModel.ChoreHistoryStatusCompleted, completed.Status)
 	require.Equal(t, flowKim, completed.CompletedBy)
+	require.NotNil(t, completed.ApprovedAt, "the weekly points count from the thumbs up")
+	require.WithinDuration(t, time.Now(), *completed.ApprovedAt, time.Minute)
+	require.Nil(t, pending.ApprovedAt)
 	var kim cModel.UserCircle
 	require.NoError(t, db.Where("user_id = ? AND circle_id = 1", flowKim).First(&kim).Error)
 	require.Equal(t, 5, kim.Points, "points come on approval")

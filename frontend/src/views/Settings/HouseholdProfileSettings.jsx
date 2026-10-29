@@ -17,13 +17,22 @@ import ProfileColourPicker from '../../components/ProfileColourPicker'
 import { useProfileSession } from '../../components/ProfileSessionManager'
 import { useMenuVisibility } from '../../queries/MenuVisibilityQueries'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries'
+import { useWeekStart } from '../../queries/WeekStartQueries'
 import { apiClient } from '../../utils/ApiClient'
 import { MENU_ITEM_NAMES } from '../../utils/MenuVisibility'
 import { PROFILE_COLOURS } from '../../utils/ProfileSession'
+import { WEEK_DAYS } from '../../utils/WeeklyPoints'
+
+// Day names in the reader's language; 2023-01-01 was a Sunday.
+const dayName = (day, language) =>
+  new Intl.DateTimeFormat(language || undefined, { weekday: 'long' }).format(
+    new Date(2023, 0, 1 + day),
+  )
 
 export default function HouseholdProfileSettings() {
   const menu = useMenuVisibility()
-  const { t } = useTranslation('profiles')
+  const week = useWeekStart()
+  const { i18n, t } = useTranslation('profiles')
   const { data: profile, refetch } = useUserProfile()
   const { data: members } = useCircleMembers()
   const { setSharedTablet, sharedTablet } = useProfileSession()
@@ -237,6 +246,29 @@ export default function HouseholdProfileSettings() {
               }}
             />
           ))}
+          {field(
+            t('weekStart'),
+            <Select
+              value={week.weekStart}
+              disabled={!week.isReady || week.isSaving}
+              onChange={async (_, value) => {
+                if (value === null || value === week.weekStart) return
+                setMessage('')
+                try {
+                  await week.save(value)
+                  setMessage('saved')
+                } catch {
+                  setMessage('failed')
+                }
+              }}
+            >
+              {WEEK_DAYS.map(day => (
+                <Option key={day} value={day}>
+                  {dayName(day, i18n.language)}
+                </Option>
+              ))}
+            </Select>,
+          )}
           <Box
             component='form'
             onSubmit={event => {

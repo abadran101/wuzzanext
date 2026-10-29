@@ -35,7 +35,8 @@
     "months6": "6 Months",
     "allTime": "All Time",
     "short30d": "30D",
-    "days30": "30 Days"
+    "days30": "30 Days",
+    "shortWeek": "Week"
   },
   "filter": {
     "analysisTitle": "Filter & Analysis",
@@ -72,7 +73,8 @@
     "allTime": "All Time",
     "last6Months": "Last 6 Months",
     "lastDays_one": "Last {{count}} Day",
-    "lastDays_other": "Last {{count}} Days"
+    "lastDays_other": "Last {{count}} Days",
+    "thisWeek": "This Week"
   },
   "trend": {
     "title": "Points Trend"

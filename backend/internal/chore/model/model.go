@@ -109,6 +109,7 @@ type ChoreHistory struct {
 	CreatedAt   time.Time          `json:"createdAt" gorm:"column:created_at;autoCreateTime;<-:create"` // When the record was created (immutable after insert)
 	Status      ChoreHistoryStatus `json:"status" gorm:"column:status"`                                 // Status of the chore (1=completed, 2=skipped)
 	Points      *int               `json:"points,omitempty" gorm:"column:points"`                       // Points for completing the chore
+	ApprovedAt  *time.Time         `json:"approvedAt,omitempty" gorm:"column:approved_at"`              // When a thumbs up approved it; its points count from then (task 010)
 	Duration    *int               `json:"duration,omitempty" gorm:"<-:false;-:migration"`              // Duration in seconds calculated from query (read-only, no DB column)
 	SyncVersion int64              `json:"syncVersion" gorm:"column:sync_version;not null;default:0;index:idx_chore_history_sync_version"`
 }
