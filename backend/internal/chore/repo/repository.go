@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"strings"
 	"time"
 
 	config "donetick.com/core/config"
@@ -830,6 +831,7 @@ func (r *ChoreRepository) RejectChore(c context.Context, choreID int, circleID i
 		// Update status to rejected
 		history.Status = chModel.ChoreHistoryStatusRejected
 		history.SyncVersion = nextVersion
+		history.Note = withRejectionNote(history.Note, rejectionNote)
 
 		// Save the updated history
 		if err := tx.Save(&history).Error; err != nil {
@@ -838,6 +840,25 @@ func (r *ChoreRepository) RejectChore(c context.Context, choreID int, circleID i
 
 		return nil
 	})
+}
+
+// withRejectionNote keeps the thumbs-down note on the rejected completion,
+// first and above the doer's own note and photo, so the doer sees why it
+// came back.
+func withRejectionNote(note *string, rejectionNote *string) *string {
+	if rejectionNote == nil || strings.TrimSpace(*rejectionNote) == "" {
+		return note
+	}
+	reason := strings.TrimSpace(*rejectionNote)
+	if strings.HasPrefix(reason, "<p>") {
+		reason = "<p>👎 " + strings.TrimPrefix(reason, "<p>")
+	} else {
+		reason = "<p>👎 " + reason + "</p>"
+	}
+	if note != nil {
+		reason += *note
+	}
+	return &reason
 }
 
 func (r *ChoreRepository) CompleteChore(c context.Context, chore *chModel.Chore, note *string, userID int, dueDate *time.Time, completedDate *time.Time, nextAssignedTo *int, applyPoints bool) error {

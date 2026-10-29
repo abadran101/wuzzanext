@@ -127,11 +127,15 @@ func TestCreatorApprovesAndRejectsWithoutBeingAdmin(t *testing.T) {
 	require.Equal(t, 5, kim.Points, "points come on approval")
 
 	// The next day's turn: a thumbs down sends it back to open.
-	done = asMember(t, router, flowKim, base+"/do", map[string]any{})
+	done = asMember(t, router, flowKim, base+"/do", map[string]any{"notes": "<p>Watered</p>"})
 	require.Equal(t, http.StatusOK, done.Code, done.Body.String())
-	rejected := asMember(t, router, flowSam, base+"/reject", map[string]any{"notes": "Soil still dry"})
+	rejected := asMember(t, router, flowSam, base+"/reject", map[string]any{"notes": "<p>Soil still dry</p>"})
 	require.Equal(t, http.StatusOK, rejected.Code, rejected.Body.String())
 	require.Equal(t, chModel.ChoreStatusNoStatus, choreStatus(t, db, id))
+	thumbsDown := latestHistory(t, db, id)
+	require.Equal(t, chModel.ChoreHistoryStatusRejected, thumbsDown.Status)
+	require.NotNil(t, thumbsDown.Note)
+	require.Equal(t, "<p>👎 Soil still dry</p><p>Watered</p>", *thumbsDown.Note, "the doer sees why it came back")
 	require.NoError(t, db.Where("user_id = ? AND circle_id = 1", flowKim).First(&kim).Error)
 	require.Equal(t, 5, kim.Points, "no points for a thumbs down")
 
