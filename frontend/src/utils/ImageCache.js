@@ -135,7 +135,9 @@ const clearImageCache = async () => {
 // Extracts (path, src) pairs for every dt-data-path image embedded in a
 // description HTML string. Attribute values are HTML-escaped in the raw
 // string ("&amp;"), so src is decoded for fetching while rawSrc keeps the
-// exact attribute text for string replacement.
+// exact attribute text for string replacement. The local storage signer
+// returns relative URLs ("users/1/x.jpg?sig=..."), so src is made absolute
+// against the API, as for freshly uploaded pictures.
 const extractDescriptionImages = html => {
   if (!html || !html.includes('dt-data-path')) return []
   const results = []
@@ -147,7 +149,11 @@ const extractDescriptionImages = html => {
     const path = tag.match(pathReg)?.[1]
     if (!path) continue
     const rawSrc = tag.match(srcReg)?.[1] || null
-    results.push({ path: decodeAttr(path), src: decodeAttr(rawSrc), rawSrc })
+    results.push({
+      path: decodeAttr(path),
+      src: rawSrc ? resolvePhotoURL(decodeAttr(rawSrc)) : null,
+      rawSrc,
+    })
   }
   return results
 }
@@ -283,7 +289,7 @@ const patchDescriptionHtml = async (html, meta = {}) => {
         kind: 'description',
         ...meta,
       })
-      if (nextSrc && nextSrc !== src) {
+      if (nextSrc && nextSrc !== (rawSrc || '').replaceAll('&amp;', '&')) {
         patched = patched.replaceAll(`src="${rawSrc}"`, `src="${nextSrc}"`)
       }
     } catch {
