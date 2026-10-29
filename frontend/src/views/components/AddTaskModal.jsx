@@ -40,6 +40,7 @@ import {
   sharedItemToFile,
 } from '../../service/ShareTargetService'
 import { voiceInputService } from '../../service/VoiceInputService'
+import { asksForThumbsUpByDefault } from '../../utils/ChoreApproval'
 import LABEL_COLORS, { TASK_COLOR } from '../../utils/Colors'
 import { sanitizeRemindersForPlan } from '../../utils/entitlements'
 import { CreateLabel, DeleteDraftAttachment } from '../../utils/Fetcher'
@@ -313,6 +314,18 @@ const TaskInput = ({
   const [hasSubTasks, setHasSubTasks] = useState(false)
   const [deadlineOffset, setDeadlineOffset] = useState(-1)
   const [requireApproval, setRequireApproval] = useState(false)
+  // Once the person flips the thumbs-up switch, it stops following the assignees.
+  const approvalTouchedRef = useRef(false)
+  // A chore given to someone else asks for a thumbs up; one's own doesn't.
+  useEffect(() => {
+    if (approvalTouchedRef.current || !userProfile?.id) return
+    setRequireApproval(
+      asksForThumbsUpByDefault(
+        assignees.map(a => a.userId),
+        userProfile.id,
+      ),
+    )
+  }, [assignees, userProfile?.id])
   const [completionWindow, setCompletionWindow] = useState(-1)
   const [assignStrategy, setAssignStrategy] = useState('keep_last_assigned')
   const [isPrivate, setIsPrivate] = useState(false)
@@ -1282,6 +1295,7 @@ const TaskInput = ({
     // Dropped here too or nothing would animate on the next task's parse
     prevHighlightKeysRef.current = new Set()
     setDeadlineOffset(-1)
+    approvalTouchedRef.current = false
     setRequireApproval(false)
     setCompletionWindow(-1)
     setAssignStrategy('keep_last_assigned')
@@ -2080,7 +2094,10 @@ const TaskInput = ({
               points={points}
               onPointsChange={setPoints}
               requireApproval={requireApproval}
-              onRequireApprovalChange={setRequireApproval}
+              onRequireApprovalChange={value => {
+                approvalTouchedRef.current = true
+                setRequireApproval(value)
+              }}
               completionWindow={completionWindow}
               onCompletionWindowChange={setCompletionWindow}
               deadlineOffset={deadlineOffset}

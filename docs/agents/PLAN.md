@@ -33,8 +33,8 @@ everything on the dev machine is readable by Codex.
 | 005 | Logo: transparent PNG, app icon, favicon, Android launcher icons | Done (PR) | 004 |
 | 006 | Inventory: what Donetick already does against the brief (recurrence, rotation, points, photos, approvals, notifications), gap list | Done | 003 |
 | 007 | Profiles with avatar and color; 4-digit PIN sign-in; person switcher | Done (PR) | 003 |
-| 008 | Chore content: instructions, "done means" text, pictures | Done (PR open) | 006 |
-| 009 | Photo proof and thumbs-up approval by the assigner | Proposed | 006, 008 |
+| 008 | Chore content: instructions, "done means" text, pictures | Done (PR #13, merged) | 006 |
+| 009 | Photo proof and thumbs-up approval by the assigner | Done (PR #14, merged) | 006, 008 |
 | 010 | Points and weekly leaderboard | Proposed | 006 |
 | 011 | Simplified fun UI pass: icons, little text, few options | Proposed | 007-010 |
 | 012 | Recipe reader for the local recipes page (from owner-provided sample pages), ingredients and servings | Waits on samples (owner, later) | 003 |

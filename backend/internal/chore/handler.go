@@ -3636,7 +3636,7 @@ func (h *Handler) notifyAdminsOfPendingApproval(c *gin.Context, circleID int, co
 // ApproveChore godoc
 //
 //	@Summary		Approve a chore completion
-//	@Description	Approves a pending chore completion (admin/manager only)
+//	@Description	Approves a pending chore completion (the chore's creator, admin or manager)
 //	@Tags			chores
 //	@Accept			json
 //	@Produce		json
@@ -3646,7 +3646,7 @@ func (h *Handler) notifyAdminsOfPendingApproval(c *gin.Context, circleID int, co
 //	@Success		200	{object}	map[string]chModel.Chore	"res: updated chore"
 //	@Failure		400	{object}	map[string]string			"error: Invalid ID | Chore is not pending approval"
 //	@Failure		401	{object}	map[string]string			"error: Authentication failed"
-//	@Failure		403	{object}	map[string]string			"error: Only admins can approve chores"
+//	@Failure		403	{object}	map[string]string			"error: Only the task's creator or an admin can approve it"
 //	@Failure		500	{object}	map[string]string			"error: Failed to retrieve chore | Error approving chore"
 //	@Router			/chores/{id}/approve [post]
 func (h *Handler) ApproveChore(c *gin.Context) {
@@ -3700,17 +3700,9 @@ func (h *Handler) ApproveChore(c *gin.Context) {
 		return
 	}
 
-	isAdmin := false
-	for _, user := range circleUsers {
-		if user.UserID == currentUser.ID && (user.Role == circle.UserRoleAdmin || user.Role == circle.UserRoleManager) {
-			isAdmin = true
-			break
-		}
-	}
-
-	if !isAdmin {
+	if !chore.CanApprove(currentUser.ID, circleUsers) {
 		c.JSON(403, gin.H{
-			"error": "Only admins can approve chores",
+			"error": "Only the task's creator or an admin can approve it",
 		})
 		return
 	}
@@ -3837,7 +3829,7 @@ type RejectChoreReq struct { // TODO: Remove "Note" in future.
 // RejectChore godoc
 //
 //	@Summary		Reject a chore completion
-//	@Description	Rejects a pending chore completion and returns it to no status (admin/manager only)
+//	@Description	Rejects a pending chore completion and returns it to no status (the chore's creator, admin or manager)
 //	@Tags			chores
 //	@Accept			json
 //	@Produce		json
@@ -3851,7 +3843,7 @@ type RejectChoreReq struct { // TODO: Remove "Note" in future.
 //	@Success		200			{object}	map[string]interface{}	"res: updated chore, message: Chore rejected successfully"
 //	@Failure		400			{object}	map[string]string		"error: Invalid ID | Chore is not pending approval"
 //	@Failure		401			{object}	map[string]string		"error: Authentication failed"
-//	@Failure		403			{object}	map[string]string		"error: Only admins can reject chores"
+//	@Failure		403			{object}	map[string]string		"error: Only the task's creator or an admin can reject it"
 //	@Failure		500			{object}	map[string]string		"error: Failed to retrieve chore | Error rejecting chore"
 //	@Router			/chores/{id}/reject [post]
 func (h *Handler) RejectChore(c *gin.Context) {
@@ -3904,17 +3896,9 @@ func (h *Handler) RejectChore(c *gin.Context) {
 		return
 	}
 
-	isAdmin := false
-	for _, user := range circleUsers {
-		if user.UserID == currentUser.ID && (user.Role == circle.UserRoleAdmin || user.Role == circle.UserRoleManager) {
-			isAdmin = true
-			break
-		}
-	}
-
-	if !isAdmin {
+	if !chore.CanApprove(currentUser.ID, circleUsers) {
 		c.JSON(403, gin.H{
-			"error": "Only admins can reject chores",
+			"error": "Only the task's creator or an admin can reject it",
 		})
 		return
 	}
@@ -4553,8 +4537,9 @@ func (h *Handler) notifyApproversOfPendingApproval(c context.Context, chore *chM
 }
 
 // pendingApprovalRecipients picks who is told about a completion waiting for
-// approval: active admins and managers tied to the task (its creator or an
-// assignee), or every active admin and manager when none of those can approve.
+// approval: the people tied to the task who may approve it (its creator, and
+// admins or managers among its assignees), or every active admin and manager
+// when none of those can approve.
 // Only people who can see the chore count, so its name never reaches anyone
 // outside a private chore or a restricted project, who could not approve it
 // anyway.
@@ -4571,10 +4556,7 @@ func pendingApprovalRecipients(chore *chModel.Chore, submittedBy *uModel.User, c
 	fallback := make([]int, 0, len(circleUsers))
 	seen := make(map[int]bool, len(circleUsers))
 	for _, user := range circleUsers {
-		if user.UserID == submittedBy.ID || !user.IsActive || !user.IsManagerOrAdmin() || seen[user.UserID] {
-			continue
-		}
-		if !chore.CanView(user.UserID, circleUsers) {
+		if user.UserID == submittedBy.ID || seen[user.UserID] || !chore.CanApprove(user.UserID, circleUsers) {
 			continue
 		}
 		seen[user.UserID] = true

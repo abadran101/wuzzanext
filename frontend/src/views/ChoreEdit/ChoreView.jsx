@@ -12,6 +12,7 @@ import {
   OpenInFull,
   PeopleAlt,
   Person,
+  PhotoCamera,
   PlayArrow,
   SwitchAccessShortcut,
   TaskAltOutlined,
@@ -60,7 +61,13 @@ import {
 import { useChoreTranslation } from '../../queries/TranslationQueries'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries.jsx'
 import { useNotification } from '../../service/NotificationProvider'
+import { withDonePhoto } from '../../utils/ChoreApproval'
 import { hasChoreContent } from '../../utils/ChoreContent'
+import {
+  pickImage,
+  showUploadError,
+  uploadChoreImage,
+} from '../../utils/ChoreImageUpload'
 import {
   ChoreHistoryStatus,
   ChoreStatus,
@@ -134,6 +141,7 @@ const ChoreView = () => {
   const [infoCards, setInfoCards] = useState([])
   const { choreId } = useParams()
   const [note, setNote] = useState(null)
+  const [uploadingPhoto, setUploadingPhoto] = useState(false)
   const queryClient = useQueryClient()
   const { showError, showSuccess, showUndo } = useNotification()
 
@@ -559,24 +567,48 @@ const ChoreView = () => {
     })
   }
 
-  const handleApproveChore = () => {
-    ApproveChore(choreId).then(response => {
-      if (response.ok) {
-        response.json().then(data => {
-          setChore(data.res)
-          queryClient.invalidateQueries({ queryKey: ['chores'] })
-        })
-      }
-    })
+  // Thumbs up or down; a note written in the note box goes with a thumbs down.
+  const handleApprovalAnswer = async approve => {
+    try {
+      const response = approve
+        ? await ApproveChore(choreId)
+        : await RejectChore(choreId, hasChoreContent(note) ? note : null)
+      if (!response.ok) throw new Error(t('choreView.approvalFailed'))
+      const data = await response.json()
+      setChore(data.res)
+      setNote(null)
+      queryClient.invalidateQueries({ queryKey: ['chores'] })
+      queryClient.invalidateQueries({ queryKey: ['choreHistory', choreId] })
+      queryClient.invalidateQueries({ queryKey: ['choreDetails', choreId] })
+    } catch (error) {
+      showError({
+        title: t('choreView.approvalFailed'),
+        message: isNetworkError(error) ? t('choreView.offlineApproval') : '',
+      })
+    }
   }
 
-  const handleRejectChore = () => {
-    RejectChore(choreId).then(response => {
-      if (response.ok) {
-        response.json().then(data => {
-          setChore(data.res)
-          queryClient.invalidateQueries({ queryKey: ['chores'] })
+  // Takes or picks a done photo and adds it to the completion note.
+  const handleDonePhoto = () => {
+    pickImage(async file => {
+      setUploadingPhoto(true)
+      try {
+        const { path, status, url } = await uploadChoreImage(file, {
+          entityId: chore.id,
+          entityType: 'chore_completion_note',
         })
+        if (!path) {
+          showUploadError(status, showError, t)
+          return
+        }
+        setNote(current => withDonePhoto(current, url, path))
+      } catch (error) {
+        showError({
+          title: t('common:upload.failedTitle'),
+          message: t('common:upload.processingMessage'),
+        })
+      } finally {
+        setUploadingPhoto(false)
       }
     })
   }
@@ -1234,7 +1266,9 @@ const ChoreView = () => {
         {chore.notes && (
           <>
             <Typography level='title-md' sx={{ mb: 1 }}>
-              {t('choreView.previousNoteLabel')}
+              {chore.status === 3
+                ? t('choreView.waitingForThumbsUp')
+                : t('choreView.previousNoteLabel')}
             </Typography>
             <Sheet
               variant='plain'
@@ -1264,10 +1298,12 @@ const ChoreView = () => {
               >
                 <OpenInFull />
               </IconButton>
+              {/* The approver sees the whole done photo; older notes stay short. */}
               <Box
                 sx={{
-                  maxHeight: '100px',
+                  maxHeight: chore.status === 3 ? 'none' : '100px',
                   overflow: 'hidden',
+                  '& img': { maxWidth: '100%' },
                 }}
               >
                 {(() => {
@@ -1363,11 +1399,27 @@ const ChoreView = () => {
                   alignItems: 'center',
                 }}
               >
-                {t('choreView.addNote')}
+                {chore.status === 3
+                  ? t('choreView.addRejectNote')
+                  : t('choreView.addNote')}
               </Typography>
             }
           />
         </FormControl>
+        {chore.status !== 3 && (
+          <Button
+            variant='soft'
+            color='neutral'
+            size='sm'
+            startDecorator={<PhotoCamera />}
+            loading={uploadingPhoto}
+            disabled={chore.isActive === false}
+            onClick={handleDonePhoto}
+            sx={{ alignSelf: 'flex-start', my: 1 }}
+          >
+            {t('choreView.addDonePhoto')}
+          </Button>
+        )}
         {note !== null && (
           <Box sx={{ mb: 1 }}>
             <Typography level='body-sm' sx={{ mb: 1 }}>
@@ -1477,7 +1529,7 @@ const ChoreView = () => {
                     <Button
                       fullWidth
                       size='lg'
-                      onClick={handleApproveChore}
+                      onClick={() => handleApprovalAnswer(true)}
                       color='success'
                       startDecorator={<ThumbUp />}
                       sx={{
@@ -1489,7 +1541,7 @@ const ChoreView = () => {
                     <Button
                       fullWidth
                       size='lg'
-                      onClick={handleRejectChore}
+                      onClick={() => handleApprovalAnswer(false)}
                       color='danger'
                       startDecorator={<ThumbDown />}
                       sx={{

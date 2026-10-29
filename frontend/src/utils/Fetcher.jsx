@@ -219,11 +219,11 @@ const ApproveChore = id => {
   })
 }
 
-const RejectChore = id => {
+const RejectChore = (id, notes) => {
   return Fetch(`/chores/${id}/reject`, {
     method: 'POST',
     headers: HEADERS(),
-    body: JSON.stringify({}),
+    body: JSON.stringify(notes ? { notes } : {}),
   })
 }
 

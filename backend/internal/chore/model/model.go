@@ -301,6 +301,22 @@ func (c *Chore) CanDelegate(userID int, circleUsers []*cModel.UserCircleDetail, 
 	return nil
 }
 
+// CanApprove reports whether userID may approve or reject a completion waiting
+// for approval: whoever gave out the chore (its creator) or an admin or manager,
+// as long as they are an active circle member who can see the chore.
+func (c *Chore) CanApprove(userID int, circleUsers []*cModel.UserCircleDetail) bool {
+	for _, cu := range circleUsers {
+		if cu.UserID != userID || !cu.IsActive {
+			continue
+		}
+		if !c.CanView(userID, circleUsers) {
+			return false
+		}
+		return c.CreatedBy == userID || cu.IsManagerOrAdmin()
+	}
+	return false
+}
+
 // restrictingProject returns the chore's project when that project limits who can
 // see its chores (private or shared with selected members) and is loaded.
 func (c *Chore) restrictingProject() *pModel.Project {

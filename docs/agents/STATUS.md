@@ -11,11 +11,10 @@ Update this file at every stop. Output from the real machines beats anything wri
 ## GitHub
 
 - Repository `abadran101/wuzzanext`, private (stays private, owner 2026-10-26). Default branch
-  `main` at f9a5329 (PR #12, task 023, merged 2026-10-28; PR #11, task 022, merged 2026-10-28; PR #10, task 024, merged 2026-10-27; PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
+  `main` at b3c1acf7 (PR #14, task 009, merged 2026-10-29; PR #13, task 008, merged 2026-10-28; PR #12, task 023, merged 2026-10-28; PR #11, task 022, merged 2026-10-28; PR #10, task 024, merged 2026-10-27; PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
   merged 2026-10-27; PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1,
   task 001, before it).
-- Open branches: `task/009-photo-approval` (done, PR #14 open), `task/025-listen-address`
-  (done, PR open). PR #13 (task 008) merged: main 84a3d570.
+- Open branch: `task/025-listen-address` (done, PR #15 open).
 - Remote `origin` is `https://github.com/abadran101/wuzzanext.git`, confirmed with
   `git ls-remote origin` on 2026-10-26.
 - Agents push task branches with the fine-grained token the orchestrator lists (it covers only the
@@ -50,13 +49,12 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 009 photo approval: done, PR #14 open; waits on the owner's merge.
-- 025 listen address (task file): done, PR open; the local test app listens on 127.0.0.1
+- 025 listen address (task file): done, PR #15 open; the local test app listens on 127.0.0.1
   only. The home server's `server.host` is set in 019.
 - First deployment: keep `storage.base_path` (`./uploads`) on the data volume next to the
   database, or pictures are lost when the container is replaced (task 008 Result).
 - Google key setup for 023 comes with the first deployment (`docs/translation-setup.md`).
-- Next: 009, 010, 011, 016, 017, 018, then 020 before 019; 012-015 stay parked.
+- Next: 010, 011, 016, 017, 018, then 020 before 019; 012-015 stay parked.
 
 ## Open items
 
@@ -73,14 +71,26 @@ Update this file at every stop. Output from the real machines beats anything wri
 6. Suggestion for 011 (the supervisor's, not a decision): remove Report an Issue entirely. It can
    only send to an outside Discord or Slack webhook built into the app, none is set, and the
    no-cloud rule keeps it that way.
+7. For 017 (found in 009, upstream): picture responses are cached for a week without
+   `Vary: Origin`; across origins (the Android app) the offline picture cache's fetch reuses
+   the `<img>` copy and is blocked by CORS. Fix with `Vary: Origin` on `/api/v1/assets`.
 
 ## Decisions (newest first)
 
+- 2026-10-29: PR #14 (task 009) merged, main b3c1acf7bd89d825c196dbd7870b382959828d37 (owner,
+  through the orchestrator: "14 merged"; checked: merge of 84a3d570 and 513c93e2). Merged into
+  the 025 branch with a merge commit (the orchestrator's request).
 - 2026-10-28: an optional server listen-address setting, empty by default (listens on every
   interface as today); the local test config uses 127.0.0.1, the home server sets it in 019
   (owner, through the orchestrator: "i agree with your recommendation"). Task 025, its own
   branch and PR from main 84a3d570.
-
+- 2026-10-28: task 009: each chore has the thumbs-up switch, on by itself when the chore is given
+  to someone else, off for one's own chore, switchable; the done photo is optional; the creator
+  approves and admins can too; a thumbs down sends the chore back to open with an optional note;
+  points come on approval (owner, through the orchestrator: "agree").
+- 2026-10-28: PR #13 (task 008) merged, main 84a3d5709f13ebc7fed5d32c5e0eddd299126d05 (owner,
+  through the orchestrator: "merged"; checked: merge of f9a53295 and c8a04445). The test servers
+  were stopped and their database, uploads and local config deleted.
 - 2026-10-28: task 008 defaults (supervisor): "Done means" has no new size limit or sanitiser
   (the same as the details), keeps the storage quota, is not translated (the owner decides
   later), and is not in the quick-add dialog; clone sharing pictures and offline picture uploads
