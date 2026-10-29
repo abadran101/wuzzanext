@@ -49,10 +49,10 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 016 Android APK (task file): code parts in progress on the branch. The APK build waits on the
-  Android SDK on the dev machine (devagent gets "Access is denied" on `C:\tools\Android`, which
-  holds only the command-line tools; Platform 36, Build-Tools 36 and platform-tools are needed;
-  the owner fixes it through Tokenmaxximus) and on the owner's answer on where the APK is signed.
+- 016 Android APK (task file): code parts and the signing guide committed on the branch (local). The
+  APK build waits: javac fails with "Access is denied" on the SDK jars: devagent can read every file, but an inherited
+  "Agents: Deny FullControl" entry on `C:\tools\Android` blocks the zip file system javac uses (the
+  owner has the Tokenmaxximus agent decide whether that is intended and fix it if not).
 - First deployment: keep `storage.base_path` (`./uploads`) on the data volume next to the
   database, or pictures are lost when the container is replaced (task 008 Result).
 - Google key setup for 023 comes with the first deployment (`docs/translation-setup.md`).
@@ -79,6 +79,13 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## Decisions (newest first)
 
+- 2026-10-29: 016: the APK is signed on the owner's own Windows PC (owner, through the orchestrator:
+  "yes my own pc"). The keystore and passwords stay there and in offline backups only; the
+  supervisor hands over an unsigned APK and its SHA-256 (`docs/android-signing.md`).
+- 2026-10-29: the owner installed Android SDK Platform 36, Build-Tools 36.0.0 and platform-tools
+  on the dev machine and gave devagent read and execute on `C:\tools\Android` (owner, through the
+  orchestrator: "Installed the three Android SDK packages and added devagent read/execute
+  access.").
 - 2026-10-29: 011 is not needed for now (owner, through the orchestrator: "im actually happy with
   how the app looks already"). The charts and rewards cleanup left for 011 is not happening
   either, unless the owner raises it. The 011 branch was stopped before any commit.

@@ -30,6 +30,19 @@ allprojects {
     }
 }
 
+// Capacitor plugin modules default to Build-Tools 35.0.0, and send-intent
+// hardcodes SDK 35; build them with the installed SDK 36 and Build-Tools
+// instead of letting Gradle download more. Registered before the modules
+// apply the Android plugin, so it runs before the plugin locks its settings.
+subprojects {
+    afterEvaluate {
+        if (plugins.hasPlugin('com.android.library')) {
+            android.compileSdk = rootProject.ext.compileSdkVersion
+            android.buildToolsVersion = rootProject.ext.buildToolsVersion
+        }
+    }
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

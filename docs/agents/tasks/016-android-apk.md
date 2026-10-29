@@ -8,9 +8,10 @@
 - **Your time:** ~45 min once (tools, signing key, backups), then ~5 min per release, plus
   installing on each phone
 - **Who:** You (SDK fix, signing answer) → Claude → You (sign, install)
-- **Waits on:** for the APK build only: the Android SDK on the dev machine (Platform 36,
-  Build-Tools 36, platform-tools, and read and execute for devagent on `C:\tools\Android`,
-  which devagent can't read today), and the owner's answer on where the APK is signed
+- **Waits on:** for the APK build only: javac fails with "Access is denied" on the SDK jars: devagent can read every file, but an inherited
+  "Agents: Deny FullControl" entry on `C:\tools\Android` blocks the zip file system javac uses (the
+  owner has the Tokenmaxximus agent decide whether that is intended and fix it if not). The SDK packages are installed and the
+  owner signs on their own PC (both 2026-10-29).
 
 ## Goal
 
@@ -40,7 +41,11 @@ sign-in page changes it later). There are no Google/Apple sign-ins and no cloud 
 3. No Google/Apple sign-in in the app; no cloud push registration (it would crash without
    Firebase, and the no-cloud rule keeps it off). Local notification permission stays (018).
 4. Version 1.0.0 (code 100), the first Wuzzanext APK.
-5. After the SDK fix: build the unsigned APK and its SHA-256; the owner's signing block.
+5. Gradle uses the installed SDK 36 and Build-Tools 36.0.0 for the app and every plugin module
+   (otherwise it tries to download Platform 35 and Build-Tools 35.0.0).
+6. The owner's guide `docs/android-signing.md`: one-time tools and key, the release block, installing.
+7. After the SDK access fix: build the unsigned APK and its SHA-256; test the release block with a
+   throwaway key in scratch.
 
 ## Acceptance
 

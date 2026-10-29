@@ -9,6 +9,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace "com.wuzzanext.app"
     compileSdk rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
         applicationId "com.wuzzanext.app"
         minSdkVersion rootProject.ext.minSdkVersion
