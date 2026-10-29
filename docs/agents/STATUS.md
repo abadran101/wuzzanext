@@ -11,10 +11,10 @@ Update this file at every stop. Output from the real machines beats anything wri
 ## GitHub
 
 - Repository `abadran101/wuzzanext`, private (stays private, owner 2026-10-26). Default branch
-  `main` at f9a5329 (PR #12, task 023, merged 2026-10-28; PR #11, task 022, merged 2026-10-28; PR #10, task 024, merged 2026-10-27; PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
+  `main` at 84a3d570 (PR #13, task 008, merged 2026-10-28; PR #12, task 023, merged 2026-10-28; PR #11, task 022, merged 2026-10-28; PR #10, task 024, merged 2026-10-27; PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
   merged 2026-10-27; PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1,
   task 001, before it).
-- Open branch: `task/008-chore-content` (done, PR open).
+- Open branch: `task/009-photo-approval` (in progress).
 - Remote `origin` is `https://github.com/abadran101/wuzzanext.git`, confirmed with
   `git ls-remote origin` on 2026-10-26.
 - Agents push task branches with the fine-grained token the orchestrator lists (it covers only the
@@ -49,12 +49,12 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 008 chore content (task file): done, PR open; browser checks in English and Arabic pass
-  (14/14, after a picture fix); waits on the owner's merge.
+- 009 photo proof and thumbs-up approval (task file): in progress; the supervisor writes it.
+- 025 optional server listen address: approved, its own PR after the 009 PR.
 - First deployment: keep `storage.base_path` (`./uploads`) on the data volume next to the
   database, or pictures are lost when the container is replaced (task 008 Result).
 - Google key setup for 023 comes with the first deployment (`docs/translation-setup.md`).
-- Next: 009, 010, 011, 016, 017, 018, then 020 before 019; 012-015 stay parked.
+- Next: 010, 011, 016, 017, 018, then 020 before 019; 012-015 stay parked.
 
 ## Open items
 
@@ -74,6 +74,17 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## Decisions (newest first)
 
+- 2026-10-28: an optional server listen-address setting, empty by default (listens on every
+  interface as today); the local test config uses 127.0.0.1, the home server sets it in 019
+  (owner, through the orchestrator: "i agree with your recommendation"). Task 025, its own PR
+  after the 009 PR (the orchestrator's suggestion).
+- 2026-10-28: task 009: each chore has the thumbs-up switch, on by itself when the chore is given
+  to someone else, off for one's own chore, switchable; the done photo is optional; the creator
+  approves and admins can too; a thumbs down sends the chore back to open with an optional note;
+  points come on approval (owner, through the orchestrator: "agree").
+- 2026-10-28: PR #13 (task 008) merged, main 84a3d5709f13ebc7fed5d32c5e0eddd299126d05 (owner,
+  through the orchestrator: "merged"; checked: merge of f9a53295 and c8a04445). The test servers
+  were stopped and their database, uploads and local config deleted.
 - 2026-10-28: task 008 defaults (supervisor): "Done means" has no new size limit or sanitiser
   (the same as the details), keeps the storage quota, is not translated (the owner decides
   later), and is not in the quick-add dialog; clone sharing pictures and offline picture uploads

@@ -82,6 +82,7 @@ import {
 } from '../../queries/ChoreQueries.jsx'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries.jsx'
 import { useNotification } from '../../service/NotificationProvider'
+import { asksForThumbsUpByDefault } from '../../utils/ChoreApproval'
 import { hasChoreContent } from '../../utils/ChoreContent'
 import { getTextColorFromBackgroundColor } from '../../utils/Colors.jsx'
 import { sanitizeRemindersForPlan } from '../../utils/entitlements'
@@ -191,6 +192,8 @@ const ChoreEdit = () => {
   const [completionActionsValid, setCompletionActionsValid] = useState(true)
   const [points, setPoints] = useState(-1)
   const [requireApproval, setRequireApproval] = useState(false)
+  // Once the person flips the thumbs-up switch, it stops following the assignees.
+  const approvalTouched = useRef(false)
   const [isPrivate, setIsPrivate] = useState(false)
   const [subTasks, setSubTasks] = useState(null)
   const [completionWindow, setCompletionWindow] = useState(-1)
@@ -775,6 +778,19 @@ const ChoreEdit = () => {
       setAssignedTo(userProfile.id)
     }
   }, [choreId, userProfile?.id])
+  // A new chore given to someone else asks for a thumbs up; one's own doesn't.
+  useEffect(() => {
+    if (choreId || approvalTouched.current || !userProfile?.id) return
+    setRequireApproval(
+      asksForThumbsUpByDefault(
+        [
+          ...assignableTo.map(a => a.userId),
+          assignedTo > 0 ? assignedTo : null,
+        ],
+        userProfile.id,
+      ),
+    )
+  }, [choreId, assignableTo, assignedTo, userProfile?.id])
   useEffect(() => {
     const anyoneSetting = localStorage.getItem('defaultAnyoneSetting')
     const anyoneDirty = anyoneSetting !== JSON.stringify(anyone)
@@ -2490,7 +2506,10 @@ const ChoreEdit = () => {
                 points={points}
                 onPointsChange={setPoints}
                 requireApproval={requireApproval}
-                onRequireApprovalChange={setRequireApproval}
+                onRequireApprovalChange={value => {
+                  approvalTouched.current = true
+                  setRequireApproval(value)
+                }}
                 onValidate={setCompletionActionsValid}
               />
             </EditorSection>

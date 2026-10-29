@@ -20,8 +20,10 @@ import (
 	cModel "donetick.com/core/internal/circle/model"
 	cRepo "donetick.com/core/internal/circle/repo"
 	"donetick.com/core/internal/database"
+	dRepo "donetick.com/core/internal/device/repo"
 	"donetick.com/core/internal/events"
 	lRepo "donetick.com/core/internal/label/repo"
+	"donetick.com/core/internal/notifier/push"
 	nRepo "donetick.com/core/internal/notifier/repo"
 	nps "donetick.com/core/internal/notifier/service"
 	"donetick.com/core/internal/storage"
@@ -49,24 +51,7 @@ func newContentTestRouter(t *testing.T) (*gin.Engine, *gorm.DB, *chRepo.ChoreRep
 	require.NoError(t, database.Migration(db))
 	require.NoError(t, db.Create(&cModel.UserCircle{UserID: 1, CircleID: 1, Role: cModel.UserRoleAdmin, IsActive: true}).Error)
 
-	cfg := &config.Config{}
-	cfg.Database.Type = "sqlite"
-	cfg.Storage.BasePath = t.TempDir()
-	circleRepository := cRepo.NewCircleRepository(db)
-	eventProducer := events.NewEventsProducer(cfg)
-	eventProducer.Start(context.Background())
-	choreRepository := chRepo.NewChoreRepository(db, cfg)
-	h := &Handler{
-		choreRepo:     choreRepository,
-		circleRepo:    circleRepository,
-		lRepo:         lRepo.NewLabelRepository(db, cfg),
-		stRepo:        stRepo.NewSubTasksRepository(db),
-		tRepo:         tRepo.NewThingRepository(db, cfg),
-		storage:       storage.NewLocalStorage(cfg),
-		storageRepo:   storageRepo.NewStorageRepository(db, cfg),
-		nPlanner:      nps.NewNotificationPlanner(nRepo.NewNotificationRepository(db), circleRepository),
-		eventProducer: eventProducer,
-	}
+	h := newContentTestHandler(t, db)
 
 	router := gin.New()
 	router.Use(func(c *gin.Context) {
@@ -75,7 +60,30 @@ func newContentTestRouter(t *testing.T) (*gin.Engine, *gorm.DB, *chRepo.ChoreRep
 	})
 	router.POST("/chores", h.CreateChore)
 	router.PUT("/chores", h.EditChore)
-	return router, db, choreRepository
+	return router, db, h.choreRepo
+}
+
+// newContentTestHandler builds a chore handler on db, with local storage.
+func newContentTestHandler(t *testing.T, db *gorm.DB) *Handler {
+	t.Helper()
+	cfg := &config.Config{}
+	cfg.Database.Type = "sqlite"
+	cfg.Storage.BasePath = t.TempDir()
+	circleRepository := cRepo.NewCircleRepository(db)
+	eventProducer := events.NewEventsProducer(cfg)
+	eventProducer.Start(context.Background())
+	return &Handler{
+		choreRepo:     chRepo.NewChoreRepository(db, cfg),
+		circleRepo:    circleRepository,
+		lRepo:         lRepo.NewLabelRepository(db, cfg),
+		stRepo:        stRepo.NewSubTasksRepository(db),
+		tRepo:         tRepo.NewThingRepository(db, cfg),
+		storage:       storage.NewLocalStorage(cfg),
+		storageRepo:   storageRepo.NewStorageRepository(db, cfg),
+		nPlanner:      nps.NewNotificationPlanner(nRepo.NewNotificationRepository(db), circleRepository),
+		eventProducer: eventProducer,
+		pushSender:    push.NewSender(dRepo.NewDeviceRepository(db, cfg), nil),
+	}
 }
 
 func sendChore(t *testing.T, router *gin.Engine, method string, body map[string]any) *httptest.ResponseRecorder {
