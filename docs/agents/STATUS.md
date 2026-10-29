@@ -11,10 +11,10 @@ Update this file at every stop. Output from the real machines beats anything wri
 ## GitHub
 
 - Repository `abadran101/wuzzanext`, private (stays private, owner 2026-10-26). Default branch
-  `main` at e3060c81 (PR #15, task 025, merged 2026-10-29; PR #14, task 009, merged 2026-10-29; PR #13, task 008, merged 2026-10-28; PR #12, task 023, merged 2026-10-28; PR #11, task 022, merged 2026-10-28; PR #10, task 024, merged 2026-10-27; PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
+  `main` at 5231923e (PR #16, task 010, merged 2026-10-29; PR #15, task 025, merged 2026-10-29; PR #14, task 009, merged 2026-10-29; PR #13, task 008, merged 2026-10-28; PR #12, task 023, merged 2026-10-28; PR #11, task 022, merged 2026-10-28; PR #10, task 024, merged 2026-10-27; PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
   merged 2026-10-27; PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1,
   task 001, before it).
-- Open branch: `task/010-weekly-points` (done, PR #16 open).
+- Open branch: `task/016-android-apk` (in progress, local).
 - Remote `origin` is `https://github.com/abadran101/wuzzanext.git`, confirmed with
   `git ls-remote origin` on 2026-10-26.
 - Agents push task branches with the fine-grained token the orchestrator lists (it covers only the
@@ -49,12 +49,14 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 010 points and weekly leaderboard (task file): done, PR #16 open; browser checks in English and
-  Arabic pass (14/14). Its Arabic texts wait for the owner's wording check.
+- 016 Android APK (task file): code parts in progress on the branch. The APK build waits on the
+  Android SDK on the dev machine (devagent gets "Access is denied" on `C:\tools\Android`, which
+  holds only the command-line tools; Platform 36, Build-Tools 36 and platform-tools are needed;
+  the owner fixes it through Tokenmaxximus) and on the owner's answer on where the APK is signed.
 - First deployment: keep `storage.base_path` (`./uploads`) on the data volume next to the
   database, or pictures are lost when the container is replaced (task 008 Result).
 - Google key setup for 023 comes with the first deployment (`docs/translation-setup.md`).
-- Next: 011, 016, 017, 018, then 020 before 019; 012-015 stay parked.
+- Next: 016, 017, 018, then 020 before 019; 012-015 stay parked.
 
 ## Open items
 
@@ -77,6 +79,12 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## Decisions (newest first)
 
+- 2026-10-29: 011 is not needed for now (owner, through the orchestrator: "im actually happy with
+  how the app looks already"). The charts and rewards cleanup left for 011 is not happening
+  either, unless the owner raises it. The 011 branch was stopped before any commit.
+- 2026-10-29: PR #16 (task 010) merged, main 5231923e8acf3e469c5015fb5c28388dbc3e1afd, and the
+  owner approved its Arabic wording (owner, through the orchestrator: "merged. arabic looks
+  good"; checked: merge of e3060c81 and 8e8eb068).
 - 2026-10-29: PR #15 (task 025) merged, main e3060c81be67342922e11c4dc33b4cbe0061b3b9 (owner,
   through the orchestrator: "15 merged"; checked: merge of b3c1acf7 and 3f597ad1). Merged into
   the 010 branch with a merge commit (the orchestrator's request). From now on every local test

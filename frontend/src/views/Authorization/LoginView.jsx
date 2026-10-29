@@ -1,6 +1,7 @@
 import { Browser } from '@capacitor/browser'
 import { Capacitor } from '@capacitor/core'
 import { Device } from '@capacitor/device'
+import { Preferences } from '@capacitor/preferences'
 // import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth'
 import { SocialLogin } from '@capgo/capacitor-social-login'
 import { SettingsOutlined } from '@mui/icons-material'
@@ -15,7 +16,7 @@ import { useNavigate } from 'react-router-dom'
 import { LoginSocialGoogle } from 'reactjs-social-login'
 
 import { useProfileSession } from '../../components/ProfileSessionManager'
-import { GOOGLE_CLIENT_ID, REDIRECT_URL } from '../../Config'
+import { API_URL, GOOGLE_CLIENT_ID, REDIRECT_URL } from '../../Config'
 import { useAuth } from '../../hooks/useAuth.jsx'
 import { useResource } from '../../queries/ResourceQueries'
 import { useUserProfile } from '../../queries/UserQueries.jsx'
@@ -36,6 +37,12 @@ import AuthShell from './AuthShell'
 import { authButtonSx } from './authStyles'
 import FacesPicker from './FacesPicker'
 import MFAVerificationModal from './MFAVerificationModal'
+
+// Google/Apple sign-in go through outside services: never in the app, and on
+// the web only for a build that isn't self-hosted.
+const showSocialLogin =
+  import.meta.env.VITE_IS_SELF_HOSTED !== 'true' &&
+  !Capacitor.isNativePlatform()
 
 const LoginView = () => {
   const { t } = useTranslation('auth')
@@ -76,6 +83,14 @@ const LoginView = () => {
   const { isAuthenticated, login: authLogin, user } = useAuth()
   const Navigate = useNavigate()
   useEffect(() => {
+    // The app has no home-server address built in: ask for it on first launch.
+    if (!Capacitor.isNativePlatform() || API_URL) return
+    Preferences.get({ key: 'customServerUrl' }).then(({ value }) => {
+      if (!value) Navigate('/login/settings', { replace: true })
+    })
+  }, [Navigate])
+  useEffect(() => {
+    if (!showSocialLogin) return
     const initializeSocialLogin = async () => {
       await SocialLogin.initialize({
         google: {
@@ -384,7 +399,6 @@ const LoginView = () => {
   }
 
   const displayName = userProfile?.displayName || userProfile?.username
-  const showSocialLogin = import.meta.env.VITE_IS_SELF_HOSTED !== 'true'
   const hasSocialOptions =
     showSocialLogin || Boolean(resource?.identity_provider?.client_id)
 
