@@ -118,7 +118,9 @@ The owner deploys a merged commit, named by its full hash.
 ## Current state
 
 See `docs/agents/STATUS.md` for the details and `docs/agents/PLAN.md` for what comes next.
-In short: Donetick is imported and builds, the rebrand and the removal of analytics and
-payments are merged, the family's logo replaces Donetick's everywhere (task 005), and
-nothing is deployed yet. Next come family profiles with PIN sign-in, chore content, photo proof, points, the Android APK, offline use
-and reminders. The meal-planning tasks wait for sample recipe pages.
+In short: Donetick is imported and builds, rebranded, without analytics or payments, with the
+family's logo (task 005). Family profiles with PIN sign-in (007), Arabic with right-to-left
+layout (022), translated chore texts (023), chore instructions with pictures (008) and photo
+proof with a thumbs up from whoever gave the chore (009) are in. Nothing is deployed yet.
+Next come points, the Android APK, offline use and reminders. The meal-planning tasks wait for
+sample recipe pages.

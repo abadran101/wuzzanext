@@ -24,7 +24,8 @@ func TestPendingApprovalRecipientsStayInsideTheAudience(t *testing.T) {
 	}
 	submitter := &uModel.User{ID: colleague}
 
-	project := &pModel.Project{ID: 7, CircleID: 1, CreatedBy: owner, IsPrivate: true, SharedWithMembers: true}
+	// The chore's creator has since left the project, so only the manager inside it hears.
+	project := &pModel.Project{ID: 7, CircleID: 1, CreatedBy: colleague, IsPrivate: true, SharedWithMembers: true}
 	project.SetMembers([]int{colleague, insideManager})
 	inProject := &chModel.Chore{ID: 1, CircleID: 1, CreatedBy: owner, ProjectID: &project.ID, Project: project, IsPrivate: true,
 		AssignedTo: intPtr(colleague), Assignees: []chModel.ChoreAssignees{{UserID: colleague}}}
@@ -33,8 +34,51 @@ func TestPendingApprovalRecipientsStayInsideTheAudience(t *testing.T) {
 	project.SetMembers([]int{colleague})
 	require.Empty(t, pendingApprovalRecipients(inProject, submitter, circleUsers), "nobody outside the project hears about it")
 
-	public := &chModel.Chore{ID: 2, CircleID: 1, CreatedBy: owner,
+	selfGiven := &chModel.Chore{ID: 2, CircleID: 1, CreatedBy: colleague,
 		AssignedTo: intPtr(colleague), Assignees: []chModel.ChoreAssignees{{UserID: colleague}}}
-	require.ElementsMatch(t, []int{outsideAdmin, insideManager}, pendingApprovalRecipients(public, submitter, circleUsers),
+	require.ElementsMatch(t, []int{outsideAdmin, insideManager}, pendingApprovalRecipients(selfGiven, submitter, circleUsers),
 		"chores everybody can see keep the fallback to every admin and manager")
+}
+
+// Whoever gave out the chore is told about the completion even when they are
+// not an admin, since they are the one who approves it.
+func TestPendingApprovalRecipientsTellTheCreator(t *testing.T) {
+	const alex, sam, admin = 1, 2, 3
+	circleUsers := []*cModel.UserCircleDetail{
+		{UserCircle: cModel.UserCircle{UserID: alex, CircleID: 1, Role: cModel.UserRoleMember, IsActive: true}},
+		{UserCircle: cModel.UserCircle{UserID: sam, CircleID: 1, Role: cModel.UserRoleMember, IsActive: true}},
+		{UserCircle: cModel.UserCircle{UserID: admin, CircleID: 1, Role: cModel.UserRoleAdmin, IsActive: true}},
+	}
+	chore := &chModel.Chore{ID: 1, CircleID: 1, CreatedBy: alex,
+		AssignedTo: intPtr(sam), Assignees: []chModel.ChoreAssignees{{UserID: sam}}}
+	require.Equal(t, []int{alex}, pendingApprovalRecipients(chore, &uModel.User{ID: sam}, circleUsers))
+
+	circleUsers[0].IsActive = false
+	require.Equal(t, []int{admin}, pendingApprovalRecipients(chore, &uModel.User{ID: sam}, circleUsers),
+		"a creator who left the circle can't approve, so the admins hear")
+}
+
+func TestCanApprove(t *testing.T) {
+	const alex, sam, kim, admin = 1, 2, 3, 4
+	circleUsers := []*cModel.UserCircleDetail{
+		{UserCircle: cModel.UserCircle{UserID: alex, CircleID: 1, Role: cModel.UserRoleMember, IsActive: true}},
+		{UserCircle: cModel.UserCircle{UserID: sam, CircleID: 1, Role: cModel.UserRoleMember, IsActive: true}},
+		{UserCircle: cModel.UserCircle{UserID: kim, CircleID: 1, Role: cModel.UserRoleMember, IsActive: false}},
+		{UserCircle: cModel.UserCircle{UserID: admin, CircleID: 1, Role: cModel.UserRoleAdmin, IsActive: true}},
+	}
+	chore := &chModel.Chore{ID: 1, CircleID: 1, CreatedBy: alex,
+		AssignedTo: intPtr(sam), Assignees: []chModel.ChoreAssignees{{UserID: sam}}}
+	require.True(t, chore.CanApprove(alex, circleUsers), "the creator approves")
+	require.True(t, chore.CanApprove(admin, circleUsers), "an admin approves")
+	require.False(t, chore.CanApprove(sam, circleUsers), "the assignee does not approve their own work")
+	require.False(t, chore.CanApprove(99, circleUsers), "nobody from outside the circle")
+
+	byKim := &chModel.Chore{ID: 2, CircleID: 1, CreatedBy: kim}
+	require.False(t, byKim.CanApprove(kim, circleUsers), "a creator who left the circle")
+
+	project := &pModel.Project{ID: 7, CircleID: 1, CreatedBy: sam, IsPrivate: true, SharedWithMembers: true}
+	project.SetMembers([]int{sam})
+	hidden := &chModel.Chore{ID: 3, CircleID: 1, CreatedBy: alex, ProjectID: &project.ID, Project: project}
+	require.False(t, hidden.CanApprove(alex, circleUsers), "a creator who can no longer see the chore")
+	require.False(t, hidden.CanApprove(admin, circleUsers), "an admin outside a restricted project")
 }

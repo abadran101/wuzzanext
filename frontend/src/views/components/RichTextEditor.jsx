@@ -1,6 +1,5 @@
 import 'quill/dist/quill.snow.css'
 
-import imageCompression from 'browser-image-compression'
 import Quill from 'quill'
 import QuillMarkdown from 'quilljs-markdown'
 
@@ -47,8 +46,11 @@ import { useTranslation } from 'react-i18next'
 import { useDescriptionHtml } from '../../hooks/useDescriptionHtml'
 import { useUserProfile } from '../../queries/UserQueries'
 import { useNotification } from '../../service/NotificationProvider'
-import { apiClient } from '../../utils/ApiClient'
-import { resolvePhotoURL } from '../../utils/Helpers'
+import {
+  pickImage,
+  showUploadError,
+  uploadChoreImage,
+} from '../../utils/ChoreImageUpload'
 import { patchDescriptionHtml } from '../../utils/ImageCache'
 
 const RichTextEditor = forwardRef(
@@ -94,92 +96,19 @@ const RichTextEditor = forwardRef(
 
     // Image upload handler - wrapped in useCallback to avoid recreating on every render
     const handleImageUpload = useCallback(() => {
-      const input = document.createElement('input')
-      input.setAttribute('type', 'file')
-      input.setAttribute('accept', 'image/*')
-      input.click()
-      input.onchange = async () => {
-        const file = input.files[0]
-        if (!file) return
-
+      pickImage(async file => {
         try {
-          // Define compression options based on entity type ( this need a revist later)
-          const compressionOptions = {
-            maxSizeMB: entityType === 'profile' ? 0.5 : 1, // Smaller size for profile images
-            maxWidthOrHeight: entityType === 'profile' ? 320 : 1200, // Smaller dimensions for profile images
-            useWebWorker: true,
-            fileType: 'image/jpeg',
-          }
-
-          // Compress the image
-          const compressedFile = await imageCompression(
-            file,
-            compressionOptions,
-          )
-
-          // Create new file with .jpg extension to ensure it's treated as JPEG
-          const compressedJpegFile = new File(
-            [compressedFile],
-            `${file.name.split('.')[0]}.jpg`,
-            { type: 'image/jpeg' },
-          )
-
-          console.log(
-            `Original size: ${(file.size / 1024 / 1024).toFixed(2)} MB`,
-          )
-          console.log(
-            `Compressed size: ${(compressedJpegFile.size / 1024 / 1024).toFixed(2)} MB`,
-          )
-
-          // Upload compressed image to backend. Without a saved entity yet,
-          // upload as a draft tied to draftId — the backend promotes drafts
-          // to the real entity when the chore is created.
-          const formData = new FormData()
-          formData.append('file', compressedJpegFile)
-          if (entityId) {
-            formData.append('entityId', String(entityId))
-            formData.append('entityType', entityType)
-          } else if (draftId) {
-            formData.append('entityType', `${entityType}_draft`)
-            formData.append('draftId', draftId)
-          } else {
-            formData.append('entityType', entityType)
-          }
-
-          const response = await apiClient.upload('/assets/chore', formData)
-
-          if (response.status === 507) {
-            showError({
-              title: t('common:upload.quotaTitle'),
-              message: t('common:upload.quotaMessage'),
-            })
-            return
-          } else if (response.status === 413) {
-            showError({
-              title: t('common:upload.tooLargeTitle'),
-              message: t('common:upload.tooLargeMessage'),
-            })
-            return
-          } else if (response.status === 403) {
-            showError({
-              title: t('common:upload.deniedTitle'),
-              message: t('common:upload.deniedMessage'),
-            })
-            return
-          } else if (!response.ok) {
-            showError({
-              title: t('common:upload.failedTitle'),
-              message: t('common:upload.failedMessage'),
-            })
+          const { path, status, url } = await uploadChoreImage(file, {
+            entityId,
+            entityType,
+            draftId,
+          })
+          if (!path) {
+            showUploadError(status, showError, t)
             return
           }
-          const data = await response.json()
-          // data.sign is a fetchable signed URL; data.path is the stable
-          // storage key kept in dt-data-path so the src can be re-signed
-          // after the URL expires.
-          const path = data.path
-          const url = resolvePhotoURL(data.sign || data.url)
-          // Insert image into Quill with dt-data-path tracked by the custom blot
+          // Insert image into Quill with dt-data-path tracked by the custom
+          // blot, so the src can be re-signed after the URL expires.
           const quill = editorRef.current
           const range = quill.getSelection()
           const insertIndex = range ? range.index : 0
@@ -191,7 +120,7 @@ const RichTextEditor = forwardRef(
             message: t('common:upload.processingMessage'),
           })
         }
-      }
+      })
     }, [entityId, entityType, draftId, showError, t]) // Dependencies for useCallback
 
     useEffect(() => {
