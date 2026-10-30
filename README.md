@@ -13,7 +13,8 @@ PIN; admins can also use the password link as a backup. Empty or unavailable pro
 lists fall back to password sign-in. In Settings → Profile, choose a colour and
 English or Arabic, change your PIN, or enable **Shared tablet** on this device.
 Shared tablets return to faces after five minutes without touch or keyboard input,
-including time in the background. Switching waits for queued offline changes to sync.
+including time in the background. Switching waits until your own queued offline changes are
+sent.
 The device's language remains the fallback when signed out.
 
 The app has full Arabic texts and switches to right to left with the language switch in the user menu.
@@ -26,6 +27,24 @@ Household admins can add people and reset PINs in the **Family** section of Prof
 settings. Set `household.circle_id` in the server configuration to the household's
 circle ID. With no value, the server uses the only circle if exactly one exists;
 otherwise the faces list is empty until a household is configured.
+
+## Offline use
+
+With no connection, the chore list and chore pages stay readable from the copy on the
+device, with the pictures already seen. Completing, skipping, starting, pausing, rescheduling,
+editing, creating, archiving and deleting chores still work: each change is kept in an outbox
+on the device, with the time it was made, and sent when the connection is back. Signing in,
+family settings and pages not opened before need the connection.
+
+When two people changed the same chore, the change made last (by the phone's clock) wins. A
+change that lost is dropped and the app says so once, for example "1 change was replaced by a
+newer one: Water plants". A delete beats an older edit. Completions, photos and thumbs-ups are
+their own entries and are never dropped.
+
+Each person has their own outbox on a shared device. Their changes are only sent with their own
+sign-in, and an expired session or another person signing in keeps them until they sign in
+again. A phone clock more than 30 seconds fast makes the server refuse its queued changes;
+they stay in the outbox as failed.
 
 ## License and origin
 
@@ -155,5 +174,5 @@ proof with a thumbs up from whoever gave the chore (009) are in, and so are star
 new chore with a leaderboard for the household's week, Monday to Sunday by default (010).
 The Android APK builds unsigned for the owner to sign (016), and every server build carries
 its own source (020). The home-server package and its deployment spec are ready (019);
-nothing is deployed yet. Next come offline use (017) and reminders (018). The meal-planning
+nothing is deployed yet. Offline use is in (017); next come reminders (018). The meal-planning
 tasks wait for sample recipe pages.
