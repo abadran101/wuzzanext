@@ -51,7 +51,7 @@ everything on the dev machine is readable by Codex.
 | 024 | Menu items hidden from regular users: Archived, Things, Labels, Report an Issue hidden by default; admins switch each on or off for all regular users (household setting); pages not blocked | Done (PR #10, merged) | 007 |
 | 023 | Translate chore names, chore details and recipe names English <-> Arabic on the home server (Google Cloud Translation, cached; key only in the server's configuration) | Done (PR #12, merged) | 022 |
 | 025 | Optional server listen address (`server.host`): empty listens on every interface as today; the local test app uses 127.0.0.1, the home server sets it in 019 (approved 2026-10-28) | Done (PR #15, merged) | 003 |
-| 026 | Install folder `C:\services\wuzzanext` (owner, 2026-10-30) | Done (branch pushed, PR to open) | 019 |
+| 026 | Install folder `C:\services\wuzzanext` (owner, 2026-10-30) | Done (PR #21, merged) | 019 |
 
 ## Settled: don't propose these again
 
