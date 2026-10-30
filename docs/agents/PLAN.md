@@ -41,11 +41,11 @@ everything on the dev machine is readable by Codex.
 | 013 | Meals: add meal, week view, cook's to-do entry | Proposed | 012 |
 | 014 | Meal polls: up to 3 recipes, chosen voters, majority, random tie-break | Proposed | 013 |
 | 015 | Shopping list from planned meals, scaled to servings | Proposed | 012, 013 |
-| 016 | Android APK build (signed by the owner), home-server address setting | Done (PR open; signed on the owner's PC) | 005 |
+| 016 | Android APK build (signed by the owner), home-server address setting | Done (PR #17, merged; signed on the owner's PC) | 005 |
 | 017 | Offline copy and outbox sync with the conflict rule (decided 2026-10-26); one queue per person, so a forced sign-out on session expiry keeps queued changes (STATUS open item 5) | Proposed | 016 |
 | 018 | Due-task reminders as local phone notifications | Proposed | 016, 017 |
-| 019 | Home-server packaging as a Windows service behind Nginx Proxy Manager, first deployment | Proposed | all, 020 first |
-| 020 | Source archive of the exact commit packaged into each build, offered on the About page (AGPL, private repository) | Approved (2026-10-26), before 019 | 004 |
+| 019 | Home-server packaging as a Windows service behind Nginx Proxy Manager, first deployment | Next, after 020 (owner, 2026-10-30): package and guide; the owner deploys | 020 |
+| 020 | Source archive of the exact commit packaged into each build, offered on the About page (AGPL, private repository) | Done (PR open) | 004 |
 | 021 | Remove unused PostHog, RevenueCat and Stripe packages; README brought up to date | Done | 004 |
 | 022 | Arabic: full right-to-left layout (the one-tap toggle is in the user menu since 007), missing Arabic texts filled in; the owner reviews the Arabic wording before merge | Done (PR #11, merged) | 007 |
 | 024 | Menu items hidden from regular users: Archived, Things, Labels, Report an Issue hidden by default; admins switch each on or off for all regular users (household setting); pages not blocked | Done (PR #10, merged) | 007 |

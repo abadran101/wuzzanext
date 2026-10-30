@@ -137,6 +137,7 @@ family's logo (task 005). Family profiles with PIN sign-in (007), Arabic with ri
 layout (022), translated chore texts (023), chore instructions with pictures (008) and photo
 proof with a thumbs up from whoever gave the chore (009) are in, and so are stars for every
 new chore with a leaderboard for the household's week, Monday to Sunday by default (010).
-Nothing is deployed yet. Next come the simpler interface, the Android APK, offline use and
-reminders. The meal-planning tasks wait for
-sample recipe pages.
+The Android APK builds unsigned for the owner to sign (016), and every server build carries
+its own source (020). Nothing is deployed yet. Next come the first home-server deployment
+(019), then offline use (017) and reminders (018). The meal-planning tasks wait for sample
+recipe pages.
