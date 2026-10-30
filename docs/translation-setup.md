@@ -44,13 +44,27 @@ pricing page before you start). Two limits keep you inside the free allowance:
 5. **Billing > Budgets & alerts**: create a budget of USD 1 for this project with an email
    alert at 50% and 100%. Success looks like: the budget is listed with the alert thresholds.
 
-## On the home server
+## Steps on the home server (signed in as the server's administrator)
 
-6. Tokenmaxximus "Production deployments" sets the key on the Wuzzanext service only, as
-   `DT_TRANSLATION_API_KEY` with `DT_TRANSLATION_ENABLED` = `true`, and restarts the service
-   (`docs/deployment-spec.md`, section 3). Type the key in on the host when it asks; never
-   paste it into a chat.
-7. Check: open the app, switch the language in the user menu to the other language, and open
+6. Give the key to the server through its environment, not through a command line (so it is
+   not saved in a command history):
+   - Start > "Edit the system environment variables" > **Environment Variables** >
+     **System variables** > **New**.
+   - Name `DT_TRANSLATION_API_KEY`, value: the key from step 3. OK.
+   - Add one more: name `DT_TRANSLATION_ENABLED`, value `true`. OK.
+
+   Alternatively, put them in the server's own `selfhosted.yaml` (never in the repository):
+
+   ```yaml
+   translation:
+     enabled: true
+     provider: "google"
+     daily_char_limit: 15000
+     api_key: "<your key>"
+   ```
+
+7. Restart the Wuzzanext service, so it reads the new settings.
+8. Check: open the app, switch the language in the user menu to the other language, and open
    the chore list. An English chore should now show in Arabic (or the reverse); the chore page
    shows **Translated** and **See original**. Want: translated names after a second or two.
    If nothing changes, see below.
@@ -58,17 +72,17 @@ pricing page before you start). Two limits keep you inside the free allowance:
 ## If it does not work
 
 - The server shows translations only when it is enabled **and** has a key. Check both
-  service settings, then restart the service again.
+  variables, then restart the service again.
 - The home server needs outbound HTTPS to `translation.googleapis.com`.
 - A wrong or restricted key makes chores stay in their original language; the server log
   says "translation service answered 403" (the key is never written to the log).
 
 ## Turning it off
 
-Ask for `DT_TRANSLATION_ENABLED` to be set to `false` on the service (or deleted) and the
-service restarted. Nothing is sent from then on. To stop it for good, also delete the key in
-the Google Cloud console (**APIs & Services > Credentials**). Answers already kept on the
-server stay in its database until it is reset; they hold only translated chore texts.
+Set `DT_TRANSLATION_ENABLED` to `false` (or delete it) and restart the service. Nothing is
+sent from then on. To stop it for good, also delete the key in the Google Cloud console
+(**APIs & Services > Credentials**). Answers already kept on the server stay in its database
+until it is reset; they hold only translated chore texts.
 
 ## For testing (developers)
 

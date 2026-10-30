@@ -123,27 +123,11 @@ repository (task 016).
 
 ## Deployment
 
-Not live yet (task 019). The server runs as a Windows service on the family's home server,
-behind Nginx Proxy Manager (in Docker on the same host) with HTTPS, reachable on the home
-network only. Data and uploaded pictures stay on that server's local storage, with a nightly
-backup. Host names and secrets live in the server's own configuration, never in this
-repository. The owner deploys a merged commit, named by its full hash.
-
-- `node scripts/build-server.mjs` (above) also packages the config template
-  (`deploy/selfhosted.yaml`), the deployment spec and the owner's steps, with a
-  `SHA256SUMS.txt`. The program stamps its commit, shown by `/health` and the About page.
-- `docs/deployment-spec.md`: what Tokenmaxximus "Production deployments" sets up on the host
-  (folders and permissions, the service, its environment, the bind address and firewall rule,
-  the nightly backup, updates, checks).
-- `docs/owner-guide.md`: the owner's own steps (copy, SHA-256 check, proxy entry, browser
-  checks, the Android app download).
-- Started by Windows, `wuzzanext.exe` runs as the service `Wuzzanext`; started by hand it
-  runs in the console as before.
-- `wuzzanext.exe backup -to <folder> [-db <file>] [-uploads <folder>] [-keep 14]` copies the
-  database (`VACUUM INTO`, checked) and the pictures into a dated folder while the server
-  runs, and removes copies older than the given days.
-- A signed `wuzzanext.apk` in `server.downloads_dir` is offered at
-  `/download/wuzzanext.apk` and linked from the About page.
+Planned, not live yet (task 019): the server runs as a Windows service on the family's home
+server, behind the home network's reverse proxy (Nginx Proxy Manager) with HTTPS, reachable
+on the home network only. Data and uploaded pictures stay on that server's local storage.
+Host names and secrets live in the server's own configuration, never in this repository.
+The owner deploys a merged commit, named by its full hash.
 
 ## Current state
 
@@ -154,6 +138,6 @@ layout (022), translated chore texts (023), chore instructions with pictures (00
 proof with a thumbs up from whoever gave the chore (009) are in, and so are stars for every
 new chore with a leaderboard for the household's week, Monday to Sunday by default (010).
 The Android APK builds unsigned for the owner to sign (016), and every server build carries
-its own source (020). The home-server package and its deployment spec are ready (019);
-nothing is deployed yet. Next come offline use (017) and reminders (018). The meal-planning
-tasks wait for sample recipe pages.
+its own source (020). Nothing is deployed yet. Next come the first home-server deployment
+(019), then offline use (017) and reminders (018). The meal-planning tasks wait for sample
+recipe pages.

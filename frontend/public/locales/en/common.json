@@ -8,9 +8,7 @@
     "openApp": "Open Wuzzanext",
     "reportUnavailableTitle": "Report not sent",
     "reportUnavailableBody": "Reporting is unavailable. You can copy the diagnostics for your server administrator.",
-    "feedbackFailed": "Feedback could not be sent. Please try again later.",
-    "downloadApp": "Download the Android app",
-    "runningCommit": "Running version {{commit}}"
+    "feedbackFailed": "Feedback could not be sent. Please try again later."
   },
   "save": "Save",
   "cancel": "Cancel",

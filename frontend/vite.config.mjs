@@ -81,7 +81,6 @@ export default ({ command }) => {
           navigateFallback: '/index.html',
           navigateFallbackDenylist: [
             /^\/wuzzanext-source\.tar\.gz$/,
-            /^\/download\//, // the Android app download (task 019)
             /^\/api\//, // Exclude all API routes
             /^\/swagger/, // Exclude all Swagger routes
           ],

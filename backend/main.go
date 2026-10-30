@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 
@@ -67,23 +66,6 @@ import (
 )
 
 func main() {
-	if len(os.Args) > 1 && os.Args[1] == "backup" {
-		os.Exit(runBackup(os.Args[2:]))
-	}
-	if isWindowsService() {
-		runWindowsService()
-		return
-	}
-
-	app := newApp()
-	if err := app.Err(); err != nil {
-		log.Fatal(err)
-	}
-	app.Run()
-}
-
-// newApp loads the configuration and wires the server; the caller starts it.
-func newApp() *fx.App {
 	// Load configuration first
 	cfg := config.LoadConfig()
 
@@ -93,7 +75,7 @@ func newApp() *fx.App {
 		cfg.Logging.Encoding,
 		cfg.Logging.Development,
 	)
-	return fx.New(
+	app := fx.New(
 		// Startup runs DB migrations synchronously in an OnStart hook. On large
 		// datasets the backfill migrations take well over fx's 15s default,
 		// which would abort startup and crash-loop. Give them room to finish.
@@ -209,7 +191,6 @@ func newApp() *fx.App {
 
 		// Frontend
 		fx.Provide(frontend.NewHandler),
-		fx.Provide(frontend.NewDownloadHandler),
 
 		// Docs
 		fx.Provide(docs.NewHandler),
@@ -252,7 +233,6 @@ func newApp() *fx.App {
 			filter.Routes,
 
 			storage.Routes,
-			frontend.DownloadRoutes,
 			frontend.Routes,
 			docs.Routes,
 			resource.Routes,
@@ -264,6 +244,13 @@ func newApp() *fx.App {
 			func(r *gin.Engine) {},
 		),
 	)
+
+	if err := app.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	app.Run()
+
 }
 
 func newServer(lc fx.Lifecycle, cfg *config.Config, db *gorm.DB, notifier *notifier.Scheduler, eventProducer *events.EventsProducer, mfaCleanup *mfa.CleanupService, authCleanup *auth.CleanupService, rts *realtime.RealTimeService, draftCleanup *storage.DraftCleanupService, ticketStore *realtime.TicketStore) *gin.Engine {

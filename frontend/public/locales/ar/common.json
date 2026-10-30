@@ -771,9 +771,7 @@
     "openApp": "فتح Wuzzanext",
     "reportUnavailableTitle": "لم يُرسَل البلاغ",
     "reportUnavailableBody": "الإبلاغ غير متاح. يمكنك نسخ بيانات التشخيص لمسؤول خادمك.",
-    "feedbackFailed": "تعذّر إرسال الملاحظات. حاول لاحقًا.",
-    "downloadApp": "تنزيل تطبيق أندرويد",
-    "runningCommit": "النسخة الحالية {{commit}}"
+    "feedbackFailed": "تعذّر إرسال الملاحظات. حاول لاحقًا."
   },
   "options": {
     "Default": "افتراضي"

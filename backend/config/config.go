@@ -146,8 +146,6 @@ type ServerConfig struct {
 	ServeFrontend    bool          `mapstructure:"serve_frontend" yaml:"serve_frontend"`
 	ServeSwagger     bool          `mapstructure:"serve_swagger" yaml:"serve_swagger"`
 	PublicHost       string        `mapstructure:"public_host" yaml:"public_host" default:"http://localhost:2021"`
-	// Folder whose wuzzanext.apk is offered at /download/wuzzanext.apk; empty offers nothing (task 019).
-	DownloadsDir string `mapstructure:"downloads_dir" yaml:"downloads_dir"`
 }
 
 // ListenAddr is the address the server listens on: every interface when Host

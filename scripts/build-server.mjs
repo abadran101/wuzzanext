@@ -1,12 +1,10 @@
-// Builds the home-server package: the program (Windows, amd64) with the web interface and
-// the exact source of this commit inside it, served as /wuzzanext-source.tar.gz (AGPL; task
-// 020), plus the config template, the deployment spec and the owner's steps (task 019).
+// Builds the home-server program (Windows, amd64) with the web interface and the exact
+// source of this commit inside it, served as /wuzzanext-source.tar.gz (AGPL; task 020).
 //
 //   node scripts/build-server.mjs
 //
-// Needs a clean, committed tree, `npm ci` done in frontend/, and Go. The package lands in
-// release/wuzzanext-<short hash>/ with a SHA256SUMS.txt; backend/frontend/dist is restored
-// afterwards.
+// Needs a clean, committed tree, `npm ci` done in frontend/, and Go. The program lands in
+// release/wuzzanext-<short hash>/wuzzanext.exe; backend/frontend/dist is restored afterwards.
 
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
@@ -44,8 +42,6 @@ const vite = path.join(frontend, 'node_modules', 'vite', 'bin', 'vite.js')
 if (!fs.existsSync(vite)) stop('run npm ci in frontend/ first')
 
 const commit = read('git', ['rev-parse', 'HEAD'])
-// The commit's own time, so two builds of one commit stay alike.
-const builtAt = read('git', ['show', '-s', '--format=%cI', commit])
 const outDir = path.join(root, 'release', `wuzzanext-${commit.slice(0, 12)}`)
 const exe = path.join(outDir, 'wuzzanext.exe')
 
@@ -68,12 +64,7 @@ try {
     commit,
   ])
   fs.mkdirSync(outDir, { recursive: true })
-  // Stamp the commit: /health and the About page show what is running.
-  const stamp = [
-    `-X donetick.com/core/config.Commit=${commit}`,
-    `-X donetick.com/core/config.BuildDate=${builtAt}`,
-  ].join(' ')
-  run('go', ['build', '-trimpath', '-ldflags', stamp, '-o', exe, '.'], {
+  run('go', ['build', '-trimpath', '-o', exe, '.'], {
     cwd: backend,
     env: { ...process.env, CGO_ENABLED: '0', GOOS: 'windows', GOARCH: 'amd64' },
   })
@@ -87,26 +78,12 @@ try {
   run('git', ['checkout', '--', 'backend/frontend/dist'])
 }
 
-// The rest of the home-server package (task 019): the config template, the deployment
-// spec and the owner's steps, with a SHA-256 list the owner checks on the host.
-const packaged = {
-  'selfhosted.yaml.template': path.join(root, 'deploy', 'selfhosted.yaml'),
-  'deployment-spec.md': path.join(root, 'docs', 'deployment-spec.md'),
-  'owner-guide.md': path.join(root, 'docs', 'owner-guide.md'),
-}
-for (const [name, from] of Object.entries(packaged)) {
-  fs.copyFileSync(from, path.join(outDir, name))
-}
-const names = ['wuzzanext.exe', archiveName, ...Object.keys(packaged)]
-const sums = names.map(name => `${sha256(path.join(outDir, name))}  ${name}`)
-fs.writeFileSync(
-  path.join(outDir, 'SHA256SUMS.txt'),
-  sums.join('\r\n') + '\r\n',
-)
-
-const lines = [`commit: ${commit}`, `package: ${outDir}`]
-for (const name of names) {
-  lines.push(`  ${name}: ${fs.statSync(path.join(outDir, name)).size} bytes`)
-}
-lines.push('SHA256SUMS.txt:', ...sums.map(line => `  ${line}`))
+const archive = path.join(outDir, archiveName)
+const lines = [
+  `commit: ${commit}`,
+  `program: ${exe}`,
+  `  ${fs.statSync(exe).size} bytes, SHA-256 ${sha256(exe)}`,
+  `source archive (inside the program, copy beside it): ${archive}`,
+  `  ${fs.statSync(archive).size} bytes, SHA-256 ${sha256(archive)}`,
+]
 console.log(lines.join('\n'))
