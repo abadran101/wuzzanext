@@ -18,6 +18,7 @@ import {
 import { syncOfflineImages } from './ImageCache'
 import { offlineDB } from './OfflineDB'
 import { isOfflineFeatureEnabled } from './OfflineFeatureToggle'
+import { replacedNames, replayOutcome } from './OutboxRules'
 
 // Give up on a command after this many transient failures so one stuck
 // command can't starve the queue and delta sync forever. Failed commands
@@ -103,7 +104,21 @@ class SyncEngine {
       await commandQueue.compact()
 
       // Step 2: Replay pending commands
-      await this._replayCommands()
+      const replaced = []
+      try {
+        await this._replayCommands(replaced)
+      } finally {
+        // A change that lost to a newer one is dropped; say so once, naming
+        // the chore (owner, 2026-10-30).
+        if (replaced.length > 0) {
+          this._notify({
+            replaced: {
+              count: replaced.length,
+              names: replacedNames(replaced),
+            },
+          })
+        }
+      }
 
       // Step 3: Delta sync from server
       const reachedServer = await this._deltaSync()
@@ -139,7 +154,7 @@ class SyncEngine {
     }
   }
 
-  async _replayCommands() {
+  async _replayCommands(replaced = []) {
     const commands = await commandQueue.getPending()
 
     for (const cmd of commands) {
@@ -152,22 +167,22 @@ class SyncEngine {
         await commandQueue.markDone(cmd.id)
       } catch (err) {
         const status = err.status || err.statusCode
-        const isPermanentRejection =
-          status >= 400 &&
-          status < 500 &&
-          status !== 401 &&
-          status !== 408 &&
-          status !== 429
-        if (status === 409) {
+        const outcome = replayOutcome(cmd.commandType, status)
+        if (outcome === 'replaced') {
+          // A newer change to the chore was kept (or it was deleted): drop
+          // this one and name the chore in the note.
+          replaced.push(await this._choreName(cmd))
+          await commandQueue.markDone(cmd.id)
+        } else if (status === 409) {
           // Conflict - mark for user attention but continue with other commands
           await commandQueue.markFailed(
             cmd.id,
             'Conflict: modified by another user',
           )
-        } else if (status === 404) {
+        } else if (outcome === 'done') {
           // Entity no longer exists - discard command
           await commandQueue.markDone(cmd.id)
-        } else if (isPermanentRejection) {
+        } else if (outcome === 'failed') {
           // The server rejected the command outright — retrying can never
           // succeed, so park it as failed instead of blocking the queue.
           await commandQueue.markFailed(
@@ -189,8 +204,24 @@ class SyncEngine {
     }
   }
 
+  async _choreName(cmd) {
+    if (typeof cmd.payload?.name === 'string' && cmd.payload.name.trim()) {
+      return cmd.payload.name
+    }
+    try {
+      const id = cmd.payload?.id ?? String(cmd.entityId).split(':')[0]
+      const chore = await offlineDB.getChore(id)
+      return chore?.name || null
+    } catch {
+      return null
+    }
+  }
+
   async _executeCommand(cmd) {
     let response
+    // When the change was made on the phone; the server lets the most recent
+    // change win (task 017).
+    const changedAt = cmd.createdAt
 
     switch (cmd.commandType) {
       case CommandType.CREATE_CHORE:
@@ -215,7 +246,7 @@ class SyncEngine {
         break
 
       case CommandType.UPDATE_CHORE:
-        response = await SaveChore(cmd.payload)
+        response = await SaveChore(cmd.payload, changedAt)
         break
 
       case CommandType.COMPLETE_CHORE: {
@@ -225,24 +256,25 @@ class SyncEngine {
           body || {},
           completedDate || null,
           performer || null,
+          changedAt,
         )
         break
       }
 
       case CommandType.SKIP_CHORE:
-        response = await SkipChore(cmd.payload.id || cmd.entityId)
+        response = await SkipChore(cmd.payload.id || cmd.entityId, changedAt)
         break
 
       case CommandType.START_CHORE:
-        response = await StartChore(cmd.payload.id || cmd.entityId)
+        response = await StartChore(cmd.payload.id || cmd.entityId, changedAt)
         break
 
       case CommandType.PAUSE_CHORE:
-        response = await PauseChore(cmd.payload.id || cmd.entityId)
+        response = await PauseChore(cmd.payload.id || cmd.entityId, changedAt)
         break
 
       case CommandType.DELETE_CHORE:
-        response = await DeleteChore(cmd.payload.id || cmd.entityId)
+        response = await DeleteChore(cmd.payload.id || cmd.entityId, changedAt)
         break
 
       case CommandType.UPDATE_CHORE_HISTORY: {
@@ -259,16 +291,19 @@ class SyncEngine {
 
       case CommandType.RESCHEDULE_CHORE: {
         const { dueDate, id } = cmd.payload
-        response = await UpdateDueDate(id, dueDate)
+        response = await UpdateDueDate(id, dueDate, changedAt)
         break
       }
 
       case CommandType.ARCHIVE_CHORE:
-        response = await ArchiveChore(cmd.payload.id || cmd.entityId)
+        response = await ArchiveChore(cmd.payload.id || cmd.entityId, changedAt)
         break
 
       case CommandType.UNARCHIVE_CHORE:
-        response = await UnArchiveChore(cmd.payload.id || cmd.entityId)
+        response = await UnArchiveChore(
+          cmd.payload.id || cmd.entityId,
+          changedAt,
+        )
         break
 
       default:

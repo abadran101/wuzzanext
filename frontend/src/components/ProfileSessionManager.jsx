@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next'
 import { useLocalization } from '../contexts/LocalizationContext'
 import { useUserProfile } from '../queries/UserQueries'
 import { apiClient } from '../utils/ApiClient'
+import { commandQueue } from '../utils/CommandQueue'
 import { offlineDB } from '../utils/OfflineDB'
 import { canSwitchPerson, isIdle } from '../utils/ProfileSession'
 import { syncEngine } from '../utils/SyncEngine'
@@ -67,7 +68,7 @@ export default function ProfileSessionManager({ children }) {
   const outboxSent = async () => {
     if (syncEngine.inFlight) await syncEngine.inFlight
     return canSwitchPerson({
-      getPending: () => offlineDB.getCommands(),
+      getPending: () => commandQueue.getAllMine(),
       sync: () => syncEngine.sync(),
       online: navigator.onLine,
     })
@@ -84,7 +85,7 @@ export default function ProfileSessionManager({ children }) {
       }
       // Stop active queries before removing cached data. Never delete the outbox.
       await queryClient.cancelQueries()
-      if ((await offlineDB.getCommands()).length) {
+      if ((await commandQueue.getAllMine()).length) {
         setBlocked('switchBlocked')
         return false
       }

@@ -96,7 +96,8 @@ class SQLiteBackend {
           created_at INTEGER NOT NULL,
           status TEXT NOT NULL DEFAULT 'pending',
           error TEXT,
-          retry_count INTEGER NOT NULL DEFAULT 0
+          retry_count INTEGER NOT NULL DEFAULT 0,
+          owner TEXT
         );
 
         CREATE TABLE IF NOT EXISTS sync_meta (
@@ -126,6 +127,15 @@ class SQLiteBackend {
         database: DB_NAME,
         statements:
           'ALTER TABLE command_queue ADD COLUMN retry_count INTEGER NOT NULL DEFAULT 0;',
+      })
+    } catch {
+      // column already exists
+    }
+    // Task 017: the person who queued each command (null for older rows).
+    try {
+      await CapacitorSQLite.execute({
+        database: DB_NAME,
+        statements: 'ALTER TABLE command_queue ADD COLUMN owner TEXT;',
       })
     } catch {
       // column already exists
@@ -334,8 +344,8 @@ class SQLiteBackend {
   async enqueueCommand(command) {
     const result = await CapacitorSQLite.run({
       database: DB_NAME,
-      statement: `INSERT INTO command_queue (command_type, entity_id, payload, created_at, status, error)
-                  VALUES (?, ?, ?, ?, ?, ?)`,
+      statement: `INSERT INTO command_queue (command_type, entity_id, payload, created_at, status, error, owner)
+                  VALUES (?, ?, ?, ?, ?, ?, ?)`,
       values: [
         command.commandType,
         command.entityId,
@@ -343,6 +353,7 @@ class SQLiteBackend {
         command.createdAt,
         command.status,
         command.error,
+        command.owner ?? null,
       ],
     })
     return result.changes?.lastId
@@ -363,6 +374,7 @@ class SQLiteBackend {
       status: row.status,
       error: row.error,
       retryCount: row.retry_count ?? 0,
+      owner: row.owner ?? null,
     }))
   }
 
@@ -382,6 +394,7 @@ class SQLiteBackend {
       status: row.status,
       error: row.error,
       retryCount: row.retry_count ?? 0,
+      owner: row.owner ?? null,
     }))
   }
 
@@ -836,6 +849,7 @@ class IndexedDBBackend {
         status: command.status,
         error: command.error,
         retryCount: 0,
+        owner: command.owner ?? null,
       }),
     )
     return id

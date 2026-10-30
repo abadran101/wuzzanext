@@ -20,6 +20,7 @@ import SSEProvider from './contexts/SSEContext'
 import useAppBadgeSync from './hooks/useAppBadgeSync'
 import { AuthProvider } from './hooks/useAuth.jsx'
 import useOnboardingGate from './hooks/useOnboardingGate'
+import { useReplacedChangesNote } from './hooks/useReplacedChangesNote'
 import useStatusBar from './hooks/useStatusBar'
 import { useSyncOnReconnect } from './hooks/useSyncOnReconnect'
 import { useResource } from './queries/ResourceQueries'
@@ -129,6 +130,7 @@ const WebServiceWorkerManager = () => {
 const AppContent = () => {
   const location = useLocation()
   useSyncOnReconnect()
+  useReplacedChangesNote()
   useAppBadgeSync()
 
   // Every route renders through this Outlet, so one listener here gives crash

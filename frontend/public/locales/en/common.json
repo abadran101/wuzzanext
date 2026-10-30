@@ -348,6 +348,8 @@
     "syncNow": "Sync Now",
     "pendingSyncLabel_one": "{{count}} pending action to sync",
     "pendingSyncLabel_other": "{{count}} pending actions to sync",
+    "replaced_one": "{{count}} change was replaced by a newer one: {{names}}",
+    "replaced_other": "{{count}} changes were replaced by newer ones: {{names}}",
     "pendingActionsTitle": "Pending actions",
     "actionsWaitingToSync_one": "{{count}} action waiting to be synced.",
     "actionsWaitingToSync_other": "{{count}} actions waiting to be synced.",

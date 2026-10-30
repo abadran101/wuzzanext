@@ -201,7 +201,9 @@ class ApiClient {
 
     await clearAllTokens()
     try {
-      await offlineDB.clearAll()
+      // Only the server copy goes: queued changes wait, tagged with their
+      // person, and are sent after that person signs in again (task 017).
+      await offlineDB.clearServerData()
     } catch (e) {
       console.error('Error clearing offline data on logout', e)
     }

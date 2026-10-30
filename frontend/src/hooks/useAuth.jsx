@@ -81,9 +81,9 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('profileLastInput', String(Date.now()))
 
         try {
-          // Queued changes belong to whoever made them; switching person refuses
-          // to switch while any are waiting, so nothing of anyone's is lost here.
-          await offlineDB.clearAll()
+          // Only the server copy goes. Queued changes belong to whoever made
+          // them and are sent only with that person's sign-in (task 017).
+          await offlineDB.clearServerData()
         } catch (e) {
           console.error('Error clearing offline data on login', e)
         }

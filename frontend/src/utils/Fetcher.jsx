@@ -1,4 +1,5 @@
 import { apiClient } from './ApiClient'
+import { withChangeTime } from './OutboxRules'
 
 // Migration helpers to maintain compatibility with existing code
 const Fetch = async (endpoint, options = {}) => {
@@ -118,14 +119,14 @@ const GetArchivedChores = () => {
     headers: HEADERS(),
   })
 }
-const ArchiveChore = id => {
-  return Fetch(`/chores/${id}/archive`, {
+const ArchiveChore = (id, changedAt) => {
+  return Fetch(withChangeTime(`/chores/${id}/archive`, changedAt), {
     method: 'PUT',
     headers: HEADERS(),
   })
 }
-const UnArchiveChore = id => {
-  return Fetch(`/chores/${id}/unarchive`, {
+const UnArchiveChore = (id, changedAt) => {
+  return Fetch(withChangeTime(`/chores/${id}/unarchive`, changedAt), {
     method: 'PUT',
     headers: HEADERS(),
   })
@@ -143,7 +144,7 @@ const GetChoreDetailById = id => {
     headers: HEADERS(),
   })
 }
-const MarkChoreComplete = (id, body, completedDate, performer) => {
+const MarkChoreComplete = (id, body, completedDate, performer, changedAt) => {
   var markChoreURL = `/chores/${id}/do`
 
   let completedDateFormated = ''
@@ -162,7 +163,7 @@ const MarkChoreComplete = (id, body, completedDate, performer) => {
     }
   }
 
-  return Fetch(markChoreURL, {
+  return Fetch(withChangeTime(markChoreURL, changedAt), {
     method: 'POST',
     headers: HEADERS(),
     body: JSON.stringify(body),
@@ -178,15 +179,15 @@ const MarkChoreComplete = (id, body, completedDate, performer) => {
   })
 }
 
-const StartChore = id => {
-  return Fetch(`/chores/${id}/start`, {
+const StartChore = (id, changedAt) => {
+  return Fetch(withChangeTime(`/chores/${id}/start`, changedAt), {
     method: 'PUT',
     headers: HEADERS(),
   })
 }
 
-const PauseChore = id => {
-  return Fetch(`/chores/${id}/pause`, {
+const PauseChore = (id, changedAt) => {
+  return Fetch(withChangeTime(`/chores/${id}/pause`, changedAt), {
     method: 'PUT',
     headers: HEADERS(),
   })
@@ -201,8 +202,8 @@ const CompleteSubTask = (id, choreId, completedAt) => {
   })
 }
 
-const SkipChore = id => {
-  return Fetch(`/chores/${id}/skip`, {
+const SkipChore = (id, changedAt) => {
+  return Fetch(withChangeTime(`/chores/${id}/skip`, changedAt), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -265,15 +266,15 @@ const CreateChore = chore => {
   })
 }
 
-const DeleteChore = id => {
-  return Fetch(`/chores/${id}`, {
+const DeleteChore = (id, changedAt) => {
+  return Fetch(withChangeTime(`/chores/${id}`, changedAt), {
     method: 'DELETE',
     headers: HEADERS(),
   })
 }
 
-const SaveChore = chore => {
-  return Fetch(`/chores/`, {
+const SaveChore = (chore, changedAt) => {
+  return Fetch(withChangeTime(`/chores/`, changedAt), {
     method: 'PUT',
     headers: HEADERS(),
     body: JSON.stringify(chore),
@@ -628,8 +629,8 @@ const VerifyMFA = (sessionToken, code) => {
   })
 }
 
-const UpdateDueDate = (id, dueDate) => {
-  return Fetch(`/chores/${id}/dueDate`, {
+const UpdateDueDate = (id, dueDate, changedAt) => {
+  return Fetch(withChangeTime(`/chores/${id}/dueDate`, changedAt), {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
