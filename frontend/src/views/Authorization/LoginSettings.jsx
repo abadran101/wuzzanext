@@ -134,7 +134,8 @@ const LoginSettings = () => {
     e.preventDefault()
     const trimmedURL = serverURL.trim()
 
-    if (trimmedURL === '') {
+    // An app built without an address can't fall back to one.
+    if (trimmedURL === '' && API_URL) {
       await Preferences.set({ key: 'customServerUrl', value: API_URL })
       Navigate('/login')
       return

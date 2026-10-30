@@ -7,6 +7,7 @@ import { Preferences } from '@capacitor/preferences'
 import { PushNotifications } from '@capacitor/push-notifications'
 import { focusManager } from '@tanstack/react-query'
 
+import { CLOUD_PUSH_ENABLED } from './Config'
 import {
   receivePendingShare,
   storePendingShare,
@@ -260,7 +261,7 @@ const registerTokenIfNeeded = async (token, deviceInfo, deviceId, platform) => {
 // token is still valid (i.e. before the logout cleanup clears it), otherwise
 // the server keeps pushing this user's chores to a signed-out device.
 const unregisterPushNotifications = async () => {
-  if (!Capacitor.isNativePlatform()) return
+  if (!Capacitor.isNativePlatform() || !CLOUD_PUSH_ENABLED) return
 
   try {
     const stored = await Preferences.get({ key: 'deviceRegistration' })
@@ -290,6 +291,8 @@ const unregisterPushNotifications = async () => {
 }
 
 const pushNotificationListenerRegistration = async () => {
+  // Without Firebase configured, register() would crash the Android app.
+  if (!CLOUD_PUSH_ENABLED) return
   // Check and request permissions for Android 13+
   if (Capacitor.isNativePlatform()) {
     let permStatus = await PushNotifications.checkPermissions()

@@ -35,13 +35,13 @@ everything on the dev machine is readable by Codex.
 | 007 | Profiles with avatar and color; 4-digit PIN sign-in; person switcher | Done (PR) | 003 |
 | 008 | Chore content: instructions, "done means" text, pictures | Done (PR #13, merged) | 006 |
 | 009 | Photo proof and thumbs-up approval by the assigner | Done (PR #14, merged) | 006, 008 |
-| 010 | Points and weekly leaderboard: 1 star per new chore, the household's calendar week (Monday by default) | Done (PR open) | 006 |
-| 011 | Simplified fun UI pass: icons, little text, few options | Proposed | 007-010 |
+| 010 | Points and weekly leaderboard: 1 star per new chore, the household's calendar week (Monday by default) | Done (PR #16, merged) | 006 |
+| 011 | Simplified fun UI pass: icons, little text, few options | Not needed for now (owner, 2026-10-29, through the orchestrator) | 007-010 |
 | 012 | Recipe reader for the local recipes page (from owner-provided sample pages), ingredients and servings | Waits on samples (owner, later) | 003 |
 | 013 | Meals: add meal, week view, cook's to-do entry | Proposed | 012 |
 | 014 | Meal polls: up to 3 recipes, chosen voters, majority, random tie-break | Proposed | 013 |
 | 015 | Shopping list from planned meals, scaled to servings | Proposed | 012, 013 |
-| 016 | Android APK build (signed by the owner), home-server address setting | Proposed | 005 |
+| 016 | Android APK build (signed by the owner), home-server address setting | Done (PR open; signed on the owner's PC) | 005 |
 | 017 | Offline copy and outbox sync with the conflict rule (decided 2026-10-26); one queue per person, so a forced sign-out on session expiry keeps queued changes (STATUS open item 5) | Proposed | 016 |
 | 018 | Due-task reminders as local phone notifications | Proposed | 016, 017 |
 | 019 | Home-server packaging as a Windows service behind Nginx Proxy Manager, first deployment | Proposed | all, 020 first |

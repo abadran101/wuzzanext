@@ -9,12 +9,13 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace "com.wuzzanext.app"
     compileSdk rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
         applicationId "com.wuzzanext.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 83
-        versionName "1.2.62"
+        versionCode 100
+        versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -34,7 +35,9 @@ android {
     }
     buildTypes {
         release {
-            signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : signingConfigs.debug
+            // The signing key stays with the owner: without keystore.properties
+            // the release APK comes out unsigned (app-release-unsigned.apk).
+            signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : null
             // R8 shrinking + obfuscation. Play Console flags releases whose DEX is
             // unobfuscated ("DEX code optimization below threshold").
             minifyEnabled true
