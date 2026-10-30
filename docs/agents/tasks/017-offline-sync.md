@@ -1,6 +1,6 @@
 # Task 017: offline copy and outbox sync
 
-- **Status:** proposed (one owner question open)
+- **Status:** in progress (owner answered, 2026-10-30)
 - **Branch and worktree:** `task/017-offline-sync` from `main` (e7f4d6b1), in
   `C:\dev\wt\wuzzanext-017-offline-sync`
 - **Hand-off:** supervisor (no Codex, STATUS Decisions 2026-10-29)
@@ -8,7 +8,7 @@
   sync engine (frontend), sign-in and sign-out (007)
 - **Your time:** ~5 min for the question, ~20 min to try it on a phone after the merge
 - **Who:** Claude → You (answer, merge, phone test)
-- **Waits on:** the owner's answer on what a phone shows when its change loses
+- **Waits on:** nothing
 
 ## Goal
 
@@ -57,7 +57,9 @@ session runs out, no longer throws away changes that were not yet sent.
    wins. A delete wins over any older edit. Completions, photos and thumbs-up are always
    kept. Times more than 30 seconds in the future are refused, as upstream does.
 2. Outbox: every command carries the time it was made; replay sends it; a "superseded" answer
-   is handled as the owner decides (question below), never as a stuck failure.
+   drops the command and shows a short note once, naming the chore ("1 change was replaced by
+   a newer one"); nothing is left waiting (owner, 2026-10-30, through the orchestrator: "agree
+   with recommended", option A). Completions, photos and thumbs-up are never dropped.
 3. One outbox per person: commands are tagged with the person who made them. A forced
    sign-out keeps them; sign-in clears only the server copy, not other people's commands;
    replay sends only the signed-in person's commands. Switch person and Log out keep waiting

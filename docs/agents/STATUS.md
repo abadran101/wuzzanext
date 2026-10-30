@@ -75,8 +75,8 @@ Update this file at every stop. Output from the real machines beats anything wri
   backup`, the APK download and running commit on the About page, the config template, the
   deployment spec for Tokenmaxximus and the owner guide. Package from a6efa64a built and
   checked (`/health` shows the full hash), superseded by the one after 026.
-- 017 offline copy (task file): started from e7f4d6b1; one owner question open (what a phone
-  shows when its change loses to a newer one).
+- 017 offline copy (task file): started from e7f4d6b1; the owner answered the question
+  (Decisions 2026-10-30); being built.
 - Next: 017, then 018 (owner, 2026-10-30); 012-015 wait for the recipe samples.
 
 ## Open items
@@ -99,6 +99,11 @@ Update this file at every stop. Output from the real machines beats anything wri
    the `<img>` copy and is blocked by CORS. Fix with `Vary: Origin` on `/api/v1/assets`.
 
 ## Decisions (newest first)
+
+- 2026-10-30: 017: a change that loses to a newer one is dropped and the phone shows a short
+  note once, naming the chore ("1 change was replaced by a newer one"); nothing is left
+  waiting; completions, photos and thumbs-up are never dropped (owner, through the
+  orchestrator: "agree with recommended", option A).
 
 - 2026-10-30: 026: services live under `C:\services\<service-name>`, so Wuzzanext installs in
   `C:\services\wuzzanext` (owner, through the orchestrator: "I like to have services installed
