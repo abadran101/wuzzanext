@@ -44,7 +44,7 @@ everything on the dev machine is readable by Codex.
 | 016 | Android APK build (signed by the owner), home-server address setting | Done (PR #17, merged; signed on the owner's PC) | 005 |
 | 017 | Offline copy and outbox sync with the conflict rule (decided 2026-10-26); one queue per person, so a forced sign-out on session expiry keeps queued changes (STATUS open item 5) | Proposed | 016 |
 | 018 | Due-task reminders as local phone notifications | Proposed | 016, 017 |
-| 019 | Home-server packaging as a Windows service behind Nginx Proxy Manager, first deployment | Next, after 020 (owner, 2026-10-30): package and guide; the owner deploys | 020 |
+| 019 | Home-server packaging as a Windows service behind Nginx Proxy Manager, first deployment | Done, PR open (after PR #18); then the package from the merged hash; the owner deploys | 020 |
 | 020 | Source archive of the exact commit packaged into each build, offered on the About page (AGPL, private repository) | Done (PR open) | 004 |
 | 021 | Remove unused PostHog, RevenueCat and Stripe packages; README brought up to date | Done | 004 |
 | 022 | Arabic: full right-to-left layout (the one-tap toggle is in the user menu since 007), missing Arabic texts filled in; the owner reviews the Arabic wording before merge | Done (PR #11, merged) | 007 |
