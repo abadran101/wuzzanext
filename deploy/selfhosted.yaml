@@ -1,6 +1,6 @@
 # Wuzzanext on the home server: the configuration template (task 019).
 #
-# On the host this file becomes C:\Wuzzanext\app\config\selfhosted.yaml (see
+# On the host this file becomes C:\services\wuzzanext\app\config\selfhosted.yaml (see
 # docs/deployment-spec.md). Every <...> is filled in on the host, never in this repository.
 # Secrets are not written here: the service gets them from its environment
 # (DT_JWT_SECRET, DT_TRANSLATION_API_KEY), which overrides the empty values below.
@@ -36,7 +36,7 @@ server:
   serve_frontend: true
   serve_swagger: false
   public_host: "<PUBLIC_URL>"
-  downloads_dir: 'C:\Wuzzanext\data\downloads' # the owner puts the signed wuzzanext.apk here
+  downloads_dir: 'C:\services\wuzzanext\data\downloads' # the owner puts the signed wuzzanext.apk here
 logging:
   level: "info"
   encoding: "json"
@@ -55,7 +55,7 @@ email:
   log_raw_url: true # password reset links go to the log; no mail server is set up
 storage:
   storage_type: "local"
-  base_path: 'C:\Wuzzanext\data\uploads' # next to the database, inside the nightly backup
+  base_path: 'C:\services\wuzzanext\data\uploads' # next to the database, inside the nightly backup
   max_file_size: 5242880 # 5 MB per file
   max_user_storage: 1073741824 # 1 GB per person
 realtime:

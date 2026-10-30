@@ -9,8 +9,8 @@ About 30 minutes the first time, 10 minutes for an update. Pick a time away from
 
 The supervisor builds it from the merged commit and reports, through the orchestrator, the
 commit's full hash and the SHA-256 of `wuzzanext.exe`. Copy the folder
-`wuzzanext-<first 12 characters>` to the home server: into `C:\Wuzzanext\incoming\` once it
-exists, the first time into your own `Downloads` folder.
+`wuzzanext-<first 12 characters>` to the home server: into `C:\services\wuzzanext\incoming\`
+once it exists, the first time into your own `Downloads` folder.
 
 ## 2. Check the files
 
@@ -21,7 +21,7 @@ On the home server, in a normal PowerShell window (Start > type PowerShell > Ent
   # Checks the newest wuzzanext-* package against its SHA256SUMS.txt.
   # want: OK on every line, then ALL MATCH
   # want: the wuzzanext.exe SHA-256 equals the one in the supervisor's report
-  $base = 'C:\Wuzzanext\incoming'
+  $base = 'C:\services\wuzzanext\incoming'
   if (-not (Test-Path -LiteralPath $base)) { $base = Join-Path $env:USERPROFILE 'Downloads' }
   $dir = Get-ChildItem -LiteralPath $base -Directory -Filter 'wuzzanext-*' |
     Sort-Object LastWriteTime | Select-Object -Last 1
@@ -84,8 +84,8 @@ Success: the app's HTTPS address opens the Wuzzanext sign-in page.
 ## 6. The Android app
 
 Sign the APK (`docs/android-signing.md`), name it `wuzzanext.apk` and copy it into
-`C:\Wuzzanext\data\downloads\`. Want: the About page now shows **Download the Android app**,
-and it downloads on a phone on the home network. Replace the file to offer a new version.
+`C:\services\wuzzanext\data\downloads\`. Want: the About page now shows **Download the
+Android app**, and it downloads on a phone on the home network. Replace the file to offer a new version.
 
 ## Updates
 
