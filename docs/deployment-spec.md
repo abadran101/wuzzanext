@@ -23,48 +23,50 @@ Built on the dev machine from `<FULL_HASH>` with `node scripts/build-server.mjs`
 
 | File | Goes to |
 | --- | --- |
-| `wuzzanext.exe` | `C:\Wuzzanext\app\wuzzanext.exe` |
-| `wuzzanext-source.tar.gz` | `C:\Wuzzanext\app\` (also inside the program; the AGPL source) |
-| `selfhosted.yaml.template` | first install only: `C:\Wuzzanext\app\config\selfhosted.yaml` |
+| `wuzzanext.exe` | `C:\services\wuzzanext\app\wuzzanext.exe` |
+| `wuzzanext-source.tar.gz` | `C:\services\wuzzanext\app\` (also inside the program; the AGPL source) |
+| `selfhosted.yaml.template` | first install only: `C:\services\wuzzanext\app\config\selfhosted.yaml` |
 | `deployment-spec.md`, `owner-guide.md` | this spec and the owner's steps (not installed) |
 | `SHA256SUMS.txt` | the SHA-256 of every file above |
 
-The owner copies the folder to `C:\Wuzzanext\incoming\` and checks the SHA-256s against the
-build report for `<FULL_HASH>` (owner guide, step 2). Install nothing whose SHA-256 differs.
+The owner copies the folder to `C:\services\wuzzanext\incoming\` and checks the SHA-256s
+against the build report for `<FULL_HASH>` (owner guide, step 2). Install nothing whose SHA-256 differs.
 
 ## 2. Folders and their permissions
 
-Inheritance from `C:\` is turned off on `C:\Wuzzanext`, so the general Users and
-Authenticated Users entries do not apply.
+`C:\services` holds the host's services, one folder each; create it if it is missing and
+leave its own permissions as they are. Inheritance is turned off on `C:\services\wuzzanext`
+only (not on `C:\services`), so the general Users and Authenticated Users entries do not
+apply to Wuzzanext's folders.
 
 | Folder | Administrators, SYSTEM | `NT SERVICE\Wuzzanext` | `<OWNER_ACCOUNT>` |
 | --- | --- | --- | --- |
-| `C:\Wuzzanext\app` (program, `config\`) | Full control | Read and execute | none |
-| `C:\Wuzzanext\data` (database) | Full control | Modify | none |
-| `C:\Wuzzanext\data\uploads` (pictures) | inherited | inherited | none |
-| `C:\Wuzzanext\data\logs` | inherited | inherited | Read |
-| `C:\Wuzzanext\data\downloads` (the signed APK) | inherited | inherited | Modify |
-| `C:\Wuzzanext\incoming` (packages from the owner) | Full control | none | Modify |
+| `C:\services\wuzzanext\app` (program, `config\`) | Full control | Read and execute | none |
+| `C:\services\wuzzanext\data` (database) | Full control | Modify | none |
+| `C:\services\wuzzanext\data\uploads` (pictures) | inherited | inherited | none |
+| `C:\services\wuzzanext\data\logs` | inherited | inherited | Read |
+| `C:\services\wuzzanext\data\downloads` (the signed APK) | inherited | inherited | Modify |
+| `C:\services\wuzzanext\incoming` (packages from the owner) | Full control | none | Modify |
 | `<BACKUP_DIR>` | Full control | none | none |
 
-The database file is `C:\Wuzzanext\data\wuzzanext.db`; the server creates it on first start.
-Its `-wal` and `-shm` files belong to it and stay in the same folder.
+The database file is `C:\services\wuzzanext\data\wuzzanext.db`; the server creates it on first
+start. Its `-wal` and `-shm` files belong to it and stay in the same folder.
 
 ## 3. The service
 
 | Setting | Value |
 | --- | --- |
 | Name and display name | `Wuzzanext` |
-| Program | `C:\Wuzzanext\app\wuzzanext.exe`, no arguments |
+| Program | `C:\services\wuzzanext\app\wuzzanext.exe`, no arguments |
 | Account | the virtual account `NT SERVICE\Wuzzanext` (no password) |
 | Start | Automatic |
 | Recovery | restart the service after 1 minute on the first, second and later failures; reset the failure count after 1 day |
 | Recovery for stops with errors | on ("Enable actions for stops with errors"), because a bad configuration ends the service with exit code 1 or 2 rather than a crash |
 
 Started by Windows, the program works from its own folder (so it reads
-`C:\Wuzzanext\app\config\selfhosted.yaml`), writes everything it prints to `DT_LOG_FILE`
-(a log over 20 MB is renamed to `.old` at the next start), and stops cleanly on Stop and on
-Shutdown.
+`C:\services\wuzzanext\app\config\selfhosted.yaml`), writes everything it prints to
+`DT_LOG_FILE` (a log over 20 MB is renamed to `.old` at the next start), and stops cleanly on
+Stop and on Shutdown.
 
 ### Environment variables of the service
 
@@ -74,8 +76,8 @@ inherits them.
 | Name | Value |
 | --- | --- |
 | `DT_ENV` | `selfhosted` |
-| `DT_SQLITE_PATH` | `C:\Wuzzanext\data\wuzzanext.db` |
-| `DT_LOG_FILE` | `C:\Wuzzanext\data\logs\wuzzanext.log` |
+| `DT_SQLITE_PATH` | `C:\services\wuzzanext\data\wuzzanext.db` |
+| `DT_LOG_FILE` | `C:\services\wuzzanext\data\logs\wuzzanext.log` |
 | `DT_JWT_SECRET` | a new random secret of 64 hex characters, made on the host; it never leaves it |
 | `DT_TRANSLATION_ENABLED` | `true`, once the owner has a Google key (`docs/translation-setup.md`) |
 | `DT_TRANSLATION_API_KEY` | the owner's Google Cloud Translation key, typed in on the host |
@@ -88,8 +90,8 @@ the owner's and the administrators, put the two secrets in `config\selfhosted.ya
 ### The configuration file
 
 First install only: copy `selfhosted.yaml.template` to
-`C:\Wuzzanext\app\config\selfhosted.yaml` and replace `<PUBLIC_URL>` (three places) and
-`<BIND_ADDRESS>`. Updates never replace this file.
+`C:\services\wuzzanext\app\config\selfhosted.yaml` and replace `<PUBLIC_URL>` (three places)
+and `<BIND_ADDRESS>`. Updates never replace this file.
 
 ## 4. Bind address
 
@@ -110,9 +112,9 @@ empty `server.host`, `0.0.0.0` or `<HOST_LAN_ADDRESS>`.
    owns the gateway of that network. Set `server.host` to that adapter's address and
    `<DOCKER_SUBNET>` to its network. Firewall rule for B: one inbound rule,
    **Wuzzanext: Docker to port 2021**, Allow, TCP, local port 2021, program
-   `C:\Wuzzanext\app\wuzzanext.exe`, remote address `<DOCKER_SUBNET>` only, all profiles. No
-   other rule may allow port 2021 or this program (check the inbound rules for both). Run the
-   NPM check; want `200`.
+   `C:\services\wuzzanext\app\wuzzanext.exe`, remote address `<DOCKER_SUBNET>` only, all
+   profiles. No other rule may allow port 2021 or this program (check the inbound rules for
+   both). Run the NPM check; want `200`.
 3. If neither works, stop and tell the owner; do not widen the binding or the rule.
 
 The NPM proxy host forwards to the same address the check used (`host.docker.internal` for A,
@@ -135,9 +137,9 @@ A scheduled task, **Wuzzanext nightly backup**:
 | --- | --- |
 | Runs as | SYSTEM, whether anyone is signed in or not |
 | Trigger | daily at 03:00 |
-| Program | `C:\Wuzzanext\app\wuzzanext.exe` |
-| Arguments | `backup -db C:\Wuzzanext\data\wuzzanext.db -uploads C:\Wuzzanext\data\uploads -to <BACKUP_DIR> -keep 14` |
-| Start in | `C:\Wuzzanext\app` |
+| Program | `C:\services\wuzzanext\app\wuzzanext.exe` |
+| Arguments | `backup -db C:\services\wuzzanext\data\wuzzanext.db -uploads C:\services\wuzzanext\data\uploads -to <BACKUP_DIR> -keep 14` |
+| Start in | `C:\services\wuzzanext\app` |
 | Stop if it runs longer than | 1 hour |
 
 Each run makes `<BACKUP_DIR>\wuzzanext-YYYYMMDD-HHMMSS\` with `wuzzanext.db` (a consistent
@@ -147,21 +149,21 @@ always kept. Exit code 0 and a last line `backup ok: <folder>` mean success; 1 i
 backup, 2 a wrong command line.
 
 **Restore** (the owner decides when): stop the service; move `wuzzanext.db`, `-wal` and `-shm`
-out of `C:\Wuzzanext\data`; copy `wuzzanext.db` and `uploads\` from the chosen backup folder
-into `C:\Wuzzanext\data`; start the service; run the checks in section 7.
+out of `C:\services\wuzzanext\data`; copy `wuzzanext.db` and `uploads\` from the chosen backup
+folder into `C:\services\wuzzanext\data`; start the service; run the checks in section 7.
 
 ## 6. Updates
 
 At a time the owner picks, away from family meal times.
 
-1. The owner copies the new package to `C:\Wuzzanext\incoming\` and checks its SHA-256s
-   against the build report for the new `<FULL_HASH>`.
+1. The owner copies the new package to `C:\services\wuzzanext\incoming\` and checks its
+   SHA-256s against the build report for the new `<FULL_HASH>`.
 2. Run the backup task once and wait for `backup ok` (the new version may change the database
    when it starts).
 3. Stop the service.
-4. Rename `C:\Wuzzanext\app\wuzzanext.exe` to `wuzzanext.exe.previous` (replacing an older
-   one), then copy the new `wuzzanext.exe` and `wuzzanext-source.tar.gz` into
-   `C:\Wuzzanext\app`. Leave `config\` and `C:\Wuzzanext\data` alone.
+4. Rename `C:\services\wuzzanext\app\wuzzanext.exe` to `wuzzanext.exe.previous` (replacing an
+   older one), then copy the new `wuzzanext.exe` and `wuzzanext-source.tar.gz` into
+   `C:\services\wuzzanext\app`. Leave `config\` and `C:\services\wuzzanext\data` alone.
 5. Start the service and run the checks in section 7.
 
 **Going back:** stop the service, put `wuzzanext.exe.previous` back as `wuzzanext.exe`,
@@ -184,4 +186,4 @@ All must pass; record what each showed (not secrets, not family data).
    running version, and signing in works.
 7. One backup run ends with `backup ok`, and the new folder holds `wuzzanext.db` and
    `uploads\`.
-8. The log `C:\Wuzzanext\data\logs\wuzzanext.log` has no errors since the start.
+8. The log `C:\services\wuzzanext\data\logs\wuzzanext.log` has no errors since the start.
