@@ -13,6 +13,9 @@ import (
 //go:embed dist
 var embeddedFiles embed.FS
 
+// files is what the server serves; tests swap in their own.
+var files fs.FS = embeddedFiles
+
 type Handler struct {
 	ServeFrontend bool
 }
@@ -41,7 +44,7 @@ func staticMiddleware(root string) gin.HandlerFunc {
 	fileServer := http.FileServer(getFileSystem(root))
 
 	return func(c *gin.Context) {
-		_, err := fs.Stat(embeddedFiles, "dist"+c.Request.URL.Path)
+		_, err := fs.Stat(files, "dist"+c.Request.URL.Path)
 		if err != nil {
 			c.Next()
 			return
@@ -74,7 +77,7 @@ func staticMiddlewareNoRoute(root string) gin.HandlerFunc {
 }
 
 func getFileSystem(path string) http.FileSystem {
-	fs, err := fs.Sub(embeddedFiles, path)
+	fs, err := fs.Sub(files, path)
 	if err != nil {
 		panic(err)
 	}

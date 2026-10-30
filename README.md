@@ -34,8 +34,10 @@ Wuzzanext is a modified version of Donetick, and like Donetick it is licensed un
 upstream license and copyright notices are kept (`backend/LICENSE.md`,
 `frontend/LICENSE.md`). This repository is private, so every running copy offers its exact
 source instead: the app's About page (`/about`, reachable without signing in) links to
-`/wuzzanext-source.tar.gz` on the same server. Task 020 builds that archive into each
-release; until it lands, the link answers 404.
+`/wuzzanext-source.tar.gz` on the same server. Every server build carries that archive: a
+`git archive` of the exact commit it was built from, with one top folder named
+`wuzzanext-<full commit hash>` (`scripts/build-server.mjs`, below). A server built some
+other way answers 404 there.
 
 Changes from Donetick so far: the Wuzzanext name, app id `com.wuzzanext.app` and link scheme
 `wuzzanext://`; no analytics (PostHog, Plausible); no paid "Plus" tier or purchases (Stripe,
@@ -95,9 +97,19 @@ To run it on your own machine:
 3. Start the web interface from `frontend/` with `npm run dev` and open the address Vite
    prints. It talks to the server at `http://localhost:2021` (`frontend/.env.development`).
 
-For a single server that also serves the web interface, copy the contents of
-`frontend/dist` into `backend/frontend/dist` before building the server; it embeds that
-folder and serves it when `server.serve_frontend` is true.
+The home-server program, with the web interface and the source archive inside it, comes
+from one command at the repository root (after `npm ci` in `frontend/`):
+
+```sh
+node scripts/build-server.mjs
+```
+
+It refuses a tree with uncommitted changes, so the archive always matches the commit. It
+builds the web interface (`selfhosted` mode), embeds it with
+`git archive --format=tar.gz` of `HEAD` as `wuzzanext-source.tar.gz`, builds the Windows
+program into `release/wuzzanext-<short hash>/wuzzanext.exe` (git ignores `release/`),
+restores `backend/frontend/dist`, and prints the commit, sizes and SHA-256s. The server
+serves the embedded files when `server.serve_frontend` is true.
 
 App icons and splash screens all come from the owner's logo. After `npm ci` in `frontend/`,
 run from the repository root `node assets/logo/make-logo.mjs` (the two cut-outs) and then
@@ -125,6 +137,7 @@ family's logo (task 005). Family profiles with PIN sign-in (007), Arabic with ri
 layout (022), translated chore texts (023), chore instructions with pictures (008) and photo
 proof with a thumbs up from whoever gave the chore (009) are in, and so are stars for every
 new chore with a leaderboard for the household's week, Monday to Sunday by default (010).
-Nothing is deployed yet. Next come the simpler interface, the Android APK, offline use and
-reminders. The meal-planning tasks wait for
-sample recipe pages.
+The Android APK builds unsigned for the owner to sign (016), and every server build carries
+its own source (020). Nothing is deployed yet. Next come the first home-server deployment
+(019), then offline use (017) and reminders (018). The meal-planning tasks wait for sample
+recipe pages.

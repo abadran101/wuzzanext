@@ -11,10 +11,10 @@ Update this file at every stop. Output from the real machines beats anything wri
 ## GitHub
 
 - Repository `abadran101/wuzzanext`, private (stays private, owner 2026-10-26). Default branch
-  `main` at 5231923e (PR #16, task 010, merged 2026-10-29; PR #15, task 025, merged 2026-10-29; PR #14, task 009, merged 2026-10-29; PR #13, task 008, merged 2026-10-28; PR #12, task 023, merged 2026-10-28; PR #11, task 022, merged 2026-10-28; PR #10, task 024, merged 2026-10-27; PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
+  `main` at 6e0d7282 (PR #17, task 016, merged 2026-10-30; PR #16, task 010, merged 2026-10-29; PR #15, task 025, merged 2026-10-29; PR #14, task 009, merged 2026-10-29; PR #13, task 008, merged 2026-10-28; PR #12, task 023, merged 2026-10-28; PR #11, task 022, merged 2026-10-28; PR #10, task 024, merged 2026-10-27; PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
   merged 2026-10-27; PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1,
   task 001, before it).
-- Open branch: `task/016-android-apk` (done, PR open).
+- Open branch: `task/020-source-archive` (done, PR open).
 - Remote `origin` is `https://github.com/abadran101/wuzzanext.git`, confirmed with
   `git ls-remote origin` on 2026-10-26.
 - Agents push task branches with the fine-grained token the orchestrator lists (it covers only the
@@ -50,7 +50,10 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 016 Android APK (task file): done, PR open. Unsigned APK 1.0.0 (code 100) in
+- 020 source archive (task file): done, PR open. `node scripts/build-server.mjs` builds the
+  Windows server with the web interface and a `git archive` of the exact commit inside it,
+  served as `/wuzzanext-source.tar.gz` (the About page link). 019 packages that program.
+- 016 Android APK: merged (PR #17). Unsigned APK 1.0.0 (code 100) in
   `C:\dev\scratch\wuzzanext-1.0.0-unsigned.apk`, SHA-256
   ca752bed110fe7057cced052980750ff7674d81083802b6085e9ed054ea2a4ae. The owner sets up signing
   (`docs/android-signing.md`), signs it and installs it on one phone; that install is the first
@@ -58,7 +61,7 @@ Update this file at every stop. Output from the real machines beats anything wri
 - First deployment: keep `storage.base_path` (`./uploads`) on the data volume next to the
   database, or pictures are lost when the container is replaced (task 008 Result).
 - Google key setup for 023 comes with the first deployment (`docs/translation-setup.md`).
-- Next: 016, 017, 018, then 020 before 019; 012-015 stay parked.
+- Next: 020, then 019, 017, 018 (owner, 2026-10-30); 012-015 wait for the recipe samples.
 
 ## Open items
 
@@ -81,6 +84,11 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## Decisions (newest first)
 
+- 2026-10-30: PR #17 (task 016) merged; do 020 and 019 next, then 017 and 018, so the owner can
+  test on a phone against the home server (owner, through the orchestrator: "merged, yes",
+  answering "Should Wuzzanext do 020 and 019 next, so you can test on a phone against the home
+  server? (recommended)"). 019 makes the package and a step-by-step guide; the owner deploys by
+  the reviewed full merged hash, and neither agent touches the home server or the LAN.
 - 2026-10-29: no Codex at all, read-only plan runs included, until the owner says otherwise; the
   supervisor does the remaining work (owner, through the orchestrator: "I want you to use Claude
   (Wuzzanext) to complete the remaining work, do not use Codex until I tell you").
