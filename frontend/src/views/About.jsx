@@ -12,6 +12,31 @@ const About = () => {
   const [sourceUrl, setSourceUrl] = useState(
     native ? null : '/wuzzanext-source.tar.gz',
   )
+  const [commit, setCommit] = useState(null)
+  const [apkReady, setApkReady] = useState(false)
+
+  // The server build stamps its commit (task 019); the owner may also have
+  // placed the signed Android app for download. Web only: the app is installed.
+  useEffect(() => {
+    if (native) return
+    let active = true
+    fetch('/health')
+      .then(res => (res.ok ? res.json() : null))
+      .then(body => {
+        if (active && body?.commit && body.commit !== 'dev') {
+          setCommit(body.commit.slice(0, 12))
+        }
+      })
+      .catch(() => {})
+    fetch('/download/wuzzanext.apk', { method: 'HEAD' })
+      .then(res => {
+        if (active) setApkReady(res.ok)
+      })
+      .catch(() => {})
+    return () => {
+      active = false
+    }
+  }, [native])
 
   useEffect(() => {
     if (!native) return
@@ -66,6 +91,16 @@ const About = () => {
           >
             {t('about.downloadSource')}
           </Link>
+          {apkReady && (
+            <Link href='/download/wuzzanext.apk' download>
+              {t('about.downloadApp')}
+            </Link>
+          )}
+          {commit && (
+            <Typography level='body-sm' textColor='neutral.500'>
+              {t('about.runningCommit', { commit })}
+            </Typography>
+          )}
           <Link href='/' color='neutral' level='body-sm'>
             {t('about.openApp')}
           </Link>
