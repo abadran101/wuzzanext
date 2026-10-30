@@ -11,11 +11,14 @@ Update this file at every stop. Output from the real machines beats anything wri
 ## GitHub
 
 - Repository `abadran101/wuzzanext`, private (stays private, owner 2026-10-26). Default branch
-  `main` at 6e0d7282 (PR #17, task 016, merged 2026-10-30; PR #16, task 010, merged 2026-10-29; PR #15, task 025, merged 2026-10-29; PR #14, task 009, merged 2026-10-29; PR #13, task 008, merged 2026-10-28; PR #12, task 023, merged 2026-10-28; PR #11, task 022, merged 2026-10-28; PR #10, task 024, merged 2026-10-27; PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
+  `main` at a6efa64a (PR #19, task 019, merged 2026-10-30; PR #20, a GitHub revert of #19,
+  closed unmerged by the owner the same day; PR #18, task 020, merged 2026-10-30, main
+  f54ec73b; PR #17, task 016, merged 2026-10-30; PR #16, task 010, merged 2026-10-29; PR #15, task 025, merged 2026-10-29; PR #14, task 009, merged 2026-10-29; PR #13, task 008, merged 2026-10-28; PR #12, task 023, merged 2026-10-28; PR #11, task 022, merged 2026-10-28; PR #10, task 024, merged 2026-10-27; PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
   merged 2026-10-27; PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1,
   task 001, before it).
-- Open branches: `task/020-source-archive` (done, PR #18 open), `task/019-home-server` (done,
-  PR open, on top of 020: merge #18 first).
+- Open branch: `task/026-services-folder` (done, pushed; the owner opens the PR, because the
+  Tokenmaxximus PR call is refused in this session's auto mode). The owner removes merged
+  and closed branches on GitHub, `revert-19-task/019-home-server` included.
 - Remote `origin` is `https://github.com/abadran101/wuzzanext.git`, confirmed with
   `git ls-remote origin` on 2026-10-26.
 - Agents push task branches with the fine-grained token the orchestrator lists (it covers only the
@@ -51,7 +54,10 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 020 source archive (task file): done, PR open. `node scripts/build-server.mjs` builds the
+- 026 install folder (task file): done. The spec, guide and template name
+  `C:\services\wuzzanext` (owner, 2026-10-30). After the merge the supervisor rebuilds the
+  package from the new merged hash; the a6efa64a package names the old folder.
+- 020 source archive (task file): merged (PR #18). `node scripts/build-server.mjs` builds the
   Windows server with the web interface and a `git archive` of the exact commit inside it,
   served as `/wuzzanext-source.tar.gz` (the About page link). 019 packages that program.
 - 016 Android APK: merged (PR #17). Unsigned APK 1.0.0 (code 100) in
@@ -62,11 +68,12 @@ Update this file at every stop. Output from the real machines beats anything wri
 - First deployment: keep `storage.base_path` (`./uploads`) on the data volume next to the
   database, or pictures are lost when the container is replaced (task 008 Result).
 - Google key setup for 023 comes with the first deployment (`docs/translation-setup.md`).
-- 019 home-server package (task file): done, PR open. Windows service mode, `wuzzanext.exe
+- 019 home-server package (task file): merged (PR #19). Windows service mode, `wuzzanext.exe
   backup`, the APK download and running commit on the About page, the config template, the
-  deployment spec for Tokenmaxximus and the owner guide. After the merge the supervisor
-  builds the package from the merged hash; the owner deploys by the guide.
-- Next: 020, then 019, 017, 018 (owner, 2026-10-30); 012-015 wait for the recipe samples.
+  deployment spec for Tokenmaxximus and the owner guide. Package from a6efa64a built and
+  checked (`/health` shows the full hash), superseded by the one after 026.
+- 017 offline copy: paused for 026 (owner, 2026-10-30); not started, no branch yet.
+- Next: 026, then 017, 018 (owner, 2026-10-30); 012-015 wait for the recipe samples.
 
 ## Open items
 
@@ -88,6 +95,12 @@ Update this file at every stop. Output from the real machines beats anything wri
    the `<img>` copy and is blocked by CORS. Fix with `Vary: Origin` on `/api/v1/assets`.
 
 ## Decisions (newest first)
+
+- 2026-10-30: 026: services live under `C:\services\<service-name>`, so Wuzzanext installs in
+  `C:\services\wuzzanext` (owner, through the orchestrator: "I like to have services installed
+  in C:\services\[service-name]"). The service name stays `Wuzzanext`. 017 waits for it.
+- 2026-10-30: PR #19 (task 019) merged; PR #20 (GitHub's revert of #19) closed unmerged (owner,
+  through the orchestrator: "I closed it"). Main a6efa64a.
 
 - 2026-10-30: 019: Nginx Proxy Manager runs in Docker on the same Windows host ("same machine
   on docker"); the spec tests the bind address at deployment and lets only the Docker side

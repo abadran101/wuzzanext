@@ -45,4 +45,14 @@ there from the start.
 
 ## Result (filled in before the push, in the task's own branch)
 
-- (to fill in)
+- Change: 88c99ba3dbb8b0f116ee584d4e130fbb7038cfe0. `deploy/selfhosted.yaml` (3 paths),
+  `docs/deployment-spec.md` (29, plus the inheritance paragraph), `docs/owner-guide.md` (3,
+  including the SHA-256 check block's `$base`); prose lines rewrapped. No code change, so the
+  019 checks stand.
+- Checked: the case-insensitive `git grep` for the old path finds nothing; the template
+  parses as YAML (js-yaml) with the new `downloads_dir` and `base_path`; the owner guide's
+  PowerShell block parses (0 errors).
+- Records: PR #18 and PR #19 merged, PR #20 closed unmerged (STATUS).
+- Left: the owner opens and merges the PR (the Tokenmaxximus PR call is refused in auto mode);
+  then the supervisor rebuilds the package from the new merged hash and reports its
+  SHA-256s. The a6efa64a package still names the old folder and should not be installed.
