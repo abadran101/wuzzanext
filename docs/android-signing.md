@@ -104,7 +104,7 @@ two lines, and run the block. `apksigner` asks for the key password.
   $out = @(
     "hash: matches   (want: matches)",
     "verified: $($verify -match 'Verifies')   (want: True)",
-    "v2 scheme: $($verify -match 'v2 scheme \(APK Signature Scheme v2\): true')   (want: True)",
+    "v2 or v3 scheme: $($verify -match 'scheme \(APK Signature Scheme v[23]\): true')   (want: True)",
     ($verify -split "`n" | Where-Object { $_ -match 'certificate SHA-256 digest' } | Select-Object -First 1),
     "signed file: $signed"
   )
