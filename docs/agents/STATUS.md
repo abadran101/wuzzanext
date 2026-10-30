@@ -11,13 +11,14 @@ Update this file at every stop. Output from the real machines beats anything wri
 ## GitHub
 
 - Repository `abadran101/wuzzanext`, private (stays private, owner 2026-10-26). Default branch
-  `main` at a6efa64a (PR #19, task 019, merged 2026-10-30; PR #20, a GitHub revert of #19,
+  `main` at e7f4d6b1 (PR #21, task 026, merged 2026-10-30; PR #19, task 019, merged
+  2026-10-30, main a6efa64a; PR #20, a GitHub revert of #19,
   closed unmerged by the owner the same day; PR #18, task 020, merged 2026-10-30, main
   f54ec73b; PR #17, task 016, merged 2026-10-30; PR #16, task 010, merged 2026-10-29; PR #15, task 025, merged 2026-10-29; PR #14, task 009, merged 2026-10-29; PR #13, task 008, merged 2026-10-28; PR #12, task 023, merged 2026-10-28; PR #11, task 022, merged 2026-10-28; PR #10, task 024, merged 2026-10-27; PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
   merged 2026-10-27; PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1,
   task 001, before it).
-- Open branch: `task/026-services-folder` (done, pushed; the owner opens the PR, because the
-  Tokenmaxximus PR call is refused in this session's auto mode). The owner removes merged
+- Open branch: `task/017-offline-sync` (in progress, local). The owner opens PRs, because the
+  Tokenmaxximus PR call is refused in this session's auto mode. The owner removes merged
   and closed branches on GitHub, `revert-19-task/019-home-server` included.
 - Remote `origin` is `https://github.com/abadran101/wuzzanext.git`, confirmed with
   `git ls-remote origin` on 2026-10-26.
@@ -54,9 +55,11 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## In flight
 
-- 026 install folder (task file): done. The spec, guide and template name
-  `C:\services\wuzzanext` (owner, 2026-10-30). After the merge the supervisor rebuilds the
-  package from the new merged hash; the a6efa64a package names the old folder.
+- 026 install folder (task file): merged (PR #21). The spec, guide and template name
+  `C:\services\wuzzanext` (owner, 2026-10-30). Package from e7f4d6b1 built and checked
+  (`/health` shows the full hash; the packaged docs name only the new folder), in
+  `C:\dev\wt\wuzzanext-019-home-server\release\wuzzanext-e7f4d6b1fcbe`; the older packages
+  are deleted. The owner deploys by `docs/owner-guide.md`.
 - 020 source archive (task file): merged (PR #18). `node scripts/build-server.mjs` builds the
   Windows server with the web interface and a `git archive` of the exact commit inside it,
   served as `/wuzzanext-source.tar.gz` (the About page link). 019 packages that program.
@@ -72,8 +75,9 @@ Update this file at every stop. Output from the real machines beats anything wri
   backup`, the APK download and running commit on the About page, the config template, the
   deployment spec for Tokenmaxximus and the owner guide. Package from a6efa64a built and
   checked (`/health` shows the full hash), superseded by the one after 026.
-- 017 offline copy: paused for 026 (owner, 2026-10-30); not started, no branch yet.
-- Next: 026, then 017, 018 (owner, 2026-10-30); 012-015 wait for the recipe samples.
+- 017 offline copy (task file): started from e7f4d6b1; one owner question open (what a phone
+  shows when its change loses to a newer one).
+- Next: 017, then 018 (owner, 2026-10-30); 012-015 wait for the recipe samples.
 
 ## Open items
 
