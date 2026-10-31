@@ -42,7 +42,7 @@ everything on the dev machine is readable by Codex.
 | 014 | Meal polls: up to 3 recipes, chosen voters, majority, random tie-break | Proposed | 013 |
 | 015 | Shopping list from planned meals, scaled to servings | Proposed | 012, 013 |
 | 016 | Android APK build (signed by the owner), home-server address setting | Done (PR #17, merged; signed on the owner's PC) | 005 |
-| 017 | Offline copy and outbox sync with the conflict rule (decided 2026-10-26); one queue per person, so a forced sign-out on session expiry keeps queued changes (STATUS open item 5) | In progress (owner answered 2026-10-30) | 016 |
+| 017 | Offline copy and outbox sync with the conflict rule (decided 2026-10-26); one queue per person, so a forced sign-out on session expiry keeps queued changes (STATUS open item 5) | Done (branch pushed, PR to be opened by the owner) | 016 |
 | 018 | Due-task reminders as local phone notifications | Proposed | 016, 017 |
 | 019 | Home-server packaging as a Windows service behind Nginx Proxy Manager, first deployment | Done (PR #19, merged); the owner deploys the package built after 026 | 020 |
 | 020 | Source archive of the exact commit packaged into each build, offered on the About page (AGPL, private repository) | Done (PR #18, merged) | 004 |

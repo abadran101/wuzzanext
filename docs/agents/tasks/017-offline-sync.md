@@ -1,6 +1,6 @@
 # Task 017: offline copy and outbox sync
 
-- **Status:** in progress (owner answered, 2026-10-30)
+- **Status:** done, branch pushed (PR to be opened by the owner)
 - **Branch and worktree:** `task/017-offline-sync` from `main` (e7f4d6b1), in
   `C:\dev\wt\wuzzanext-017-offline-sync`
 - **Hand-off:** supervisor (no Codex, STATUS Decisions 2026-10-29)
@@ -80,4 +80,38 @@ session runs out, no longer throws away changes that were not yet sent.
 
 ## Result (filled in before the push, in the task's own branch)
 
-- (to fill in)
+- Commits: 567c08f1b63c81755835cd79174ea99400154521 (task file),
+  034f7b75a2b54aae721ae0dc690bd3c5f2afd84b (record), 430d1b950987a73150dcb399ed63e072075b53de
+  (`Vary: Origin` on pictures; the owner's answer), aea31e71aa98a9c7fe80fecfd7f7c6bcf818e5fb
+  (server: change time), 98688da99abb5e76b587861bc6a35883230fe69f (outbox per person, change
+  time on replay, the note), 63bd3c3f94c4a8911370a562a4dbacbaa4b6283b (README), then this
+  record commit.
+- Server: replayed chore edits, due dates, skips, starts, pauses, archive, unarchive and
+  deletes carry `?changedAt=`. A change older than the chore's last change gets 409
+  `{"superseded":true}`; a newer one wins and becomes the chore's change time; a delete
+  follows the same rule; a completion is always kept (its time is the phone's change time
+  when none is given); a time more than 30 s ahead gets 400. Without `changedAt` (online use)
+  nothing changes. Pictures answer with `Vary: Origin` (open item 7).
+- Phone: each queued command carries its time and the person who queued it. A superseded (or
+  gone) edit is dropped and the app says once "1 change was replaced by a newer one: <chore>"
+  (Arabic with every plural form); a superseded completion or create is kept as failed, never
+  dropped. Replay sends only the signed-in person's commands; a forced sign-out and a sign-in
+  clear only the server copy (open item 5). Older commands without a person go with whoever
+  signs in.
+- Checks: Go build, `go vet` (only the known `pool.go:218`), `go test ./...` (all packages
+  ok, new `change_time_test.go`: older loses, newer wins, due date and skip, delete beats an
+  older edit, completion kept, future refused, `asset_vary_test.go`). Web: build, lint (0
+  errors, 1897 warnings as before), node tests 55 of 56 (only the known
+  `task-editor-compatibility` failure; new `offline-outbox.test.mjs`, 7 tests), prettier.
+- Browser, 127.0.0.1, made-up household (Sam, Kim), the packaged Windows server of this
+  branch, Edge, English and Arabic, 22 of 22: Kim skips a chore offline (queued, tagged with
+  Kim, server unchanged); Sam changes it online later; on reconnect Sam's change stays, the
+  note names the chore, nothing is left waiting. Kim skips another chore offline, the session
+  expires; on reconnect the app signs out to the faces, the skip stays on the device and the
+  server is unchanged; after Kim's PIN sign-in the skip is sent. Two "Transition was skipped"
+  page errors on PIN sign-in also happen on main (e7f4d6b1, same flow), so not from 017.
+- Limits: a phone clock more than 30 s fast gets its queued changes refused (kept as failed;
+  README). Photos and thumbs-ups are not queued offline (as upstream); they need the
+  connection.
+- The owner: open the PR and merge; after the next install, try it on a phone (airplane mode,
+  change a chore, reconnect).
