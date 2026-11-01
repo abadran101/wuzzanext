@@ -46,6 +46,18 @@ sign-in, and an expired session or another person signing in keeps them until th
 again. A phone clock more than 30 seconds fast makes the server refuse its queued changes;
 they stay in the outbox as failed.
 
+## Reminders
+
+The Android app reminds the signed-in person of their own due chores with notifications it
+schedules itself from the copy on the device, so they arrive with the app closed and without a
+connection. No push service is involved, and the browser shows no reminders.
+
+A new chore reminds 1 day before, at the due time and 1 day after; each chore can change that
+in its editor. Only the next due date of a repeating chore is scheduled, and the reminders are
+brought up to date whenever the app opens, syncs or a chore changes. Signing out or switching
+device notifications off in Settings, Notifications, removes them. Nobody is signed in on the
+faces screen, so a shared tablet shows none.
+
 ## License and origin
 
 Wuzzanext is a modified version of Donetick, and like Donetick it is licensed under the
@@ -174,5 +186,5 @@ proof with a thumbs up from whoever gave the chore (009) are in, and so are star
 new chore with a leaderboard for the household's week, Monday to Sunday by default (010).
 The Android APK builds unsigned for the owner to sign (016), and every server build carries
 its own source (020). The home-server package and its deployment spec are ready (019);
-nothing is deployed yet. Offline use is in (017); next come reminders (018). The meal-planning
-tasks wait for sample recipe pages.
+nothing is deployed yet. Offline use (017) and phone reminders (018) are in. The
+meal-planning tasks wait for sample recipe pages.
