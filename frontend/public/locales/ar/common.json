@@ -299,6 +299,15 @@
   },
   "versionInfo": "V{{version}} (API: {{apiVersion}})",
   "apiVersionUnavailable": "غير متاح",
+  "reminders": {
+    "today": "اليوم الساعة {{time}}",
+    "tomorrow": "غدًا الساعة {{time}}",
+    "yesterday": "أمس الساعة {{time}}",
+    "onDate": "{{date}} الساعة {{time}}",
+    "due": "موعدها {{when}}",
+    "overdue": "متأخرة · كان موعدها {{when}}",
+    "now": "حان موعدها الآن"
+  },
   "sync": {
     "aria": "فتح حالة المزامنة والشبكة",
     "allSynced": "تمت مزامنة جميع التغييرات",

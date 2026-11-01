@@ -30,6 +30,7 @@ import {
   UnregisterDeviceToken,
   UpdateNotificationTarget,
 } from '../../utils/Fetcher'
+import { REMINDERS_CHANGED_EVENT } from '../Chores/LocalNotificationScheduler'
 import SettingsLayout from './SettingsLayout'
 
 const NotificationSetting = () => {
@@ -49,13 +50,15 @@ const NotificationSetting = () => {
         key: 'notificationPreferences',
         value: JSON.stringify({ granted: false }),
       })
-      return
+    } else {
+      const currentSettings = await getNotificationPreferences()
+      await Preferences.set({
+        key: 'notificationPreferences',
+        value: JSON.stringify({ ...currentSettings, ...value }),
+      })
     }
-    const currentSettings = await getNotificationPreferences()
-    await Preferences.set({
-      key: 'notificationPreferences',
-      value: JSON.stringify({ ...currentSettings, ...value }),
-    })
+    // Reminders follow the switch at once (task 018).
+    window.dispatchEvent(new Event(REMINDERS_CHANGED_EVENT))
   }
 
   const getPushNotificationPreferences = async () => {
@@ -307,7 +310,9 @@ const NotificationSetting = () => {
                   }
                 })
               } else {
+                // Switched off: store it, so no reminders are scheduled.
                 setDeviceNotification(false)
+                setNotificationPreferences({ granted: false })
               }
             }}
             color={deviceNotification ? 'success' : 'neutral'}

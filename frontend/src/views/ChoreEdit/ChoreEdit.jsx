@@ -104,6 +104,7 @@ import {
   PROJECT_VISIBILITY,
 } from '../../utils/ProjectAccess'
 import { getIconComponent } from '../../utils/ProjectIcons'
+import { defaultReminderTemplates } from '../../utils/ReminderPlan'
 import { getSafeBottomPadding } from '../../utils/SafeAreaUtils.js'
 import { useSinglePageTaskEditor } from '../../utils/TaskEditorPreferences'
 import { generateUUID } from '../../utils/UUID'
@@ -204,7 +205,10 @@ const ChoreEdit = () => {
   const [thingTrigger, setThingTrigger] = useState(null)
   const [isThingValid, setIsThingValid] = useState(false)
 
-  const [notificationMetadata, setNotificationMetadata] = useState({})
+  // A new chore starts with the same reminders as quick add (task 018).
+  const [notificationMetadata, setNotificationMetadata] = useState(() =>
+    choreId ? {} : { templates: defaultReminderTemplates() },
+  )
 
   const [isRolling, setIsRolling] = useState(false)
   const isNotificable = (notificationMetadata?.templates?.length ?? 0) > 0

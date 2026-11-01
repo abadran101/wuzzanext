@@ -50,6 +50,7 @@ import {
   getProjectAudienceIds,
 } from '../../utils/ProjectAccess'
 import { getIconComponent } from '../../utils/ProjectIcons'
+import { defaultReminderTemplates } from '../../utils/ReminderPlan'
 import { generateUUID } from '../../utils/UUID'
 import { DEFAULT_CHORE_POINTS } from '../../utils/WeeklyPoints'
 import { useLabels } from '../Labels/LabelQueries'
@@ -80,66 +81,6 @@ import SmartTaskTitleInput from './SmartTaskTitleInput'
 import SubTasks from './SubTask'
 import { buildChorePayload, parseVoiceTask } from './VoiceToTask/parseVoiceTask'
 import VoicePanel from './VoiceToTask/VoicePanel'
-// Canonical reminder template shape, shared with NotificationTemplate and
-// LocalNotificationScheduler: a signed value plus 'm' | 'h' | 'd'. Negative is
-// before due, positive is after, zero is on due.
-const DEFAULT_NOTIFICATION_TEMPLATES = [
-  { value: -1, unit: 'd' },
-  { value: 0, unit: 'm' },
-  { value: 1, unit: 'd' },
-]
-
-const UNIT_ALIASES = {
-  minute: 'm',
-  minutes: 'm',
-  hour: 'h',
-  hours: 'h',
-  day: 'd',
-  days: 'd',
-}
-
-// Earlier builds stored {value: 1, unit: 'days', type: 'before'}. Nothing reads
-// `type`, and the scheduler's unit switch falls through on 'days', so those
-// entries fired at the due time (or collided on id) instead of offsetting.
-const normalizeTemplate = template => {
-  const unit = UNIT_ALIASES[template.unit] || template.unit
-  const value = Number(template.value) || 0
-  if (!template.type) return { value, unit }
-  if (template.type === 'ondue') return { value: 0, unit }
-  return {
-    value: template.type === 'before' ? -Math.abs(value) : Math.abs(value),
-    unit,
-  }
-}
-
-const getDefaultNotification = () => {
-  const storedDefault = localStorage.getItem('defaultNotificationTemplate')
-  if (storedDefault) {
-    try {
-      const parsed = JSON.parse(storedDefault)
-      if (Array.isArray(parsed)) {
-        // An empty list is a deliberate "no reminders by default", not a
-        // missing value — respect it instead of re-seeding.
-        const normalized = parsed.map(normalizeTemplate)
-        if (JSON.stringify(normalized) !== storedDefault) {
-          localStorage.setItem(
-            'defaultNotificationTemplate',
-            JSON.stringify(normalized),
-          )
-        }
-        return normalized
-      }
-    } catch {
-      // fall through and reset to the defaults below
-    }
-  }
-
-  localStorage.setItem(
-    'defaultNotificationTemplate',
-    JSON.stringify(DEFAULT_NOTIFICATION_TEMPLATES),
-  )
-  return DEFAULT_NOTIFICATION_TEMPLATES
-}
 
 // Get initial project from localStorage (current active project)
 const getInitialProject = () => {
@@ -306,7 +247,7 @@ const TaskInput = ({
   // Lazy initializers: these read localStorage, which must not happen on
   // every render
   const [notificationMetadata, setNotificationMetadata] = useState(() => ({
-    templates: getDefaultNotification(),
+    templates: defaultReminderTemplates(),
   }))
   const [subTasks, setSubTasks] = useState(null)
   const [points, setPoints] = useState(DEFAULT_CHORE_POINTS)
@@ -395,7 +336,7 @@ const TaskInput = ({
   // Reminder default the voice cards start from — read once so the array
   // identity stays stable across renders of the panel
   const voiceDefaultNotificationTemplates = useMemo(
-    () => getDefaultNotification(),
+    () => defaultReminderTemplates(),
     [],
   )
   // Same arrangement for the scan panel: it reports the action for its
@@ -1225,7 +1166,7 @@ const TaskInput = ({
   // so create them all directly.
   const handleVoiceCreateMany = async parsedTasks => {
     setCreatingVoiceTasks(true)
-    const notificationTemplates = getDefaultNotification()
+    const notificationTemplates = defaultReminderTemplates()
     for (const parsed of parsedTasks) {
       const chore = buildChorePayload(parsed, {
         userProfile,

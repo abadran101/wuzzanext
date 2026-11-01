@@ -19,6 +19,7 @@ import { NavBarTitleProvider } from './contexts/NavBarTitleContext'
 import SSEProvider from './contexts/SSEContext'
 import useAppBadgeSync from './hooks/useAppBadgeSync'
 import { AuthProvider } from './hooks/useAuth.jsx'
+import useChoreReminders from './hooks/useChoreReminders'
 import useOnboardingGate from './hooks/useOnboardingGate'
 import { useReplacedChangesNote } from './hooks/useReplacedChangesNote'
 import useStatusBar from './hooks/useStatusBar'
@@ -132,6 +133,7 @@ const AppContent = () => {
   useSyncOnReconnect()
   useReplacedChangesNote()
   useAppBadgeSync()
+  useChoreReminders()
 
   // Every route renders through this Outlet, so one listener here gives crash
   // reports the trail that led to the failure.

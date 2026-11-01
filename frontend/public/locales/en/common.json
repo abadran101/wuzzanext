@@ -308,6 +308,15 @@
   },
   "versionInfo": "V{{version}} (API: {{apiVersion}})",
   "apiVersionUnavailable": "unavailable",
+  "reminders": {
+    "today": "today at {{time}}",
+    "tomorrow": "tomorrow at {{time}}",
+    "yesterday": "yesterday at {{time}}",
+    "onDate": "{{date}} at {{time}}",
+    "due": "Due {{when}}",
+    "overdue": "Overdue · was due {{when}}",
+    "now": "Due now"
+  },
   "sync": {
     "aria": "Open sync and network status",
     "allSynced": "All changes synced",

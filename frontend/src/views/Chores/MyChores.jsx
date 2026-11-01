@@ -73,10 +73,6 @@ import { useCustomFilters } from './hooks/useCustomFilters'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useMultiSelect } from './hooks/useMultiSelect'
 import { useProjectFilter } from './hooks/useProjectFilter'
-import {
-  canScheduleNotification,
-  scheduleChoreNotification,
-} from './LocalNotificationScheduler'
 import NotificationAccessSnackbar from './NotificationAccessSnackbar'
 import Sidepanel from './Sidepanel'
 import { INSIGHT_FILTER_DEFS } from './SmartInsightsCard'
@@ -561,15 +557,7 @@ const MyChores = () => {
 
         // Don't set choreSections here - let the dedicated effect handle it
         // This prevents caching issues when switching between projects
-
-        if (await canScheduleNotification()) {
-          console.log('Scheduling chore notifications...')
-          scheduleChoreNotification(
-            choresData.res,
-            userProfile,
-            membersData.res,
-          )
-        }
+        // Reminders are scheduled app-wide by useChoreReminders (task 018).
       }
 
       processEffectAsync()
