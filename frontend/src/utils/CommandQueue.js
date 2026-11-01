@@ -1,5 +1,6 @@
 import { offlineDB } from './OfflineDB'
 import { isOfflineFeatureEnabled } from './OfflineFeatureToggle'
+import { belongsTo, outboxOwnerFromToken } from './OutboxRules'
 
 // Domain command types
 export const CommandType = {
@@ -15,6 +16,22 @@ export const CommandType = {
   RESCHEDULE_CHORE: 'reschedule_chore',
   ARCHIVE_CHORE: 'archive_chore',
   UNARCHIVE_CHORE: 'unarchive_chore',
+}
+
+// One outbox per person (task 017): each command is tagged with whoever was
+// signed in when it was queued, and only that person's sign-in reads or sends
+// it. A forced sign-out keeps everyone's commands.
+export const currentOutboxOwner = () => {
+  try {
+    return outboxOwnerFromToken(localStorage.getItem('token'))
+  } catch {
+    return null
+  }
+}
+
+const mine = commands => {
+  const owner = currentOutboxOwner()
+  return commands.filter(c => belongsTo(c, owner))
 }
 
 // Parse a stored command payload; a corrupt payload must not take down every
@@ -78,14 +95,21 @@ class CommandQueue {
       createdAt: Date.now(),
       status: 'pending',
       error: null,
+      owner: currentOutboxOwner(),
     }
     return offlineDB.enqueueCommand(command)
+  }
+
+  // Every command of the signed-in person, whatever its state
+  async getAllMine() {
+    if (!isOfflineFeatureEnabled()) return []
+    return mine(await offlineDB.getCommands())
   }
 
   // Get all pending commands in order
   async getPending() {
     if (!isOfflineFeatureEnabled()) return []
-    const commands = await offlineDB.getCommands()
+    const commands = mine(await offlineDB.getCommands())
     return commands
       .filter(c => c.status === 'pending' || c.status === 'syncing')
       .map(parsePayload)
@@ -95,7 +119,7 @@ class CommandQueue {
   // Get all failed commands
   async getFailed() {
     if (!isOfflineFeatureEnabled()) return []
-    const commands = await offlineDB.getCommands()
+    const commands = mine(await offlineDB.getCommands())
     return commands
       .filter(c => c.status === 'failed')
       .map(parsePayload)
@@ -105,7 +129,7 @@ class CommandQueue {
   // Get pending commands for a specific entity (for undo/UI)
   async getPendingForEntity(entityId) {
     if (!isOfflineFeatureEnabled()) return []
-    const allCommands = await offlineDB.getCommands()
+    const allCommands = mine(await offlineDB.getCommands())
     const key = String(entityId)
     const commands = allCommands
       .filter(
@@ -125,7 +149,7 @@ class CommandQueue {
   // card reading it for itself.
   async getPendingGroupedByEntity() {
     if (!isOfflineFeatureEnabled()) return {}
-    const allCommands = await offlineDB.getCommands()
+    const allCommands = mine(await offlineDB.getCommands())
     const grouped = {}
     allCommands
       .filter(c => c.status === 'pending' || c.status === 'syncing')
@@ -219,7 +243,7 @@ class CommandQueue {
   // Reset any in-flight commands so they remain retryable after aborted syncs
   async resetSyncing() {
     if (!isOfflineFeatureEnabled()) return
-    const commands = await offlineDB.getCommands()
+    const commands = mine(await offlineDB.getCommands())
     const syncingCommands = commands.filter(c => c.status === 'syncing')
 
     await Promise.all(

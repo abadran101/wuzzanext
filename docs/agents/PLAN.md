@@ -42,7 +42,7 @@ everything on the dev machine is readable by Codex.
 | 014 | Meal polls: up to 3 recipes, chosen voters, majority, random tie-break | Proposed | 013 |
 | 015 | Shopping list from planned meals, scaled to servings | Proposed | 012, 013 |
 | 016 | Android APK build (signed by the owner), home-server address setting | Done (PR #17, merged; signed on the owner's PC) | 005 |
-| 017 | Offline copy and outbox sync with the conflict rule (decided 2026-10-26); one queue per person, so a forced sign-out on session expiry keeps queued changes (STATUS open item 5) | Proposed | 016 |
+| 017 | Offline copy and outbox sync with the conflict rule (decided 2026-10-26); one queue per person, so a forced sign-out on session expiry keeps queued changes (STATUS open item 5) | Done (branch pushed, PR to be opened by the owner) | 016 |
 | 018 | Due-task reminders as local phone notifications | Proposed | 016, 017 |
 | 019 | Home-server packaging as a Windows service behind Nginx Proxy Manager, first deployment | Done (PR #19, merged); the owner deploys the package built after 026 | 020 |
 | 020 | Source archive of the exact commit packaged into each build, offered on the About page (AGPL, private repository) | Done (PR #18, merged) | 004 |
@@ -51,7 +51,7 @@ everything on the dev machine is readable by Codex.
 | 024 | Menu items hidden from regular users: Archived, Things, Labels, Report an Issue hidden by default; admins switch each on or off for all regular users (household setting); pages not blocked | Done (PR #10, merged) | 007 |
 | 023 | Translate chore names, chore details and recipe names English <-> Arabic on the home server (Google Cloud Translation, cached; key only in the server's configuration) | Done (PR #12, merged) | 022 |
 | 025 | Optional server listen address (`server.host`): empty listens on every interface as today; the local test app uses 127.0.0.1, the home server sets it in 019 (approved 2026-10-28) | Done (PR #15, merged) | 003 |
-| 026 | Install folder `C:\services\wuzzanext` (owner, 2026-10-30) | Done (branch pushed, PR to open) | 019 |
+| 026 | Install folder `C:\services\wuzzanext` (owner, 2026-10-30) | Done (PR #21, merged) | 019 |
 
 ## Settled: don't propose these again
 

@@ -105,6 +105,10 @@ func (h *Handler) AssetHandler(c *gin.Context) {
 	// Set headers
 	// c.Header("Content-Type", contentType)
 	c.Header("Cache-Control", "public, max-age=604800, immutable")
+	// The same picture is fetched by <img> (no CORS) and by the offline picture
+	// cache from the Android app's origin; without Vary the cached copy of one
+	// answers the other and CORS blocks it (task 017).
+	c.Writer.Header().Add("Vary", "Origin")
 	c.Header("Expires", time.Now().UTC().Add(7*24*time.Hour).Format(http.TimeFormat))
 	c.Status(http.StatusOK)
 

@@ -408,6 +408,81 @@ func actionCreatedAtOrNow(options *ActionOptions) time.Time {
 	return time.Now().UTC()
 }
 
+// Task 017: the outbox replays each queued change with the time it was made on
+// the phone (?changedAt=, RFC 3339). The most recent change wins: a change older
+// than the chore's last change is answered 409 with "superseded" and the phone
+// drops it; a newer one is applied and the chore keeps the phone's time as its
+// last change, so the next queued change, from any phone, is judged fairly.
+// Completions are their own entries and are never superseded.
+const queuedChangeTimeParam = "changedAt"
+
+// queuedChangeTime reads the phone's change time. nil means a live change,
+// handled as upstream does. A time more than 30s ahead is refused.
+func queuedChangeTime(c *gin.Context) (*time.Time, bool) {
+	raw := c.Query(queuedChangeTimeParam)
+	if raw == "" {
+		return nil, true
+	}
+	changedAt, err := time.Parse(time.RFC3339Nano, raw)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid changedAt"})
+		return nil, false
+	}
+	changedAt = changedAt.UTC()
+	if changedAt.After(time.Now().UTC().Add(30 * time.Second)) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "changedAt is in the future"})
+		return nil, false
+	}
+	return &changedAt, true
+}
+
+// queuedChoreGone answers 404 for a queued change to a chore that no longer
+// exists, so the phone drops it instead of retrying.
+func queuedChoreGone(c *gin.Context, changedAt *time.Time, err error) bool {
+	if changedAt == nil || !errors.Is(err, gorm.ErrRecordNotFound) {
+		return false
+	}
+	c.JSON(http.StatusNotFound, gin.H{"error": "Chore not found"})
+	return true
+}
+
+// staleCheck drops upstream's "changed since you looked" check for a queued
+// change: it is judged by when it was made instead.
+func staleCheck(seen *time.Time, changedAt *time.Time) *time.Time {
+	if changedAt != nil {
+		return nil
+	}
+	return seen
+}
+
+// supersededChange answers a queued change that is older than the chore's last
+// change.
+func supersededChange(c *gin.Context, chore *chModel.Chore, changedAt *time.Time) bool {
+	if changedAt == nil || !chore.UpdatedAt.After(*changedAt) {
+		return false
+	}
+	c.JSON(http.StatusConflict, gin.H{
+		"error":      "A newer change to this chore was kept",
+		"superseded": true,
+	})
+	return true
+}
+
+// keepChangeTime records the phone's time as the chore's last change, never
+// earlier than the last change before this one.
+func (h *Handler) keepChangeTime(c *gin.Context, choreID int, before time.Time, changedAt *time.Time) {
+	if changedAt == nil {
+		return
+	}
+	at := *changedAt
+	if before.After(at) {
+		at = before
+	}
+	if err := h.choreRepo.SetChoreChangeTime(c, choreID, at); err != nil {
+		logging.FromContext(c).Errorw("Failed to keep the change time", "error", err, "choreID", choreID)
+	}
+}
+
 func applyStartActionTime(session *chModel.TimeSession, userID int, actionTime time.Time) {
 	actionTime = actionTime.UTC()
 	session.StartTime = actionTime
@@ -811,7 +886,14 @@ func (h *Handler) EditChore(c *gin.Context) {
 	}
 
 	// Remove the auto-assignment logic - if no assignee then keep no assignee
+	changedAt, ok := queuedChangeTime(c)
+	if !ok {
+		return
+	}
 	oldChore, err := h.choreRepo.GetChore(c, choreReq.ID, currentUser.ID, currentUser.CircleID)
+	if queuedChoreGone(c, changedAt, err) {
+		return
+	}
 	if err != nil {
 		logger.Error("Failed to retrieve chore", "error", err)
 		c.JSON(500, gin.H{
@@ -819,10 +901,13 @@ func (h *Handler) EditChore(c *gin.Context) {
 		})
 		return
 	}
-	if err := oldChore.CanEdit(currentUser.ID, circleUsers, choreReq.UpdatedAt); err != nil {
+	if err := oldChore.CanEdit(currentUser.ID, circleUsers, staleCheck(choreReq.UpdatedAt, changedAt)); err != nil {
 		c.JSON(403, gin.H{
 			"error": fmt.Sprintf("You cannot edit this chore: %s", err.Error()),
 		})
+		return
+	}
+	if supersededChange(c, oldChore, changedAt) {
 		return
 	}
 
@@ -1029,6 +1114,7 @@ func (h *Handler) EditChore(c *gin.Context) {
 		return
 	}
 
+	h.keepChangeTime(c, oldChore.ID, oldChore.UpdatedAt, changedAt)
 	c.JSON(200, gin.H{
 		"message": "Chore updated successfully",
 	})
@@ -1246,7 +1332,14 @@ func (h *Handler) DeleteChore(c *gin.Context) {
 		return
 	}
 	// Get chore details before deletion for real-time event; scopes to current circle
+	changedAt, ok := queuedChangeTime(c)
+	if !ok {
+		return
+	}
 	chore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+	if queuedChoreGone(c, changedAt, err) {
+		return
+	}
 	if err != nil {
 		logger.Error("Failed to retrieve chore", "error", err)
 		c.JSON(500, gin.H{
@@ -1269,6 +1362,10 @@ func (h *Handler) DeleteChore(c *gin.Context) {
 			})
 			return
 		}
+	}
+
+	if supersededChange(c, chore, changedAt) {
+		return
 	}
 
 	// Collect file paths before deletion; the DeleteChore transaction removes the
@@ -1506,7 +1603,14 @@ func (h *Handler) StartChore(c *gin.Context) {
 		effectiveUser = actualUser
 	}
 
+	changedAt, ok := queuedChangeTime(c)
+	if !ok {
+		return
+	}
 	chore, err := h.choreRepo.GetChore(c, id, effectiveUser.ID, actualUser.CircleID)
+	if queuedChoreGone(c, changedAt, err) {
+		return
+	}
 	if err != nil {
 		logger.Error("Failed to retrieve chore", "error", err)
 		c.JSON(500, gin.H{
@@ -1520,7 +1624,13 @@ func (h *Handler) StartChore(c *gin.Context) {
 	if !validateActionVersion(c, "start", chore, req.ActionOptions) {
 		return
 	}
+	if supersededChange(c, chore, changedAt) {
+		return
+	}
 	actionTime := actionCreatedAtOrNow(req.ActionOptions)
+	if req.ActionOptions == nil && changedAt != nil {
+		actionTime = *changedAt
+	}
 	circleUsers, err := h.circleRepo.GetCircleUsers(c, actualUser.CircleID)
 	if err != nil {
 		logger.Error("Failed to retrieve circle users", "error", err)
@@ -1610,6 +1720,7 @@ func (h *Handler) StartChore(c *gin.Context) {
 		broadcaster.BroadcastChoreUpdated(chore, &effectiveUser.User, changes, nil)
 	}
 
+	h.keepChangeTime(c, chore.ID, chore.UpdatedAt, changedAt)
 	if session != nil {
 		c.JSON(200, gin.H{
 			"res": map[string]interface{}{
@@ -1683,7 +1794,14 @@ func (h *Handler) PauseChore(c *gin.Context) {
 		effectiveUser = actualUser
 	}
 
+	changedAt, ok := queuedChangeTime(c)
+	if !ok {
+		return
+	}
 	chore, err := h.choreRepo.GetChore(c, id, effectiveUser.ID, actualUser.CircleID)
+	if queuedChoreGone(c, changedAt, err) {
+		return
+	}
 	if err != nil {
 		logger.Error("Failed to retrieve chore", "error", err)
 		c.JSON(500, gin.H{
@@ -1697,7 +1815,13 @@ func (h *Handler) PauseChore(c *gin.Context) {
 	if !validateActionVersion(c, "pause", chore, req.ActionOptions) {
 		return
 	}
+	if supersededChange(c, chore, changedAt) {
+		return
+	}
 	actionTime := actionCreatedAtOrNow(req.ActionOptions)
+	if req.ActionOptions == nil && changedAt != nil {
+		actionTime = *changedAt
+	}
 	circleUsers, err := h.circleRepo.GetCircleUsers(c, actualUser.CircleID)
 	if err != nil {
 		logger.Error("Failed to retrieve circle users", "error", err)
@@ -1757,6 +1881,7 @@ func (h *Handler) PauseChore(c *gin.Context) {
 			})
 	}
 
+	h.keepChangeTime(c, chore.ID, chore.UpdatedAt, changedAt)
 	c.JSON(200, gin.H{
 		"res": map[string]interface{}{
 			"duration":       session.Duration,
@@ -1959,7 +2084,14 @@ func (h *Handler) SkipChore(c *gin.Context) {
 		effectiveUser = actualUser
 	}
 
+	changedAt, ok := queuedChangeTime(c)
+	if !ok {
+		return
+	}
 	chore, err := h.choreRepo.GetChore(c, id, effectiveUser.ID, actualUser.CircleID)
+	if queuedChoreGone(c, changedAt, err) {
+		return
+	}
 	if err != nil {
 		logger.Error("Failed to retrieve chore", "error", err)
 		c.JSON(500, gin.H{
@@ -1978,6 +2110,9 @@ func (h *Handler) SkipChore(c *gin.Context) {
 
 	if !validateActionVersion(c, "skip", chore, req.ActionOptions) {
 
+		return
+	}
+	if supersededChange(c, chore, changedAt) {
 		return
 	}
 
@@ -2030,6 +2165,7 @@ func (h *Handler) SkipChore(c *gin.Context) {
 		broadcaster.BroadcastChoreSkipped(updatedChore, &effectiveUser.User, choreHistory, nil)
 	}
 
+	h.keepChangeTime(c, chore.ID, chore.UpdatedAt, changedAt)
 	c.JSON(200, gin.H{
 		"res": updatedChore,
 	})
@@ -2096,7 +2232,14 @@ func (h *Handler) UpdateDueDate(c *gin.Context) {
 		utcTime := dueDateReq.DueDate.UTC()
 		dueDate = &utcTime
 	}
+	changedAt, ok := queuedChangeTime(c)
+	if !ok {
+		return
+	}
 	chore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+	if queuedChoreGone(c, changedAt, err) {
+		return
+	}
 	if err != nil {
 		logger.Error("Failed to retrieve chore", "error", err)
 		c.JSON(500, gin.H{
@@ -2112,8 +2255,11 @@ func (h *Handler) UpdateDueDate(c *gin.Context) {
 		})
 		return
 	}
-	if err := chore.CanEdit(currentUser.ID, circleUsers, dueDateReq.UpdatedAt); err != nil {
+	if err := chore.CanEdit(currentUser.ID, circleUsers, staleCheck(dueDateReq.UpdatedAt, changedAt)); err != nil {
 		c.JSON(403, gin.H{})
+		return
+	}
+	if supersededChange(c, chore, changedAt) {
 		return
 	}
 	now := time.Now().UTC()
@@ -2155,6 +2301,7 @@ func (h *Handler) UpdateDueDate(c *gin.Context) {
 		}
 	}
 
+	h.keepChangeTime(c, chore.ID, chore.UpdatedAt, changedAt)
 	c.JSON(200, gin.H{
 		"res": chore,
 	})
@@ -2197,10 +2344,18 @@ func (h *Handler) ArchiveChore(c *gin.Context) {
 
 	// The repository only checks authorship; a creator who lost sight of the chore
 	// (e.g. removed from a shared project) must not be able to change it anymore.
-	if _, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID); err != nil {
+	changedAt, ok := queuedChangeTime(c)
+	if !ok {
+		return
+	}
+	chore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+	if err != nil {
 		c.JSON(404, gin.H{
 			"error": "Chore not found",
 		})
+		return
+	}
+	if supersededChange(c, chore, changedAt) {
 		return
 	}
 	err = h.choreRepo.ArchiveChore(c, id, currentUser.ID, currentUser.CircleID)
@@ -2228,6 +2383,7 @@ func (h *Handler) ArchiveChore(c *gin.Context) {
 		}
 	}
 
+	h.keepChangeTime(c, chore.ID, chore.UpdatedAt, changedAt)
 	c.JSON(200, gin.H{
 		"message": "Chore archived successfully",
 	})
@@ -2269,10 +2425,18 @@ func (h *Handler) UnarchiveChore(c *gin.Context) {
 	}
 	// The repository only checks authorship; a creator who lost sight of the chore
 	// (e.g. removed from a shared project) must not be able to change it anymore.
-	if _, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID); err != nil {
+	changedAt, ok := queuedChangeTime(c)
+	if !ok {
+		return
+	}
+	chore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+	if err != nil {
 		c.JSON(404, gin.H{
 			"error": "Chore not found",
 		})
+		return
+	}
+	if supersededChange(c, chore, changedAt) {
 		return
 	}
 	err = h.choreRepo.UnarchiveChore(c, id, currentUser.ID, currentUser.CircleID)
@@ -2298,6 +2462,7 @@ func (h *Handler) UnarchiveChore(c *gin.Context) {
 		}
 	}
 
+	h.keepChangeTime(c, chore.ID, chore.UpdatedAt, changedAt)
 	c.JSON(200, gin.H{
 		"message": "Chore unarchived successfully",
 	})
@@ -2369,13 +2534,6 @@ func (h *Handler) CompleteChore(c *gin.Context) {
 		return
 	}
 
-	var completedDate time.Time
-	if req.CompletedDate == nil {
-		completedDate = actionCreatedAtOrNow(req.ActionOptions)
-	} else {
-		completedDate = req.CompletedDate.UTC()
-	}
-
 	id, err := strconv.Atoi(completeChoreID)
 	if err != nil {
 		c.JSON(400, gin.H{
@@ -2383,7 +2541,14 @@ func (h *Handler) CompleteChore(c *gin.Context) {
 		})
 		return
 	}
+	changedAt, ok := queuedChangeTime(c)
+	if !ok {
+		return
+	}
 	chore, err := h.choreRepo.GetChore(c, id, effectiveUser.ID, actualUser.CircleID)
+	if queuedChoreGone(c, changedAt, err) {
+		return
+	}
 	if err != nil {
 		logger.Error("Failed to retrieve chore", "error", err)
 		c.JSON(500, gin.H{
@@ -2396,6 +2561,15 @@ func (h *Handler) CompleteChore(c *gin.Context) {
 	}
 	if !validateActionVersion(c, "complete", chore, req.ActionOptions) {
 		return
+	}
+	// A completion is its own entry and is never superseded (task 017).
+	var completedDate time.Time
+	if req.CompletedDate != nil {
+		completedDate = req.CompletedDate.UTC()
+	} else if req.ActionOptions == nil && changedAt != nil {
+		completedDate = *changedAt
+	} else {
+		completedDate = actionCreatedAtOrNow(req.ActionOptions)
 	}
 
 	// user need to be assigned to the chore to complete it
@@ -2524,6 +2698,7 @@ func (h *Handler) CompleteChore(c *gin.Context) {
 		}
 		h.notifyAdminsOfPendingApproval(c, actualUser.CircleID, completerName, updatedChore)
 
+		h.keepChangeTime(c, chore.ID, chore.UpdatedAt, changedAt)
 		c.JSON(200, gin.H{
 			"res":     updatedChore,
 			"message": "Chore completion submitted for approval",
@@ -2576,6 +2751,7 @@ func (h *Handler) CompleteChore(c *gin.Context) {
 		broadcaster.BroadcastChoreCompleted(updatedChore, &effectiveUser.User, choreHistory, note)
 	}
 
+	h.keepChangeTime(c, chore.ID, chore.UpdatedAt, changedAt)
 	c.JSON(200, gin.H{
 		"res": updatedChore,
 	})

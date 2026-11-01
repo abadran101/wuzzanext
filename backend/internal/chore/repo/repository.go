@@ -404,6 +404,13 @@ func (r *ChoreRepository) UpdateChoreFields(ctx context.Context, choreID int, fi
 	return r.db.WithContext(ctx).Model(&chModel.Chore{}).Where("id = ?", choreID).Updates(fields).Error
 }
 
+// SetChoreChangeTime records when the chore's last change was made, by the
+// phone's clock for a queued change (task 017). It bypasses the automatic
+// updated_at, which would stamp the time the change reached the server.
+func (r *ChoreRepository) SetChoreChangeTime(ctx context.Context, choreID int, at time.Time) error {
+	return r.db.WithContext(ctx).Model(&chModel.Chore{}).Where("id = ?", choreID).UpdateColumn("updated_at", at.UTC()).Error
+}
+
 func (r *ChoreRepository) nextSyncVersionRange(ctx context.Context, circleID int, count int) (int64, error) {
 	return r.nextSyncVersionRangeWithDB(ctx, r.db, circleID, count)
 }
