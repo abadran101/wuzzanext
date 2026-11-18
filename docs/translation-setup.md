@@ -3,7 +3,7 @@
 Wuzzanext can show chore names and chore details in the reader's language: an English
 chore appears in Arabic for someone using the app in Arabic, and an Arabic chore appears in
 English for someone using it in English. The home server asks Google Cloud Translation for
-this. It is **off** until you do the steps below on the home server.
+this. It is required on the home server: do the steps below before the first install.
 
 ## What is sent, and what is not
 
@@ -46,10 +46,10 @@ pricing page before you start). Two limits keep you inside the free allowance:
 
 ## On the home server
 
-6. Tokenmaxximus "Production deployments" sets the key on the Wuzzanext service only, as
-   `DT_TRANSLATION_API_KEY` with `DT_TRANSLATION_ENABLED` = `true`, and restarts the service
-   (`docs/deployment-spec.md`, section 3). Type the key in on the host when it asks; never
-   paste it into a chat.
+6. The key is required on the home server. You type it into
+   `C:\services\wuzzanext\app\config\selfhosted.yaml` in place of `<GOOGLE_KEY>`, with
+   `translation.enabled: true` (owner guide, step 4; on a server already running, edit the
+   file the same way and restart the service in Services). Never paste it into a chat.
 7. Check: open the app, switch the language in the user menu to the other language, and open
    the chore list. An English chore should now show in Arabic (or the reverse); the chore page
    shows **Translated** and **See original**. Want: translated names after a second or two.
@@ -57,16 +57,18 @@ pricing page before you start). Two limits keep you inside the free allowance:
 
 ## If it does not work
 
-- The server shows translations only when it is enabled **and** has a key. Check both
-  service settings, then restart the service again.
+- The server shows translations only when it is enabled **and** has a key. Check
+  `enabled: true` and the key under `translation:` in `selfhosted.yaml` (no `<GOOGLE_KEY>`
+  left), then restart the service again.
 - The home server needs outbound HTTPS to `translation.googleapis.com`.
 - A wrong or restricted key makes chores stay in their original language; the server log
   says "translation service answered 403" (the key is never written to the log).
 
 ## Turning it off
 
-Ask for `DT_TRANSLATION_ENABLED` to be set to `false` on the service (or deleted) and the
-service restarted. Nothing is sent from then on. To stop it for good, also delete the key in
+Translation is required on the home server, so turning it off is a change of that decision.
+If you make it: set `enabled: false` under `translation:` in `selfhosted.yaml` and restart the
+service. Nothing is sent from then on. To stop it for good, also delete the key in
 the Google Cloud console (**APIs & Services > Credentials**). Answers already kept on the
 server stay in its database until it is reset; they hold only translated chore texts.
 

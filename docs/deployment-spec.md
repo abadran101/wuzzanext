@@ -1,9 +1,9 @@
 # Wuzzanext on the home server: deployment spec
 
-For Tokenmaxximus "Production deployments" on the home server, carried out with Windows
-consent, and for the owner, who checks it. It describes what the host should end up with; it
-holds no hostnames, addresses or secret values. Every `<...>` is filled in on the host and
-stays there.
+What the home server should end up with. The owner sets it up by hand, step by step, by
+`docs/owner-guide.md` (the home server does not run Tokenmaxximus); this spec is the reference
+the guide follows and the checks it ends with. It holds no hostnames, addresses or secret
+values. Every `<...>` is filled in on the host and stays there.
 
 | Placeholder | What it is |
 | --- | --- |
@@ -14,7 +14,9 @@ stays there.
 | `<HOST_LAN_ADDRESS>` | the host's address on the home network (only for the checks) |
 | `<NPM_CONTAINER>` | the Nginx Proxy Manager container's name |
 | `<BACKUP_DIR>` | where the nightly copies go; best on a second disk |
-| `<OWNER_ACCOUNT>` | the owner's own (standard) Windows account on the host |
+| `<OWNER_ACCOUNT>` | the owner's own Windows account on the host |
+| `<JWT_SECRET>` | a new random secret of 64 hex characters, made on the host; it never leaves it |
+| `<GOOGLE_KEY>` | the owner's Google Cloud Translation key (`docs/translation-setup.md`); required |
 
 ## 1. The package
 
@@ -70,28 +72,34 @@ Stop and on Shutdown.
 
 ### Environment variables of the service
 
-Set on the service only (its own `Environment` setting), not system-wide, so no other program
-inherits them.
+Set on the service only (the `Environment` multi-string value under
+`HKLM\SYSTEM\CurrentControlSet\Services\Wuzzanext`), not system-wide, so no other program
+inherits them. None of them is secret: local accounts on a Windows host can read service
+settings, so the secrets live in the configuration file instead.
 
 | Name | Value |
 | --- | --- |
 | `DT_ENV` | `selfhosted` |
 | `DT_SQLITE_PATH` | `C:\services\wuzzanext\data\wuzzanext.db` |
 | `DT_LOG_FILE` | `C:\services\wuzzanext\data\logs\wuzzanext.log` |
-| `DT_JWT_SECRET` | a new random secret of 64 hex characters, made on the host; it never leaves it |
-| `DT_TRANSLATION_ENABLED` | `true`, once the owner has a Google key (`docs/translation-setup.md`) |
-| `DT_TRANSLATION_API_KEY` | the owner's Google Cloud Translation key, typed in on the host |
 
-Local accounts on a Windows host can read service settings. If the host has accounts other than
-the owner's and the administrators, put the two secrets in `config\selfhosted.yaml` instead
-(`jwt.secret`, `translation.api_key`) and remove Read and execute for everyone but
-`NT SERVICE\Wuzzanext`, Administrators and SYSTEM on that one file.
+The service is registered with one command line, typed by the owner in an administrator
+terminal (owner guide, step 5; the only command line in the install):
+
+    sc.exe create Wuzzanext binPath= "C:\services\wuzzanext\app\wuzzanext.exe" obj= "NT SERVICE\Wuzzanext" start= auto DisplayName= "Wuzzanext"
+
+Recovery is set on the service's Recovery tab in Services.
 
 ### The configuration file
 
 First install only: copy `selfhosted.yaml.template` to
-`C:\services\wuzzanext\app\config\selfhosted.yaml` and replace `<PUBLIC_URL>` (three places)
-and `<BIND_ADDRESS>`. Updates never replace this file.
+`C:\services\wuzzanext\app\config\selfhosted.yaml` and replace `<JWT_SECRET>`,
+`<GOOGLE_KEY>`, `<PUBLIC_URL>` (three places) and `<BIND_ADDRESS>`. Updates never replace this
+file. It holds the two secrets, so it sits in `app\config`, which only Administrators, SYSTEM
+and `NT SERVICE\Wuzzanext` can read (section 2). An unfilled `<JWT_SECRET>` is too short, so
+the server refuses to start rather than run with a weak secret.
+
+Translation is required on this host: `translation.enabled` is `true` and the key is set.
 
 ## 4. Bind address
 
@@ -182,8 +190,11 @@ All must pass; record what each showed (not secrets, not family data).
 5. From another device on the home network (a laptop or phone, not the host):
    `Test-NetConnection <HOST_LAN_ADDRESS> -Port 2021` shows `TcpTestSucceeded : False`, or
    `curl -m 5 http://<HOST_LAN_ADDRESS>:2021/health` fails. The port must not answer.
-6. The owner's checks in the web browser (owner guide, step 4): the About page shows the
+6. The owner's checks in the web browser (owner guide, step 11): the About page shows the
    running version, and signing in works.
-7. One backup run ends with `backup ok`, and the new folder holds `wuzzanext.db` and
+7. Translation works (required): with the app switched to Arabic, an English chore name shows
+   in Arabic, with **Translated** and **See original** on the chore page (owner guide,
+   step 11.3). The log has no "translation service answered" errors.
+8. One backup run ends with `backup ok`, and the new folder holds `wuzzanext.db` and
    `uploads\`.
-8. The log `C:\services\wuzzanext\data\logs\wuzzanext.log` has no errors since the start.
+9. The log `C:\services\wuzzanext\data\logs\wuzzanext.log` has no errors since the start.
