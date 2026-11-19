@@ -4,20 +4,23 @@ Update this file at every stop. Output from the real machines beats anything wri
 
 ## Production (none yet)
 
-- Target: the owner's home server, home network only. Nothing deployed. Deployment model not
-  yet in the protected projects file; isolated behavior applies until it is.
+- Target: the owner's home server, home network only. Nothing deployed. It does not run
+  Tokenmaxximus and will not (owner, 2026-11-17): the owner installs by hand by
+  `docs/owner-guide.md` (task 027). Nothing here contacts it. Deployment model not in the
+  protected projects file (`prodHost` "none yet"); isolated behavior applies.
 - Commit running: none.
 
 ## GitHub
 
 - Repository `abadran101/wuzzanext`, private (stays private, owner 2026-10-26). Default branch
-  `main` at e7f4d6b1 (PR #21, task 026, merged 2026-10-30; PR #19, task 019, merged
+  `main` at b1de072f (PR #22, task 017, merged; PR #21, task 026, merged 2026-10-30; PR #19, task 019, merged
   2026-10-30, main a6efa64a; PR #20, a GitHub revert of #19,
   closed unmerged by the owner the same day; PR #18, task 020, merged 2026-10-30, main
   f54ec73b; PR #17, task 016, merged 2026-10-30; PR #16, task 010, merged 2026-10-29; PR #15, task 025, merged 2026-10-29; PR #14, task 009, merged 2026-10-29; PR #13, task 008, merged 2026-10-28; PR #12, task 023, merged 2026-10-28; PR #11, task 022, merged 2026-10-28; PR #10, task 024, merged 2026-10-27; PR #9, PR #8 and PR #7, task 007, merged 2026-10-27; PR #6, task 005, merged 2026-10-27; PR #5, task 021, and PR #4, task 004,
   merged 2026-10-27; PR #3, task 006, merged 2026-10-26; PR #2, tasks 002-003, and PR #1,
   task 001, before it).
-- Open branch: `task/017-offline-sync` (done, pushed; PR to be opened by the owner). The owner opens PRs, because the
+- Open branches: `task/027-manual-install` (this one); `task/018-local-reminders` (on hold,
+  pushed at 94281934, no PR). The owner opens PRs, because the
   Tokenmaxximus PR call is refused in this session's auto mode. The owner removes merged
   and closed branches on GitHub, `revert-19-task/019-home-server` included.
 - Remote `origin` is `https://github.com/abadran101/wuzzanext.git`, confirmed with
@@ -43,7 +46,8 @@ Update this file at every stop. Output from the real machines beats anything wri
 - Tools: Claude Code 2.1.301, Codex CLI 0.163.0, Git 2.56.0, Go 1.27.3, Node.js 24.22.1 with
   npm 11.19.1, Temurin JDK 21.0.12.1 (`JAVA_HOME`, machine), Android command-line tools 22.0
   (`ANDROID_HOME` = `C:\tools\Android`, machine). Temurin 25 also installed, not first on PATH.
-- Coding provider: codex, but no Codex at all until the owner says so (Decisions 2026-10-29).
+- Coding provider: codex; Codex is allowed again (Decisions 2026-11-04); read-only test run
+  succeeded 2026-11-04 (codex-cli 0.163.0, model gpt-6.1-sol, no prompts, no errors).
   Codex profile: none set. Codex hit its ChatGPT usage limit on
   2026-10-26 during task 003; the supervisor wrote the small fix itself.
 - Locked rules: `git push --dry-run origin main` refused without a prompt on 2026-10-26, again
@@ -54,6 +58,11 @@ Update this file at every stop. Output from the real machines beats anything wri
 - Fence last tested with Tokenmaxximus' security check: not run in this session.
 
 ## In flight
+
+- 027 manual install (task file): the owner guide is now a by-hand install with Windows'
+  tools and one typed `sc.exe create` line; secrets and the required Google key go in
+  `selfhosted.yaml`; translation is one of the checks. After the merge: a package from the
+  merged hash (the b1de072f package has the old guide and template; do not use it).
 
 - 026 install folder (task file): merged (PR #21). The spec, guide and template name
   `C:\services\wuzzanext` (owner, 2026-10-30). Package from e7f4d6b1 built and checked
@@ -75,10 +84,10 @@ Update this file at every stop. Output from the real machines beats anything wri
   backup`, the APK download and running commit on the About page, the config template, the
   deployment spec for Tokenmaxximus and the owner guide. Package from a6efa64a built and
   checked (`/health` shows the full hash), superseded by the one after 026.
-- 017 offline copy (task file): done and pushed (from e7f4d6b1). The most recent change wins
+- 017 offline copy (task file): merged (PR #22, main b1de072f). The most recent change wins
   by the phone's change time; a change that lost is dropped with a short note; one outbox per
   person, kept through a forced sign-out. Checked in the browser on 127.0.0.1 in English and
-  Arabic (22 of 22). The owner opens the PR and merges; a phone try comes with the next install.
+  Arabic (22 of 22). A phone try comes with the first install.
 - Next: 018 (owner, 2026-10-30); 012-015 wait for the recipe samples.
 
 ## Open items
@@ -98,6 +107,21 @@ Update this file at every stop. Output from the real machines beats anything wri
 7. Resolved by task 017: `Vary: Origin` on `/api/v1/assets`.
 
 ## Decisions (newest first)
+
+- 2026-11-17: the home server does not run Tokenmaxximus and will not; the owner installs by
+  hand, with steps written in plain words; the Google translation key is a must-have on the
+  home server (owner, in the supervisor's window). Task 027.
+- 2026-11-17: exception to the no-admin-commands rule, for the home server install only: one
+  `sc.exe create` line the owner reads and types in an administrator terminal, not a pasted
+  block (owner, in the supervisor's window: "yes I approve the exception").
+- 2026-11-17: the hold of 2026-10-31 ends for task 027, which the owner asked for in the
+  supervisor's window; 018 stays on hold.
+- 2026-10-31: Wuzzanext work on hold (owner, through the orchestrator: "putting the wuzzanext
+  work on hold for now"). 018 stays pushed at 942819340c6ec430c0e493ec03028c283a3f8897, no PR.
+
+- 2026-11-04: Codex is back, replacing the 2026-10-29 "no Codex" decision (owner, through the
+  orchestrator: "codex is back, wuzzanext probably has an ourdated codex status, we can test
+  it"). Only a small read-only test run; no build work (018) until the owner asks.
 
 - 2026-10-30: 017: a change that loses to a newer one is dropped and the phone shows a short
   note once, naming the chore ("1 change was replaced by a newer one"); nothing is left

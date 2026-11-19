@@ -151,11 +151,12 @@ repository. The owner deploys a merged commit, named by its full hash.
 - `node scripts/build-server.mjs` (above) also packages the config template
   (`deploy/selfhosted.yaml`), the deployment spec and the owner's steps, with a
   `SHA256SUMS.txt`. The program stamps its commit, shown by `/health` and the About page.
-- `docs/deployment-spec.md`: what Tokenmaxximus "Production deployments" sets up on the host
-  (folders and permissions, the service, its environment, the bind address and firewall rule,
-  the nightly backup, updates, checks).
-- `docs/owner-guide.md`: the owner's own steps (copy, SHA-256 check, proxy entry, browser
-  checks, the Android app download).
+- `docs/deployment-spec.md`: what the host ends up with (folders and permissions, the
+  service, its environment, the bind address and firewall rule, the nightly backup, updates,
+  checks). The home server does not run Tokenmaxximus.
+- `docs/owner-guide.md`: the owner's own steps, by hand with Windows' tools (copy, SHA-256
+  check, folders, config with the secrets and the required Google key, the service, proxy
+  entry, browser checks including translation, the Android app download).
 - Started by Windows, `wuzzanext.exe` runs as the service `Wuzzanext`; started by hand it
   runs in the console as before.
 - `wuzzanext.exe backup -to <folder> [-db <file>] [-uploads <folder>] [-keep 14]` copies the
